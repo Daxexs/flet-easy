@@ -2,7 +2,7 @@
 
 [![pdm-managed](https://img.shields.io/badge/pdm-managed-blueviolet)](https://pdm-project.org)
 
-<div style="text-align:center">
+<div align="center">
     <img src="media/logo.png" alt="logo" width="250">
 </div>
 
@@ -46,8 +46,8 @@
   - Use on_resize [view](#%EF%B8%8F-use-on_resize)
 - Class ResponsiveControlsy [view](#-Class-ResponsiveControlsy)
 - Run the app [view](#-Run-the-app)
-- Working with other apps and creating apis [view](-working-with-other-apps-and-creating-apis)
-- Code examples [view](-code-examples)
+- Working with other apps and creating apis [view](#-working-with-other-apps-and-creating-apis)
+- Code examples [view](#-code-examples)
 
 
 ## 💻Installation:
