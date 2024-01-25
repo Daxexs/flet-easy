@@ -1,0 +1,39 @@
+[project]
+name = "flet-easy"
+version = "0.1.0"
+description = "Flet-Easy is a package created as a Flet add-on, designed to be easy to use with a cleaner order in the code, having many customizable features."
+authors = [
+    {name = "Daxexs", email = "Daxexsdev@gmail.com"},
+]
+dynamic = ["version"]
+dependencies = [
+    "flet",
+    "parse",
+]
+requires-python = ">=3.8"
+readme = "README.md"
+license = {text = "apache-2.0"}
+keywords = ["flet easy", "flet", "python", "flet router"]
+classifiers = [
+    "Topic :: Software Development :: Build Tools",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+[project.urls]
+Homepage = "https://github.com/Daxexs"
+Repository = "https://github.com/Daxexs/flet-easy"
+Documentation = "https://github.com/Daxexs/flet-easy/blob/main/README.md"
+Changelog = "https://github.com/Daxexs/flet-easy/blob/main/README.md"
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+
+[tool.pdm]
+package-type = "library"
