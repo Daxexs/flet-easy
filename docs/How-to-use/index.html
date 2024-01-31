@@ -1109,11 +1109,11 @@ we create the app object, in it you can configure:</p>
 <h3 id="clear"><code>clear</code></h3>
 <p>Removes the pages from the page.views list of flet. (optional)</p>
 <h3 id="share_data"><code>share_data</code></h3>
-<p>It is a boolean value, which is useful if you want to share data between pages, in a more restricted way. <a href="/Data-sharing-between-pages">More information</a></p>
+<p>It is a boolean value, which is useful if you want to share data between pages, in a more restricted way. <a href="/flet-easy/Data-sharing-between-pages">More information</a></p>
 <h3 id="protected_route"><code>protected_route</code></h3>
 <p>Protects the route of the page, according to the configuration of the login decorator of the FletEasy class. (optional)</p>
 <h3 id="custom_params"><code>custom_params</code></h3>
-<p>To add parameter validation in the custom url using a dictionary, where the key is the name of the parameter validation and the value is the custom function that should return a value (boolean if false). <a href="/dynamic-routes/#custom-validation">view</a></p>
+<p>To add parameter validation in the custom url using a dictionary, where the key is the name of the parameter validation and the value is the custom function that should return a value (boolean if false). <a href="/flet-easy/dynamic-routes/#custom-validation">view</a></p>
 <h2 id="example_1"><strong>Example</strong></h2>
 <p><div class="language-Python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="hll"><span class="nd">@app</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="n">route</span><span class="o">=</span><span class="s2">&quot;/home&quot;</span><span class="p">)</span>
 </span></span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">def</span> <span class="nf">home_page</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">fs</span><span class="o">.</span><span class="n">Datasy</span><span class="p">):</span>
@@ -1138,9 +1138,9 @@ This class has the following attributes, in order to access its data:</p>
 <li><code>route_prefix</code> : Value entered in the <code>FletEasy</code> class parameters to create the app object.</li>
 <li><code>route_init</code> : Value entered in the <code>FletEasy</code> class parameters to create the app object.</li>
 <li><code>route_login</code> : Value entered in the <code>FletEasy</code> class parameters to create the app object.</li>
-<li><code>share</code> : It is used to be able to store and to obtain values in the client session, the utility is to be able to have greater control in the pages in which it is wanted to share and not in all the pages. <a href="/Data-sharing-between-pages/">More information</a></li>
-<li><code>on_keyboard_event</code> : Get event values to use in the page. <a href="/Events/keyboard-event/">view</a></li>
-<li><code>on_resize</code> : Get event values to use in the page. <a href="/Events/On-resize/">view</a></li>
+<li><code>share</code> : It is used to be able to store and to obtain values in the client session, the utility is to be able to have greater control in the pages in which it is wanted to share and not in all the pages. <a href="/flet-easy/Data-sharing-between-pages/">More information</a></li>
+<li><code>on_keyboard_event</code> : Get event values to use in the page. <a href="/flet-easy/Events/keyboard-event/">view</a></li>
+<li><code>on_resize</code> : Get event values to use in the page. <a href="/flet-easy/Events/On-resize/">view</a></li>
 <li><code>logaut | logaut_async</code> : Method to close sessions of all sections in the browser (client storage), requires as parameter the key or the control (the parameter key of the control must have the value to delete), this is to avoid creating an extra function.</li>
 <li><code>update_login | update_login_async</code> : Method to create sessions of all sections in the browser (client storage), requires as parameters the key and the value, the same used in the <code>page.client_storage.set</code> method.</li>
 <li><code>go | go_async</code> : Method to change the path of the application, in order to reduce the code, you must assign the value of the <code>key</code> parameter of the <code>control</code> used, for example buttons.</li>
