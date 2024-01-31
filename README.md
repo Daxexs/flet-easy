@@ -1,6 +1,6 @@
 [![github](https://img.shields.io/badge/my_profile-000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Daxexs)[![pypi](https://img.shields.io/badge/Pypi-0A66C2?style=for-the-badge&logo=pypi&logoColor=white)](https://pypi.org/project/flet-easy)
 
-[![pdm-managed](https://img.shields.io/badge/pdm-managed-blueviolet)](https://pdm-project.org)
+[![Downloads](https://static.pepy.tech/badge/flet-easy)](https://pepy.tech/project/flet-easy) [![pdm-managed](https://img.shields.io/badge/pdm-managed-blueviolet)](https://pdm-project.org)
 
 <div align="center">
     <img src="media/logo.png" alt="logo" width="250">
@@ -30,10 +30,12 @@ and more extra features.....
 - `on_error`
 
 ## 💻Installation:
+
 Requires installation for use:
-* Flet (Installed automatically)
-* Flet-fastapi (Optional)
-* uvicorn (Optional)
+* `Flet` (Installed automatically)
+* `Flet-fastapi` (Optional)
+* `uvicorn` (Optional)
+
 ```bash
   pip install flet-easy
 ```
@@ -114,12 +116,12 @@ app.run()
 ```
 
 ## 🚀 How to use `Flet-Easy`?
-!!! info Documentation
-    https://github.com/Daxexs/flet-easy
+> [!IMPORTANT]
+https://daxexs.github.io/flet-easy/
 
 ## 👀 Code examples:
-!!! success Github
-    https://github.com/Daxexs/flet-easy/tree/main/tests
+> [!NOTE]
+https://github.com/Daxexs/flet-easy/tree/main/tests
 
 # 🧾 License
 [Apache License 2.0](https://choosealicense.com/licenses/apache-2.0/)
