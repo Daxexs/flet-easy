@@ -19,13 +19,28 @@ from flet import (
     ControlEvent,
 )
 from dataclasses import dataclass
-from typing import Any, Callable, List
+from typing import Any, Callable, List, Dict
 from flet_core import Control
+from flet_core.session_storage import SessionStorage
 from functools import wraps
 from flet.canvas import Canvas
 
 from flet_core.constrained_control import ConstrainedControl
 from inspect import iscoroutinefunction
+
+
+class SessionStorageEdit(SessionStorage):
+    def __init__(self, page):
+        super().__init__(page)
+
+    def contains(self) -> bool:
+        return False if len(self._SessionStorage__store) == 0 else True
+
+    def get_values(self) -> List[Any]:
+        return list(self._SessionStorage__store.values())
+
+    def get_all(self) -> Dict[str, Any]:
+        return self._SessionStorage__store
 
 
 class Keyboardsy:
@@ -79,19 +94,19 @@ class Keyboardsy:
         for value in self.__controls:
             value()
 
-    def key(self):
+    def key(self)->str:
         return self.call.key
 
-    def shift(self):
+    def shift(self)->bool:
         return self.call.shift
 
-    def ctrl(self):
+    def ctrl(self)-> bool:
         return self.call.ctrl
 
-    def alt(self):
+    def alt(self)-> bool:
         return self.call.alt
 
-    def meta(self):
+    def meta(self)-> bool:
         return self.call.meta
 
     def test(self):
@@ -253,7 +268,8 @@ class Resizesy:
                         if (self.page.height - self.margin_y) <= value["control"].height
                         else value["control_height"]
                     )
-                    value["object"].update() if value["object"] else self.page.update()
+                    value["object"].update(
+                    ) if value["object"] else self.page.update()
                 else:
                     print("pasado")
             else:
@@ -266,7 +282,8 @@ class Resizesy:
 
     def add_controls_async(self):
         """Adding a list of controllers, using an anonymous function (lambda)"""
-        self.__add_controls_f = lambda: self.__response_async(self.__add_control)
+        self.__add_controls_f = lambda: self.__response_async(
+            self.__add_control)
 
     def add_controls(self):
         """Adding a list of controllers, using an anonymous function (lambda)"""
@@ -345,6 +362,15 @@ class Datasy:
     * `route_prefix` : Value entered in the `FletEasy` class parameters to create the app object.
     * `route_init` : Value entered in the `FletEasy` class parameters to create the app object.
     * `route_login` : Value entered in the `FletEasy` class parameters to create the app object.
+    ---
+    * `share` : It is used to be able to store and to obtain values in the client session, the utility is to be able to have greater control in the pages in which it is wanted to share and not in all the pages, for it the `share_data` parameter of the `page` decorator must be used. The methods to use are similar `page.session` (https://flet.dev/docs/guides/python/session-storage). 
+    
+    Besides that you get some extra methods: 
+        
+        * `contains` : Returns a boolean, it is useful to know if there is shared data.
+        * `get_values` : Get a list of all shared values.
+        * `get_all` : Get the dictionary of all shared values.
+    ----    
     * `on_keyboard_event` : get event values to use in the page.
     * `on_resize` : get event values to use in the page.
     * `logaut and logaut_async` : method to close sessions of all sections in the browser (client storage), requires as parameter the key or the control (the parameter key of the control must have the value to delete), this is to avoid creating an extra function.
@@ -356,11 +382,12 @@ class Datasy:
         self, route_prefix: str = None, route_init: str = None, route_login: str = None
     ) -> None:
         self.__page: Page = None
-        self.__url_params: list = None
+        self.__url_params: dict = None
         self.__view: View = None
         self.__route_prefix: str = route_prefix
         self.__route_init: str = route_init
         self.__route_login: str = route_login
+        self.__share = SessionStorageEdit(self.__page)
         self.__on_keyboard_event: Keyboardsy = None
         self.__on_resize: Resizesy = None
 
@@ -412,6 +439,10 @@ class Datasy:
     def route_login(self, route_login: str):
         self.__route_login = route_login
 
+    @property
+    def share(self):
+        return self.__share
+
     # events
     @property
     def on_keyboard_event(self):
@@ -443,12 +474,10 @@ class Datasy:
     async def __logaut_init_asyn(self, topic, msg: Msg):
         if msg.method == "login":
             await self.page.client_storage.set_async(msg.key, msg.value)
-            await self.page.update_async()
 
         elif msg.method == "logaut":
             await self.page.client_storage.remove_async(msg.key)
             await self.page.go_async(self.route_login)
-            await self.page.update_async()
 
     async def _create_login_async(self):
         await self.page.pubsub.subscribe_topic_async(
@@ -457,7 +486,8 @@ class Datasy:
 
     async def update_login_async(self, key: str, value: Any):
         """Registering in the client's storage the key and value in all browser sessions."""
-        await self.page.pubsub.send_all_on_topic_async(
+        await self.page.client_storage.set_async(key, value)
+        await self.page.pubsub.send_others_on_topic_async(
             self.page.client_ip, Msg("login", key, value)
         )
 
@@ -468,24 +498,25 @@ class Datasy:
             key = e
         else:
             key = e.control.key
-        self.page.pubsub.send_all_on_topic(self.page.client_ip, Msg("logaut", key))
+        self.page.pubsub.send_all_on_topic(
+            self.page.client_ip, Msg("logaut", key))
 
     def __logaut_init(self, topic, msg: Msg):
         if msg.method == "login":
             self.page.client_storage.set(msg.key, msg.value)
-            self.page.update()
 
         elif msg.method == "logaut":
             self.page.client_storage.remove(msg.key)
             self.page.go(self.route_login)
-            self.page.update()
 
     def _create_login(self):
-        self.page.pubsub.subscribe_topic(self.page.client_ip, self.__logaut_init)
+        self.page.pubsub.subscribe_topic(
+            self.page.client_ip, self.__logaut_init)
 
     def update_login(self, key: str, value: Any):
         """Registering in the client's storage the key and value in all browser sessions."""
-        self.page.pubsub.send_all_on_topic(
+        self.page.client_storage.set(key, value)
+        self.page.pubsub.send_others_on_topic(
             self.page.client_ip, Msg("login", key, value)
         )
 
@@ -511,11 +542,12 @@ class Datasy:
 @dataclass
 class Pagesy:
     """To add pages, it requires the following parameters:
-    * route: text string of the url, for example(`'/task'`).
-    * ``view``: Stores the page function.
-    * ``clear``: Removes the pages from the `page.views` list of flet. (optional)
-    * ``protected_route``: Protects the route of the page, according to the configuration of the `login` decorator of the `FletEasy` class. (optional)
-    * ``custom_params``: To add validation of parameters in the custom url using a list, where the key is the name of the parameter validation and the value is the custom function that must report a boolean value.
+    * `route`: text string of the url, for example(`'/task'`).
+    * `view`: Stores the page function.
+    * `clear`: Removes the pages from the `page.views` list of flet. (optional)
+    * `share_data` : It is a boolean value, which is useful if you want to share data between pages, in a more restricted way.
+    * `protected_route`: Protects the route of the page, according to the configuration of the `login` decorator of the `FletEasy` class. (optional)
+    * `custom_params`: To add validation of parameters in the custom url using a list, where the key is the name of the parameter validation and the value is the custom function that must report a boolean value.
 
     Example:
     ```python
@@ -526,6 +558,7 @@ class Pagesy:
     route: str
     view: Callable
     clear: bool = False
+    share_data: bool = False
     protected_route: bool = False
     custom_params: dict = None
 
@@ -541,7 +574,7 @@ class Pagesy:
             and self.protected_route == other.protected_route
         )
 
-
+# Add new attributes if flet adds in its updates.
 @dataclass
 class Viewsy:
     route: str | None = None
@@ -641,7 +674,8 @@ class AddPagesy:
                     route,
                     func,
                     data.get("page_clear"),
-                    data.get("proctect_route"),
+                    data.get("share_data"),
+                    data.get("protected_route"),
                     custom_params=data.get("custom_params"),
                 )
             )
@@ -653,7 +687,8 @@ class AddPagesy:
         self,
         route: str,
         page_clear: bool = False,
-        proctect_route: bool = False,
+        share_data: bool = False,
+        protected_route: bool = False,
         custom_params: dict = None,
     ):
         """Decorator to add a new page to the app, you need the following parameters:
@@ -696,7 +731,8 @@ class AddPagesy:
         data = {
             "route": route,
             "page_clear": page_clear,
-            "proctect_route": proctect_route,
+            "share_data": share_data,
+            "protected_route": protected_route,
             "custom_params": custom_params,
         }
         return self.__decorator(data)

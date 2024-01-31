@@ -1,6 +1,6 @@
 import flet_easy as fs
 import flet_fastapi
-from view import counter, index, login, markdown, keyboard, response, task, test, pbs
+from view import counter, index, login, markdown, keyboard, response, task, test, pbs,data
 
 from core.config import ConfigApp
 from pathlib import Path
@@ -34,7 +34,7 @@ app = fs.FletEasy(
 """" Add pages from other archives:
 * In the list you enter objects of class `AddPagesy` from other .py files.
 """
-app.add_pages([index, counter, login, markdown, keyboard, response, task, test, pbs])
+app.add_pages([index, counter, login, markdown, keyboard, response, task, test, pbs,data])
 
 """ -> Add routes without the use of decorators.""" ""
 # app.add_routes(add_views=[

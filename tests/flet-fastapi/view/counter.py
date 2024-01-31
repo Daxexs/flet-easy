@@ -44,7 +44,7 @@ class Contador(ft.UserControl):
             alignment=ft.alignment.center
         )
 
-@counter.page('/', proctect_route=True)
+@counter.page('/', protected_route=True)
 async def counter_page(data: fs.Datasy):
     
     view = data.view

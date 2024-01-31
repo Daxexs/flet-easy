@@ -80,8 +80,10 @@ class ResponseTest(ft.UserControl):
 @response.page('/response')
 async def response_page(data: fs.Datasy):
     page = data.page
+    view = data.view
     
     page.title = 'response'
+    view.appbar.title = ft.Text('Response')
 
     async def handle_resize(e: CanvasResizeEvent):
         c = e.control.content
@@ -90,7 +92,7 @@ async def response_page(data: fs.Datasy):
         await page.update_async()
 
     return ft.View(
-        '/response',
+        f'{data.route_prefix}/response',
         controls=[
             fs.ResponsiveControlsy(
                 content=ft.Container(
@@ -116,4 +118,5 @@ async def response_page(data: fs.Datasy):
                 expand=2
             ),
         ],
+        appbar=view.appbar
     )

@@ -40,7 +40,7 @@ class FletEasyX:
             self.__route_login,
         )
 
-        self.__view_404 = ViewError()
+        self.__view_404 = ViewError(route_init)
         self.__page_404: Pagesy = page_404
         self.__view_data: Viewsy = view_data
         self.__view_config: Callable = view_config
@@ -53,14 +53,16 @@ class FletEasyX:
         pg_404 = True
         self.__page_on_resize.clear()
         self.__page_on_keyboard.clear()
+        path = self.__route_init if route.route == '/' else route.route
 
         for page in self.__pages:
             if page.custom_params is None:
-                route_math = parse(page.route, route.route)
+                route_math = parse(page.route, path)
                 route_check = route_math
             else:
                 try:
-                    route_math = parse(page.route, route.route, page.custom_params)
+                    route_math = parse(
+                        page.route, path, page.custom_params)
 
                     if route_math:
                         route_check = all(
@@ -79,7 +81,10 @@ class FletEasyX:
                         if self.__config_login(self.__page):
                             if page.clear:
                                 self.__page.views.clear()
-                            self.__add_events_params(page.view, route_math.named)
+                            if not page.share_data:
+                                self.__data.share.clear()
+                            self.__add_events_params(
+                                page.view, route_math.named)
                             break
                         else:
                             self.__page.go(self.__route_login)
@@ -88,6 +93,8 @@ class FletEasyX:
                     else:
                         if page.clear:
                             self.__page.views.clear()
+                        if not page.share_data:
+                            self.__data.share.clear()
                         self.__add_events_params(page.view, route_math.named)
                         break
 
@@ -103,8 +110,6 @@ class FletEasyX:
 
                 self.__add_events_params(self.__page_404.view)
             else:
-                self.__page.route = "/Flet-Easy-404"
-                self.__view_404.route_index = self.__route_init
                 self.__page.views.append(self.__view_404.view(self.__page))
                 self.__page.update()
 
@@ -173,17 +178,19 @@ class FletEasyX:
 
     # ---- Async ----------------------------------------------------------------
     async def __route_change_async(self, route: RouteChangeEvent):
+        path = self.__route_init if route.route == '/' else route.route
         pg_404 = True
         self.__page_on_resize.clear()
         self.__page_on_keyboard.clear()
 
         for page in self.__pages:
             if page.custom_params is None:
-                route_math = parse(page.route, route.route)
+                route_math = parse(page.route, path)
                 route_check = route_math
             else:
                 try:
-                    route_math = parse(page.route, route.route, page.custom_params)
+                    route_math = parse(
+                        page.route, path, page.custom_params)
 
                     if route_math:
                         route_check = all(
@@ -204,6 +211,8 @@ class FletEasyX:
                         if await self.__config_login(self.__page):
                             if page.clear:
                                 self.__page.views.clear()
+                            if not page.share_data:
+                                self.__data.share.clear()
                             await self.__add_events_params_async(
                                 page.view, route_math.named
                             )
@@ -215,6 +224,8 @@ class FletEasyX:
                     else:
                         if page.clear:
                             self.__page.views.clear()
+                        if not page.share_data:
+                            self.__data.share.clear()
                         await self.__add_events_params_async(
                             page.view, route_math.named
                         )
@@ -232,8 +243,6 @@ class FletEasyX:
 
                 await self.__add_events_params_async(self.__page_404.view)
             else:
-                self.__page.route = "/Flet-Easy-404"
-                self.__view_404.route_index = self.__route_init
                 self.__page.views.append(await self.__view_404.view_async(self.__page))
                 await self.__page.update_async()
 

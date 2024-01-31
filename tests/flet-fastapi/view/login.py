@@ -20,11 +20,8 @@ class Login(ft.UserControl):
 
     async def login(self, e):
         if self.username.value and self.password.value:
-            await self.page.client_storage.set_async("login", self.username.value)
-
             # Registering in the client's storage the key and value in all browser sessions.
             await self.data.update_login_async("login", self.username.value)
-
             await self.page.go_async(f"{self.data.route_prefix}/counter")
         else:
             if len(self.menssage.controls) == 0:

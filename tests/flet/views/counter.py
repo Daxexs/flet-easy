@@ -2,9 +2,8 @@ import flet as ft
 import flet_easy as fs
 
 counter = fs.AddPagesy(
-    route_prefix = '/counter',
+    route_prefix='/counter',
 )
-
 
 # We add a second page
 @counter.page(route='/test/{id}')
@@ -24,9 +23,6 @@ def counter_page(data: fs.Datasy, id: str):
         txt_number.value = str(int(txt_number.value) + 1)
         page.update()
 
-    def go_home(e):
-        page.go(data.route_init)
-        
     def show_drawer(e):
         view.drawer.open = True
         page.update()
@@ -42,7 +38,11 @@ def counter_page(data: fs.Datasy, id: str):
                 ],
                 alignment="center",
             ),
-            ft.FilledButton("Go to Home", on_click=go_home),
+            ft.FilledButton(
+                "Go to Home",
+                key=data.route_init,
+                on_click=data.go
+            ),
             ft.FilledButton("Show_drawer", on_click=show_drawer),
         ],
         vertical_alignment=ft.MainAxisAlignment.CENTER,

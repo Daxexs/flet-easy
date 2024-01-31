@@ -57,6 +57,9 @@ async def index_page(data: fs.Datasy):
             ft.ElevatedButton(
                 "Go to Login", key=data.route_login, on_click=data.go_async
             ),
+            ft.ElevatedButton(
+                "Go to send-data", key=f'{data.route_prefix}/test/send-data', on_click=data.go_async
+            ),
         ],
         appbar=view.appbar,
         vertical_alignment=ft.MainAxisAlignment.CENTER,

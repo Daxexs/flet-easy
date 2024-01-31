@@ -26,7 +26,8 @@ class ConfigApp:
             theme = ft.Theme()
             platforms = ["android", "ios", "macos", "linux", "windows"]
             for platform in platforms:  # Removing animation on route change.
-                setattr(theme.page_transitions, platform, ft.PageTransitionTheme.NONE)
+                setattr(theme.page_transitions, platform,
+                        ft.PageTransitionTheme.NONE)
 
             theme.text_theme = ft.TextTheme()
             page.theme = theme
@@ -68,12 +69,16 @@ class ConfigApp:
                     center_title=False,
                     bgcolor=ft.colors.SURFACE_VARIANT,
                     actions=[
-                        ft.IconButton(ft.icons.WB_SUNNY_OUTLINED, on_click=theme),
+                        ft.IconButton(ft.icons.WB_SUNNY_OUTLINED,
+                                      on_click=theme),
                         ft.PopupMenuButton(
                             items=[
-                                ft.PopupMenuItem(text="🔥 Home", on_click=go_home),
-                                ft.PopupMenuItem(text="❌ Logaut", on_click=logauth),
-                                ft.PopupMenuItem(text="🔃 Reload", on_click=reload),
+                                ft.PopupMenuItem(
+                                    text="🔥 Home", on_click=go_home),
+                                ft.PopupMenuItem(
+                                    text="❌ Logaut", on_click=logauth),
+                                ft.PopupMenuItem(
+                                    text="🔃 Reload", on_click=reload),
                             ]
                         ),
                     ],
@@ -91,16 +96,14 @@ class ConfigApp:
             page.title = "Error 404"
             view.appbar.title = ft.Text("Error 404")
 
-            async def index_go(e):
-                await page.go_async(ROUTE + "/hi")
-
             return ft.View(
                 route="/error404",
                 controls=[
                     ft.Text("Error 404", size=30),
                     ft.ElevatedButton(
-                        "ir a index",
-                        on_click=index_go,
+                        "Go to Home",
+                        key=data.route_init,
+                        on_click=data.go_async,
                     ),
                 ],
                 appbar=view.appbar,

@@ -4,6 +4,8 @@ import flet_easy as fs
 index = fs.AddPagesy()
 
 # We add a page
+
+
 @index.page(route="/home")
 def index_page(data: fs.Datasy):
     page = data.page
@@ -11,9 +13,6 @@ def index_page(data: fs.Datasy):
 
     page.title = "Flet-Easy"
 
-    def go_counter(e):
-        page.go(f"{data.route_prefix}/counter/test/15")
-    
     def show_drawer(e):
         view.drawer.open = True
         page.update()
@@ -22,8 +21,10 @@ def index_page(data: fs.Datasy):
         route="/",
         controls=[
             ft.Text("Home page"),
-            ft.FilledButton("Go to Counter", on_click=go_counter),
+            ft.FilledButton("Go to Counter",
+                            key='/counter/test/15', on_click=data.go),
             ft.FilledButton("Show_drawer", on_click=show_drawer),
+            ft.FilledButton("Share data", key='/send-data', on_click=data.go),
         ],
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,

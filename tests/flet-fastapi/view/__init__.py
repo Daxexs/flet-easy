@@ -18,3 +18,4 @@ from .response import response
 from .task import task
 from .test import test
 from .pubsub import pbs
+from .share_data import data

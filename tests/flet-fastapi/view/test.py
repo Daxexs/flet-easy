@@ -1,5 +1,6 @@
 import flet_easy as fs
 import flet as ft
+from dataclasses import dataclass
 from uuid import UUID
 
 ROUTE = "/index"
@@ -7,7 +8,39 @@ ROUTE = "/index"
 test = fs.AddPagesy(route_prefix="/test")
 
 
-@test.page("/{id:d}/user/{name:l}", proctect_route=True)
+@dataclass
+class Test:
+    name: int
+    version: str
+
+""" Checking data shared between pages in a controlled manner """
+@test.page('/send-data', share_data=True)
+async def send_data_page(data: fs.Datasy):
+    page = data.page
+    view = data.view
+
+    page.title = 'send data'
+    view.appbar.title = ft.Text('Send data')
+
+    data.share.set('test', Test('Flet-Easy', '0.1'))
+    data.share.set('owner', 'Daxexs')
+
+    return ft.View(
+        route=f'{data.route_prefix}/test/send-data',
+        controls=[
+            ft.Text(f'data keys: {data.share.get_keys()}'),
+            ft.Text(f'data values: {data.share.get_values()}'),
+            ft.Text(f'data dict: {data.share.get_all()}'),
+            ft.ElevatedButton(
+                'Data transfer', key=f'{data.route_prefix}/data', on_click=data.go_async)
+        ],
+        appbar=view.appbar,
+        vertical_alignment=ft.MainAxisAlignment.CENTER,
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER
+    )
+
+
+@test.page("/{id:d}/user/{name:l}", protected_route=True)
 async def test_page(data: fs.Datasy, id: int, name: str):
     page = data.page
     view = data.view
@@ -15,15 +48,16 @@ async def test_page(data: fs.Datasy, id: int, name: str):
     page.title = "Test"
     view.appbar.title = ft.Text("test")
 
-    async def go_index(e):
-        await page.go_async(f"{ROUTE}/hi")
-
     return ft.View(
         "/test",
         controls=[
             ft.Text(f"Test {data.url_params}"),
             ft.Text(f"Test Id is: {id}"),
-            ft.ElevatedButton("Go to Home", on_click=go_index),
+            ft.ElevatedButton(
+                "Go to Home",
+                key=data.route_init,
+                on_click=data.go_async
+            ),
         ],
         appbar=view.appbar,
         vertical_alignment=ft.MainAxisAlignment.CENTER,

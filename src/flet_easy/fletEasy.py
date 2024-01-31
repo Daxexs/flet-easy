@@ -294,7 +294,8 @@ class FletEasy:
                         route,
                         func,
                         data.get("page_clear"),
-                        data.get("proctect_route"),
+                        data.get('share_data'),
+                        data.get("protected_route"),
                         data.get("custom_params"),
                     )
                 )
@@ -324,7 +325,8 @@ class FletEasy:
         self,
         route: str,
         page_clear: bool = False,
-        proctect_route: bool = False,
+        share_data: bool = False,
+        protected_route: bool = False,
         custom_params: dict = None,
     ):
         """Decorator to add a new page to the app, you need the following parameters:
@@ -365,7 +367,8 @@ class FletEasy:
         data = {
             "route": route,
             "page_clear": page_clear,
-            "proctect_route": proctect_route,
+            "share_data": share_data,
+            "protected_route": protected_route,
             "custom_params": custom_params,
         }
         return self.__decorator("page", data)
