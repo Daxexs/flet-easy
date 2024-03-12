@@ -1,5 +1,5 @@
 import flet_easy as fs
-import flet_fastapi
+from flet import fastapi
 from view import counter, index, login, markdown, keyboard, response, task, test, pbs,data
 
 from core.config import ConfigApp
@@ -55,7 +55,7 @@ ConfigApp(app)
 
 assets = Path(__file__).resolve().parent / "assets"
 """ Execute the app through flet_fastapi (async)"""
-run = flet_fastapi.app(
+run = fastapi.app(
     app.fastapi(),
     app_name="Flet Easy",
     app_short_name="Easy app",

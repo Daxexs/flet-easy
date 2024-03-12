@@ -158,7 +158,7 @@ class FletEasy:
         web_renderer: WebRenderer = WebRenderer.CANVAS_KIT,
         use_color_emoji=False,
         route_url_strategy="path",
-        auth_token=None,
+        export_asgi_app: bool = False,
     ):
         """-> Execute the app."""
 
@@ -191,7 +191,7 @@ class FletEasy:
             web_renderer=web_renderer,
             use_color_emoji=use_color_emoji,
             route_url_strategy=route_url_strategy,
-            auth_token=auth_token,
+            export_asgi_app=export_asgi_app,
         )
 
     # ---- Async ----------------------------------------------------------------
@@ -208,7 +208,7 @@ class FletEasy:
         web_renderer: WebRenderer = WebRenderer.CANVAS_KIT,
         use_color_emoji=False,
         route_url_strategy="path",
-        auth_token=None,
+        export_asgi_app: bool = False,
     ):
         """-> Execute the app through (async)."""
 
@@ -241,7 +241,7 @@ class FletEasy:
             web_renderer=web_renderer,
             use_color_emoji=use_color_emoji,
             route_url_strategy=route_url_strategy,
-            auth_token=auth_token,
+            export_asgi_app=export_asgi_app,
         )
 
     # --- get main fastapi ---
@@ -294,7 +294,7 @@ class FletEasy:
                         route,
                         func,
                         data.get("page_clear"),
-                        data.get('share_data'),
+                        data.get("share_data"),
                         data.get("protected_route"),
                         data.get("custom_params"),
                     )
