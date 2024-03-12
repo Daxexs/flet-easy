@@ -1,4 +1,9 @@
-from flet import Page, app, AppView, WebRenderer
+try:
+    from flet import Page, app, AppView, WebRenderer
+except ImportError:
+    raise Exception(
+        'Install "flet" the latest version available -> pip install flet --upgrade.'
+    )
 
 from .inheritance import Pagesy, Viewsy, AddPagesy
 from .route import FletEasyX

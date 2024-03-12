@@ -1,13 +1,12 @@
 [project]
 name = "flet-easy"
-version = "0.1.1"
+version = "0.1.3"
 description = "Flet-Easy is a package created as a Flet add-on, designed to be easy to use with a cleaner order in the code, having many customizable features."
 authors = [
     {name = "Daxexs", email = "Daxexsdev@gmail.com"},
 ]
 
 dependencies = [
-    "flet",
     "parse",
 ]
 requires-python = ">=3.8"
@@ -40,5 +39,5 @@ distribution = true
 
 [tool.pdm.dev-dependencies]
 test = [
-    "uvicorn>=0.27.0.post1",
+    "flet>=0.21.1",
 ]
