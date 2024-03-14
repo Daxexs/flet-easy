@@ -1,6 +1,7 @@
 from flet import Page, RouteChangeEvent, KeyboardEvent, ControlEvent, View
-from .inheritance import Keyboardsy, Resizesy, Pagesy, Datasy, Viewsy
-from .view_404 import ViewError
+from flet_easy.inheritance import Keyboardsy, Resizesy, Pagesy, Viewsy
+from flet_easy.datasy import Datasy
+from flet_easy.view_404 import ViewError
 from typing import Callable
 from inspect import iscoroutinefunction
 from parse import parse
@@ -21,6 +22,7 @@ class FletEasyX:
         config_event_handler: Callable,
         on_resize: bool,
         on_Keyboard: bool,
+        fastapi: bool,
     ):
         self.__page = page
         self.__page_on_keyboard = Keyboardsy()
@@ -31,13 +33,16 @@ class FletEasyX:
         self.__config_login = config_login
         self.__on_resize = on_resize
         self.__on_Keyboard = on_Keyboard
+        self.__fastapi = fastapi
         # ----
         self.__pages = pages
 
         self.__data = Datasy(
+            self.__page,
             "" if route_prefix is None else route_prefix,
             self.__route_init,
             self.__route_login,
+            fastapi,
         )
 
         self.__view_404 = ViewError(route_init)
@@ -48,12 +53,11 @@ class FletEasyX:
 
         self.__pubsub_user: bool = True if self.__route_login is not None else False
 
-    # -----------
-    def __route_change(self, route: RouteChangeEvent):
+    # ----------- Supports async
+    async def __route_change(self, route: RouteChangeEvent):
         pg_404 = True
-        self.__page_on_resize.clear()
         self.__page_on_keyboard.clear()
-        path = self.__route_init if route.route == '/' else route.route
+        path = self.__route_init if route.route == "/" else route.route
 
         for page in self.__pages:
             if page.custom_params is None:
@@ -61,8 +65,7 @@ class FletEasyX:
                 route_check = route_math
             else:
                 try:
-                    route_math = parse(
-                        page.route, path, page.custom_params)
+                    route_math = parse(page.route, path, page.custom_params)
 
                     if route_math:
                         route_check = all(
@@ -78,13 +81,17 @@ class FletEasyX:
                 pg_404 = False
                 try:
                     if page.protected_route:
-                        if self.__config_login(self.__page):
+                        if iscoroutinefunction(self.__config_login):
+                            auth = await self.__config_login(self.__page)
+                        else:
+                            auth = self.__config_login(self.__page)
+
+                        if auth:
                             if page.clear:
                                 self.__page.views.clear()
                             if not page.share_data:
                                 self.__data.share.clear()
-                            self.__add_events_params(
-                                page.view, route_math.named)
+                            await self.__add_events_params(page.view, route_math.named)
                             break
                         else:
                             self.__page.go(self.__route_login)
@@ -95,7 +102,7 @@ class FletEasyX:
                             self.__page.views.clear()
                         if not page.share_data:
                             self.__data.share.clear()
-                        self.__add_events_params(page.view, route_math.named)
+                        await self.__add_events_params(page.view, route_math.named)
                         break
 
                 except Exception as e:
@@ -108,24 +115,31 @@ class FletEasyX:
                 if self.__page_404.route:
                     self.__page.route = self.__page_404.route
 
-                self.__add_events_params(self.__page_404.view)
+                await self.__add_events_params(self.__page_404.view)
             else:
                 self.__page.views.append(self.__view_404.view(self.__page))
                 self.__page.update()
 
-    def __add_events_params(self, view: View, url_params: dict = None):
-        self.__data.page = self.__page
+    async def __add_events_params(self, view: View, url_params: dict = None):
         self.__data.on_keyboard_event = self.__page_on_keyboard
         self.__data.on_resize = self.__page_on_resize
         self.__data.url_params = url_params
-        self.__data.view: Viewsy = (
-            self.__view_data(self.__data) if self.__view_data else None
-        )
 
-        if url_params:
-            self.__page.views.append(view(self.__data, **url_params))
+        if iscoroutinefunction(self.__view_data):
+            self.__data.view = await self.__view_data(self.__data)
         else:
-            self.__page.views.append(view(self.__data))
+            self.__data.view = self.__view_data(self.__data)
+
+        if iscoroutinefunction(view):
+            if url_params:
+                self.__page.views.append(await view(self.__data, **url_params))
+            else:
+                self.__page.views.append(await view(self.__data))
+        else:
+            if url_params:
+                self.__page.views.append(view(self.__data, **url_params))
+            else:
+                self.__page.views.append(view(self.__data))
 
         if self.__pubsub_user:
             self.__data._create_login()
@@ -137,33 +151,40 @@ class FletEasyX:
         top_view = self.__page.views[-1]
         self.__page.go(top_view.route)
 
-    def __on_keyboard(self, e: KeyboardEvent):
+    async def __on_keyboard(self, e: KeyboardEvent):
         self.__page_on_keyboard.call = e
         if self.__page_on_keyboard._controls():
-            self.__page_on_keyboard._run_controls()
+            await self.__page_on_keyboard._run_controls()
 
     def __page_resize(self, e: ControlEvent):
-        self.__page_on_resize.page = self.__page
-        self.__page_on_resize.width = float(e.control.width)
-        self.__page_on_resize.height = float(e.control.height)
+        self.__page_on_resize.e = e
 
-        if self.__page_on_resize.add_controls_f is not None:
-            self.__page_on_resize._run()
+    async def __add_configuration_start(self):
+        if self.__view_config:
+            if iscoroutinefunction(self.__view_config):
+                await self.__view_config(self.__page)
+            else:
+                self.__view_config(self.__page)
+
+        if self.__config_event:
+            if iscoroutinefunction(self.__view_config):
+                await self.__config_event(self.__page)
+            else:
+                self.__config_event(self.__page)
 
     # -- initialization
 
     def run(self):
         if self.__route_init != "/" and self.__page.route == "/":
             self.__page.route = self.__route_init
-        if self.__view_config:
-            self.__view_config(self.__page)
+
         if len(self.__page.views) == 1:
             self.__page.views.clear()
 
         """ Add custom events """
-        if self.__config_event:
-            self.__config_event(self.__page)
+        self.__page.run_task(self.__add_configuration_start)
 
+        """ Executing charter events """
         self.__page.on_route_change = self.__route_change
         self.__page.on_view_pop = self.__view_pop
         self.__page.on_error = lambda e: print("Page error:", e.data)
@@ -175,140 +196,3 @@ class FletEasyX:
             self.__page.on_keyboard_event = self.__on_keyboard
 
         self.__page.go(self.__page.route)
-
-    # ---- Async ----------------------------------------------------------------
-    async def __route_change_async(self, route: RouteChangeEvent):
-        path = self.__route_init if route.route == '/' else route.route
-        pg_404 = True
-        self.__page_on_resize.clear()
-        self.__page_on_keyboard.clear()
-
-        for page in self.__pages:
-            if page.custom_params is None:
-                route_math = parse(page.route, path)
-                route_check = route_math
-            else:
-                try:
-                    route_math = parse(
-                        page.route, path, page.custom_params)
-
-                    if route_math:
-                        route_check = all(
-                            valor is not False and valor is not None
-                            for valor in dict(route_math.named).values()
-                        )
-                    else:
-                        route_check = route_math
-                except:  # noqa: E722
-                    break
-
-            if route_check:
-                pg_404 = False
-                try:
-                    if page.protected_route:
-                        assert self.__config_login, f"The function -> ({page.view.__name__}), which is being decorated has path protection enabled, but it is not configured yet. To configure it use the 'FletEasy' decorator (login)."
-
-                        if await self.__config_login(self.__page):
-                            if page.clear:
-                                self.__page.views.clear()
-                            if not page.share_data:
-                                self.__data.share.clear()
-                            await self.__add_events_params_async(
-                                page.view, route_math.named
-                            )
-                            break
-                        else:
-                            await self.__page.go_async(self.__route_login)
-                            break
-
-                    else:
-                        if page.clear:
-                            self.__page.views.clear()
-                        if not page.share_data:
-                            self.__data.share.clear()
-                        await self.__add_events_params_async(
-                            page.view, route_math.named
-                        )
-                        break
-
-                except Exception as e:
-                    raise e
-
-        if pg_404:
-            if self.__page_404:
-                if self.__page_404.clear:
-                    self.__page.views.clear()
-                if self.__page_404.route:
-                    self.__page.route = self.__page_404.route
-
-                await self.__add_events_params_async(self.__page_404.view)
-            else:
-                self.__page.views.append(await self.__view_404.view_async(self.__page))
-                await self.__page.update_async()
-
-    async def __add_events_params_async(self, view: View, url_params: dict = None):
-        self.__data.page = self.__page
-        self.__data.on_keyboard_event = self.__page_on_keyboard
-        self.__data.on_resize = self.__page_on_resize
-        self.__data.url_params = url_params
-        self.__data.view: Viewsy = (
-            await self.__view_data(self.__data) if self.__view_data else None
-        )
-
-        if iscoroutinefunction(view):
-            if url_params:
-                self.__page.views.append(await view(self.__data, **url_params))
-            else:
-                self.__page.views.append(await view(self.__data))
-        else:
-            self.__page.views.append(view(self.__data, **url_params))
-
-        if self.__pubsub_user:
-            await self.__data._create_login_async()
-            self.__pubsub_user = False
-        await self.__page.update_async()
-
-    # ---- event handlers --------------------------------
-    async def __view_pop_async(self, e):
-        self.__page.views.pop()
-        top_view = self.__page.views[-1]
-        await self.__page.go_async(top_view.route)
-
-    async def __on_keyboard_async(self, e: KeyboardEvent):
-        self.__page_on_keyboard.call = e
-        if self.__page_on_keyboard._controls():
-            await self.__page_on_keyboard._run_controls_async()
-
-    async def __page_resize_async(self, e: ControlEvent):
-        self.__page_on_resize.page = self.__page
-        self.__page_on_resize.width = float(e.control.width)
-        self.__page_on_resize.height = float(e.control.height)
-
-        if self.__page_on_resize.add_controls_f is not None:
-            await self.__page_on_resize._run_async()
-
-    # -- initialize
-
-    async def run_async(self):
-        if self.__route_init != "/" and self.__page.route == "/":
-            self.__page.route = self.__route_init
-        if self.__view_config:
-            await self.__view_config(self.__page)
-        if len(self.__page.views) == 1:
-            self.__page.views.clear()
-
-        """ Add custom events """
-        if self.__config_event:
-            await self.__config_event(self.__page)
-
-        self.__page.on_route_change = self.__route_change_async
-        self.__page.on_view_pop = self.__view_pop_async
-        self.__page.on_error = lambda e: print("Page error:", e.data)
-
-        """ activation of charter events """
-        if self.__on_resize:
-            self.__page.on_resize = self.__page_resize_async
-        if self.__on_Keyboard:
-            self.__page.on_keyboard_event = self.__on_keyboard_async
-
-        await self.__page.go_async(self.__page.route)

@@ -7,7 +7,7 @@ counter = fs.AddPagesy(
 
 # We add a second page
 @counter.page(route='/test/{id}')
-def counter_page(data: fs.Datasy, id: str):
+async def counter_page(data: fs.Datasy, id: str):
     page = data.page
     view = data.view
 

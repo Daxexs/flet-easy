@@ -26,8 +26,7 @@ class ConfigApp:
             theme = ft.Theme()
             platforms = ["android", "ios", "macos", "linux", "windows"]
             for platform in platforms:  # Removing animation on route change.
-                setattr(theme.page_transitions, platform,
-                        ft.PageTransitionTheme.NONE)
+                setattr(theme.page_transitions, platform, ft.PageTransitionTheme.NONE)
 
             theme.text_theme = ft.TextTheme()
             page.theme = theme
@@ -54,9 +53,6 @@ class ConfigApp:
             async def go_home(e):
                 await page.go_async(data.route_init)
 
-            async def logauth(e):
-                await data.logaut_async("login")
-
             async def reload(e):
                 await page.launch_url_async(
                     url=page.route,
@@ -69,16 +65,15 @@ class ConfigApp:
                     center_title=False,
                     bgcolor=ft.colors.SURFACE_VARIANT,
                     actions=[
-                        ft.IconButton(ft.icons.WB_SUNNY_OUTLINED,
-                                      on_click=theme),
+                        ft.IconButton(ft.icons.WB_SUNNY_OUTLINED, on_click=theme),
                         ft.PopupMenuButton(
                             items=[
+                                ft.PopupMenuItem(text="🔥 Home", on_click=go_home),
                                 ft.PopupMenuItem(
-                                    text="🔥 Home", on_click=go_home),
-                                ft.PopupMenuItem(
-                                    text="❌ Logaut", on_click=logauth),
-                                ft.PopupMenuItem(
-                                    text="🔃 Reload", on_click=reload),
+                                    text="❌ Logaut",
+                                    on_click=lambda _: data.logaut("login"),
+                                ),
+                                ft.PopupMenuItem(text="🔃 Reload", on_click=reload),
                             ]
                         ),
                     ],
@@ -103,7 +98,7 @@ class ConfigApp:
                     ft.ElevatedButton(
                         "Go to Home",
                         key=data.route_init,
-                        on_click=data.go_async,
+                        on_click=data.go,
                     ),
                 ],
                 appbar=view.appbar,

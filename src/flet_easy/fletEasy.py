@@ -5,8 +5,8 @@ except ImportError:
         'Install "flet" the latest version available -> pip install flet --upgrade.'
     )
 
-from .inheritance import Pagesy, Viewsy, AddPagesy
-from .route import FletEasyX
+from flet_easy.inheritance import Pagesy, Viewsy, AddPagesy
+from flet_easy.route import FletEasyX
 from functools import wraps
 from typing import Callable, Optional
 
@@ -117,13 +117,8 @@ class FletEasy:
             horizontal_alignment=ft.CrossAxisAlignment.CENTER
         )
 
-    # Execute the app through flet_fastapi (async)
-    app = app.run_fastapi(
-        use_color_emoji=True,
-        app_name='FletEasy',
-        app_short_name='FletEasy Test',
-        app_description='Use FletEasy app'
-    )
+    # Execute the app (synchronous / asynchronous)
+    app.run()
 
     ```
     """
@@ -150,7 +145,7 @@ class FletEasy:
         self.__config_event: Callable = None
 
     # -------------------------------------------------------------------
-    # -- initialize
+    # -- initialize / Supports async
 
     def run(
         self,
@@ -164,8 +159,9 @@ class FletEasy:
         use_color_emoji=False,
         route_url_strategy="path",
         export_asgi_app: bool = False,
-    ):
-        """-> Execute the app."""
+        fastapi: bool = False,
+    ) -> Page:
+        """* Execute the app. | Supports async and fastapi."""
 
         def main(page: Page):
             app = FletEasyX(
@@ -181,97 +177,31 @@ class FletEasy:
                 config_event_handler=self.__config_event,
                 on_resize=self.__on_resize,
                 on_Keyboard=self.__on_Keyboard,
+                fastapi=fastapi,
             )
 
             app.run()
 
-        app(
-            target=main,
-            name=name,
-            host=host,
-            port=port,
-            view=view,
-            assets_dir=assets_dir,
-            upload_dir=upload_dir,
-            web_renderer=web_renderer,
-            use_color_emoji=use_color_emoji,
-            route_url_strategy=route_url_strategy,
-            export_asgi_app=export_asgi_app,
-        )
-
-    # ---- Async ----------------------------------------------------------------
-
-    # -- initialize
-    def run_async(
-        self,
-        name="",
-        host=None,
-        port=0,
-        view: Optional[AppView] = AppView.FLET_APP,
-        assets_dir="assets",
-        upload_dir=None,
-        web_renderer: WebRenderer = WebRenderer.CANVAS_KIT,
-        use_color_emoji=False,
-        route_url_strategy="path",
-        export_asgi_app: bool = False,
-    ):
-        """-> Execute the app through (async)."""
-
-        async def main_async(page: Page):
-            app = FletEasyX(
-                page=page,
-                route_prefix=self.__route_prefix,
-                route_init=self.__route_init,
-                route_login=self.__route_login,
-                config_login=self.__config_login,
-                pages=self.__pages,
-                page_404=self.__page_404,
-                view_data=self.__view_data,
-                view_config=self.__view_config,
-                config_event_handler=self.__config_event,
-                on_resize=self.__on_resize,
-                on_Keyboard=self.__on_Keyboard,
+        if fastapi:
+            return main
+        try:
+            app(
+                target=main,
+                name=name,
+                host=host,
+                port=port,
+                view=view,
+                assets_dir=assets_dir,
+                upload_dir=upload_dir,
+                web_renderer=web_renderer,
+                use_color_emoji=use_color_emoji,
+                route_url_strategy=route_url_strategy,
+                export_asgi_app=export_asgi_app,
             )
-
-            await app.run_async()
-
-        app(
-            target=main_async,
-            name=name,
-            host=host,
-            port=port,
-            view=view,
-            assets_dir=assets_dir,
-            upload_dir=upload_dir,
-            web_renderer=web_renderer,
-            use_color_emoji=use_color_emoji,
-            route_url_strategy=route_url_strategy,
-            export_asgi_app=export_asgi_app,
-        )
-
-    # --- get main fastapi ---
-    def fastapi(self):
-        """-> To get the main of the app and be able to add `Fastapi` to it."""
-
-        async def main(page: Page):
-            app = FletEasyX(
-                page=page,
-                route_prefix=self.__route_prefix,
-                route_init=self.__route_init,
-                route_login=self.__route_login,
-                config_login=self.__config_login,
-                pages=self.__pages,
-                page_404=self.__page_404,
-                view_data=self.__view_data,
-                view_config=self.__view_config,
-                config_event_handler=self.__config_event,
-                on_resize=self.__on_resize,
-                on_Keyboard=self.__on_Keyboard,
+        except RuntimeError:
+            raise Exception(
+                "If you are using fastapi from flet, set the 'fastapi = True' parameter of the run() method."
             )
-
-            await app.run_async()
-
-        return main
 
     # -- decorators --------------------------------
 
@@ -482,7 +412,6 @@ class FletEasy:
         ```
         """
         self.__view_data = func
-        return func
 
     def config(self, func):
         """Decorator to add a custom configuration to the app:
@@ -511,7 +440,6 @@ class FletEasy:
         ```
         """
         self.__view_config = func
-        return func
 
     def login(self, func):
         """Decorator to add a login configuration to the app (protected_route):

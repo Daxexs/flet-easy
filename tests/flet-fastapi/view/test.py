@@ -32,7 +32,7 @@ async def send_data_page(data: fs.Datasy):
             ft.Text(f'data values: {data.share.get_values()}'),
             ft.Text(f'data dict: {data.share.get_all()}'),
             ft.ElevatedButton(
-                'Data transfer', key=f'{data.route_prefix}/data', on_click=data.go_async)
+                'Data transfer', key=f'{data.route_prefix}/data', on_click=data.go)
         ],
         appbar=view.appbar,
         vertical_alignment=ft.MainAxisAlignment.CENTER,
@@ -56,7 +56,7 @@ async def test_page(data: fs.Datasy, id: int, name: str):
             ft.ElevatedButton(
                 "Go to Home",
                 key=data.route_init,
-                on_click=data.go_async
+                on_click=data.go
             ),
         ],
         appbar=view.appbar,

@@ -34,7 +34,7 @@ async def get_data_page(data: fs.Datasy):
             ft.ElevatedButton(
                 'Check the following page for matched data',
                 key=f'{data.route_prefix}/data/info',
-                on_click=data.go_async
+                on_click=data.go
             )
         ],
         appbar=view.appbar,

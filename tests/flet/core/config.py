@@ -9,7 +9,7 @@ class ConfigApp:
 
     def start(self):
         @self.app.view
-        def view_config(page: ft.Page):
+        async def view_config(page: ft.Page):
             def counter_go(e):
                 page.go("/counter/test/15")
 

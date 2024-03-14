@@ -21,7 +21,7 @@ class Login(ft.UserControl):
     async def login(self, e):
         if self.username.value and self.password.value:
             # Registering in the client's storage the key and value in all browser sessions.
-            await self.data.update_login_async("login", self.username.value)
+            self.data.update_login("login", self.username.value)
             await self.page.go_async(f"{self.data.route_prefix}/counter")
         else:
             if len(self.menssage.controls) == 0:
@@ -45,7 +45,7 @@ class Login(ft.UserControl):
                     ft.ElevatedButton(
                         "Go to Index",
                         key=self.data.route_init,
-                        on_click=self.data.go_async,
+                        on_click=self.data.go,
                     ),
                 ],
                 alignment=ft.MainAxisAlignment.CENTER,
