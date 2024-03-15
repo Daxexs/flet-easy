@@ -43,12 +43,10 @@ class Contador(ft.UserControl):
         )
 
 
-@counter.page("/", protected_route=True)
+@counter.page("/", title='Counter', protected_route=True)
 async def counter_page(data: fs.Datasy):
     view = data.view
-    page = data.page
-
-    page.title = "Counter"
+    
     counter = Contador()
     counter2 = Contador()
 

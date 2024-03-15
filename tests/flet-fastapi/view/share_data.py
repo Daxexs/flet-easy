@@ -5,12 +5,10 @@ from view.test import Test  # To assist the IDE in code autocompletion.
 data = fs.AddPagesy(route_prefix="/data")
 
 
-@data.page('/', share_data=True)
+@data.page('/', title='Data', share_data=True)
 async def get_data_page(data: fs.Datasy):
-    page = data.page
     view = data.view
     
-    page.title = 'data'
     view.appbar.title = ft.Text('Data')
     
     # It is checked if there is data stored in the dictionary (data.share.set).
@@ -43,12 +41,10 @@ async def get_data_page(data: fs.Datasy):
     )
 
 
-@data.page('/info')
+@data.page('/info', title='Information')
 async def info_page(data: fs.Datasy):
-    page = data.page
     view = data.view
 
-    page.title = "Information"
     view.appbar.title = ft.Text('Information')
 
     # It is checked if there is data stored in the dictionary (data.share.set).

@@ -4,11 +4,9 @@ import flet as ft
 index = fs.AddPagesy()
 
 
-@index.page("/index", page_clear=True)
+@index.page("/index", title="Home", page_clear=True)
 async def index_page(data: fs.Datasy):
-    page = data.page
     view = data.view
-    page.title = "Home"
 
     view.appbar.title = ft.Text("Home - Test [Flet-Easy]")
 
@@ -54,11 +52,11 @@ async def index_page(data: fs.Datasy):
                 key=f"{data.route_prefix}/chat",
                 on_click=data.go,
             ),
+            ft.ElevatedButton("Go to Login", key=data.route_login, on_click=data.go),
             ft.ElevatedButton(
-                "Go to Login", key=data.route_login, on_click=data.go
-            ),
-            ft.ElevatedButton(
-                "Go to send-data", key=f'{data.route_prefix}/test/send-data', on_click=data.go
+                "Go to send-data",
+                key=f"{data.route_prefix}/test/send-data",
+                on_click=data.go,
             ),
         ],
         appbar=view.appbar,

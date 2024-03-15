@@ -97,13 +97,12 @@ class Task(ft.UserControl):
         await self.update_async()
 
 
-@task.page("/")
+@task.page("/", title='Task')
 async def task_page(data: fs.Datasy):
     page = data.page
     view = data.view
     on_resize = data.on_resize
 
-    page.title = "Task"
     view.appbar.title = ft.Text("Task")
 
     task = Task(page, on_resize)

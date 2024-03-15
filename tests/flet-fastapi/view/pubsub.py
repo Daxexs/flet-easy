@@ -141,7 +141,7 @@ class Chat(ft.UserControl):
         )
 
 
-@pbs.page("/")
+@pbs.page("/", title='Chat Users')
 async def pubsub_page(data: fs.Datasy):
     page = data.page
     view = data.view
@@ -149,7 +149,6 @@ async def pubsub_page(data: fs.Datasy):
 
     on_resize.margin_y = 28
 
-    page.title = "Chat Users"
     view.appbar.title = ft.Text("Chat Users")
 
     return ft.View(

@@ -60,11 +60,10 @@ class Login(ft.UserControl):
         )
 
 
-@login.page("/user")
+@login.page("/user", title='Login')
 async def login_page(data: fs.Datasy):
     page = data.page
     view = data.view
-    page.title = "login"
 
     view.appbar.title = ft.Text("Login")
 

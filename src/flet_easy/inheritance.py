@@ -198,6 +198,7 @@ class Pagesy:
     """To add pages, it requires the following parameters:
     * `route`: text string of the url, for example(`'/task'`).
     * `view`: Stores the page function.
+    * `title` : Define the title of the page.
     * `clear`: Removes the pages from the `page.views` list of flet. (optional)
     * `share_data` : It is a boolean value, which is useful if you want to share data between pages, in a more restricted way.
     * `protected_route`: Protects the route of the page, according to the configuration of the `login` decorator of the `FletEasy` class. (optional)
@@ -211,19 +212,21 @@ class Pagesy:
 
     route: str
     view: Callable
+    title:str = None
     clear: bool = False
     share_data: bool = False
     protected_route: bool = False
     custom_params: dict = None
 
     def __hash__(self):
-        return hash((self.route, self.view, self.clear, self.protected_route))
+        return hash((self.route, self.view, self.title, self.clear, self.protected_route))
 
     def __eq__(self, other):
         return (
             isinstance(other, Pagesy)
             and self.route == other.route
             and self.view == other.view
+            and self.tilte == other.title
             and self.clear == other.clear
             and self.protected_route == other.protected_route
         )
@@ -326,11 +329,12 @@ class AddPagesy:
 
             self.__pages.add(
                 Pagesy(
-                    route,
-                    func,
-                    data.get("page_clear"),
-                    data.get("share_data"),
-                    data.get("protected_route"),
+                    route=route,
+                    view=func,
+                    title=data.get("title"),
+                    clear=data.get("page_clear"),
+                    share_data=data.get("share_data"),
+                    protected_route=data.get("protected_route"),
                     custom_params=data.get("custom_params"),
                 )
             )
@@ -341,6 +345,7 @@ class AddPagesy:
     def page(
         self,
         route: str,
+        title: str = None,
         page_clear: bool = False,
         share_data: bool = False,
         protected_route: bool = False,
@@ -348,6 +353,7 @@ class AddPagesy:
     ):
         """Decorator to add a new page to the app, you need the following parameters:
         * route: text string of the url, for example(`'/counter'`).
+        * `title` : Define the title of the page. (optional).
         * clear: Removes the pages from the `page.views` list of flet. (optional)
         * protected_route: Protects the route of the page, according to the configuration of the `login` decorator of the `FletEasy` class. (optional)
         * custom_params: To add validation of parameters in the custom url using a list, where the key is the name of the parameter validation and the value is the custom function that must report a boolean value.
@@ -363,13 +369,11 @@ class AddPagesy:
             route_prefix='/counter'
         )
 
-        @counter.page('/')
+        @counter.page('/', title='Counter)
         async def counter_page(data: fs.Datasy):
 
             view = data.view
-            page = data.page
 
-            page.title = 'Counter'
             view.appbar.title = ft.Text('Counter')
 
             return ft.View(
@@ -385,6 +389,7 @@ class AddPagesy:
         """
         data = {
             "route": route,
+            "title": title,
             "page_clear": page_clear,
             "share_data": share_data,
             "protected_route": protected_route,

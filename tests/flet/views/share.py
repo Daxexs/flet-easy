@@ -13,10 +13,8 @@ class Test:
 # 1
 
 
-@share.page('/send-data', share_data=True)
+@share.page('/send-data', title='Send Data', share_data=True)
 def send_data_page(data: fs.Datasy):
-    page = data.page
-    page.title = 'send data'
 
     data.share.set('test', Test('Flet-Easy', '0.1'))
     data.share.set('owner', 'Daxexs')

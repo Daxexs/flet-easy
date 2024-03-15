@@ -4,15 +4,12 @@ import flet_easy as fs
 markdown = fs.AddPagesy()
 
 
-@markdown.page("/markdown")
+@markdown.page("/markdown", title="On-resize")
 async def markdown_page(data: fs.Datasy):
-    page = data.page
     view = data.view
     on_resize = data.on_resize
 
     view.appbar.title = ft.Text("On-resize")
-
-    page.title = "On-resize"
 
     on_resize.margin_y = 28
 

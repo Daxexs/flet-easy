@@ -6,12 +6,10 @@ index = fs.AddPagesy()
 # We add a page
 
 
-@index.page(route="/home")
+@index.page(route="/home", title='Flet-Easy')
 def index_page(data: fs.Datasy):
     page = data.page
     view = data.view
-
-    page.title = "Flet-Easy"
 
     def show_drawer(e):
         view.drawer.open = True

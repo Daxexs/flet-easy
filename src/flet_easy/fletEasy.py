@@ -222,16 +222,17 @@ class FletEasy:
                     route = data.get("route")
 
             if value == "page_404":
-                self.__page_404 = Pagesy(route, func, data.get("page_clear"))
+                self.__page_404 = Pagesy(route, func, data.get("title"), data.get("page_clear"))
             elif value == "page":
                 self.__pages.add(
                     Pagesy(
-                        route,
-                        func,
-                        data.get("page_clear"),
-                        data.get("share_data"),
-                        data.get("protected_route"),
-                        data.get("custom_params"),
+                        route=route,
+                        view=func,
+                        title=data.get("title"),
+                        clear=data.get("page_clear"),
+                        share_data=data.get("share_data"),
+                        protected_route=data.get("protected_route"),
+                        custom_params=data.get("custom_params"),
                     )
                 )
             return wrapper
@@ -259,6 +260,7 @@ class FletEasy:
     def page(
         self,
         route: str,
+        title: str = None,
         page_clear: bool = False,
         share_data: bool = False,
         protected_route: bool = False,
@@ -266,6 +268,7 @@ class FletEasy:
     ):
         """Decorator to add a new page to the app, you need the following parameters:
         * route: text string of the url, for example(`'/FletEasy'`).
+        * `title` : Define the title of the page. (optional).
         * clear: Removes the pages from the `page.views` list of flet. (optional)
         * protected_route: Protects the route of the page, according to the configuration of the `login` decorator of the `FletEasy` class. (optional)
         * custom_params: To add validation of parameters in the custom url using a list, where the key is the name of the parameter validation and the value is the custom function that must report a boolean value.
@@ -278,16 +281,12 @@ class FletEasy:
         import flet_easy as fs
 
         app = fs.FletEasy(
-            route='/FletEasy',
+            route_prefix='/FletEasy',
             route_init='/FletEasy',
         )
 
-        @app.page('/')
+        @app.page('/', title='FletEasy')
         async def index_page(data: fs.Datasy):
-
-            page = data.page
-            page.title = 'FletEasy'
-
             return ft.View(
                 route='/FletEasy',
                 controls=[
@@ -301,6 +300,7 @@ class FletEasy:
 
         data = {
             "route": route,
+            "title": title,
             "page_clear": page_clear,
             "share_data": share_data,
             "protected_route": protected_route,
@@ -311,10 +311,12 @@ class FletEasy:
     def page_404(
         self,
         route: str = None,
+        title: str = None,
         page_clear: bool = False,
     ):
         """Decorator to add a new custom page when not finding a route in the app, you need the following parameters :
         * route: text string of the url, for example (`'/FletEasy-404'`). (optional).
+        * `title` : Define the title of the page. (optional).
         * clear: remove the pages from the `page.views` list of flet. (optional)
 
         -> The decorated function must receive a mandatory parameter, for example: `data:fs.Datasy`.
@@ -325,15 +327,12 @@ class FletEasy:
         import flet_easy as fs
 
         app = fs.FletEasy(
-            route='/FletEasy',
+            route_prefix='/FletEasy',
             route_init='/FletEasy',
         )
 
-        @app.page_404('/FletEasy-404', page_clear=True)
+        @app.page_404('/FletEasy-404', title='Error 404', page_clear=True)
         async def page404(data: fs.Datasy):
-
-            page = data.page
-            page.title = 'Error 404'
 
             return ft.View(
                 route='/error404',
@@ -345,7 +344,7 @@ class FletEasy:
             )
         ```
         """
-        data = {"route": route, "page_clear": page_clear}
+        data = {"route": route, "title": title, "page_clear": page_clear}
         return self.__decorator("page_404", data)
 
     def view(self, func):

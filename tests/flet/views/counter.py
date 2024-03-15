@@ -6,12 +6,10 @@ counter = fs.AddPagesy(
 )
 
 # We add a second page
-@counter.page(route='/test/{id}')
+@counter.page(route='/test/{id}', title='Counter')
 async def counter_page(data: fs.Datasy, id: str):
     page = data.page
     view = data.view
-
-    page.title = "Counter"
 
     txt_number = ft.TextField(value=id, text_align="right", width=100)
 

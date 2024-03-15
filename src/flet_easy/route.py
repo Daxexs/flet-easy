@@ -42,7 +42,7 @@ class FletEasyX:
             "" if route_prefix is None else route_prefix,
             self.__route_init,
             self.__route_login,
-            fastapi,
+            self.__fastapi,
         )
 
         self.__view_404 = ViewError(route_init)
@@ -91,7 +91,7 @@ class FletEasyX:
                                 self.__page.views.clear()
                             if not page.share_data:
                                 self.__data.share.clear()
-                            await self.__add_events_params(page.view, route_math.named)
+                            await self.__add_events_params(page.view, page.title, route_math.named)
                             break
                         else:
                             self.__page.go(self.__route_login)
@@ -102,7 +102,7 @@ class FletEasyX:
                             self.__page.views.clear()
                         if not page.share_data:
                             self.__data.share.clear()
-                        await self.__add_events_params(page.view, route_math.named)
+                        await self.__add_events_params(page.view, page.title, route_math.named)
                         break
 
                 except Exception as e:
@@ -115,15 +115,16 @@ class FletEasyX:
                 if self.__page_404.route:
                     self.__page.route = self.__page_404.route
 
-                await self.__add_events_params(self.__page_404.view)
+                await self.__add_events_params(self.__page_404.view, page.title)
             else:
                 self.__page.views.append(self.__view_404.view(self.__page))
                 self.__page.update()
 
-    async def __add_events_params(self, view: View, url_params: dict = None):
+    async def __add_events_params(self, view: View, title:str, url_params: dict = None):
         self.__data.on_keyboard_event = self.__page_on_keyboard
         self.__data.on_resize = self.__page_on_resize
         self.__data.url_params = url_params
+        self.__data.page.title = title
 
         if iscoroutinefunction(self.__view_data):
             self.__data.view = await self.__view_data(self.__data)

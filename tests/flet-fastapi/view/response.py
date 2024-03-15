@@ -77,12 +77,11 @@ class ResponseTest(ft.UserControl):
             expand=2
         )
 
-@response.page('/response')
+@response.page('/response', title='Response')
 async def response_page(data: fs.Datasy):
     page = data.page
     view = data.view
     
-    page.title = 'response'
     view.appbar.title = ft.Text('Response')
 
     async def handle_resize(e: CanvasResizeEvent):
