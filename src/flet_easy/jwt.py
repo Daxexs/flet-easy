@@ -1,7 +1,9 @@
 from secrets import token_bytes
 from typing import Any, Union
+
 from jwt import DecodeError, ExpiredSignatureError, InvalidKeyError
 from rsa import newkeys
+
 from flet_easy.datasy import Datasy, evaluate_secret_key
 from flet_easy.extra import Msg
 from flet_easy.extrasJwt import _decode_payload_async
@@ -40,9 +42,7 @@ class EasyKey:
         return token_bytes(64).hex().encode("utf-8")
 
 
-async def _handle_decode_errors(
-    data: Datasy, key_login: str
-) -> Union[dict[str, Any], bool]:
+async def _handle_decode_errors(data: Datasy, key_login: str) -> Union[dict[str, Any], bool]:
     """decodes the jwt and updates the browser sessions."""
     try:
         evaluate_secret_key(data)
@@ -51,18 +51,12 @@ async def _handle_decode_errors(
             return False
 
         if data.auto_logout and not data._login_done:
-            data.page.pubsub.send_others_on_topic(
-                data.page.client_ip, Msg("updateLogin", value=data._login_done)
-            )
+            data.page.pubsub.send_others_on_topic(data.page.client_ip, Msg("updateLogin", value=data._login_done))
 
         decode = await _decode_payload_async(
             page=data.page,
             key_login=key_login,
-            secret_key=(
-                data.secret_key.secret
-                if data.secret_key.secret is not None
-                else data.secret_key.pem_key.public
-            ),
+            secret_key=(data.secret_key.secret if data.secret_key.secret is not None else data.secret_key.pem_key.public),
             algorithms=data.secret_key.algorithm,
         )
 
@@ -99,7 +93,7 @@ def decode(key_login: str, data: Datasy) -> dict[str, Any] | bool:
     * `data` : Instance object of the `Datasy` class.
     """
     assert not data._login_async, "Use the 'decode_async' method instead of 'decode'."
-    value = data.page.run_task(_handle_decode_errors, data, key_login)
+    value = data.page.run_task(_handle_decode_errors, data, key_login).result()
     if value:
         return value
     else:

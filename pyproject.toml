@@ -8,6 +8,8 @@ authors = [
 
 dependencies = [
     "parse>=1.20.1",
+    "pyJWT>=2.8.0",
+    "rsa>=4.9",
 ]
 requires-python = ">=3.8"
 readme = "README.md"
@@ -40,4 +42,18 @@ distribution = true
 [tool.pdm.dev-dependencies]
 test = [
     "flet>=0.21.1",
+    "ruff>=0.3.4",
 ]
+
+[tool.ruff]
+line-length = 320
+target-version = "py38"
+
+[tool.ruff.lint]
+extend-select = ["E", "F", "UP", "SIM", "I", "Q", "RUF100"]
+ignore-init-module-imports = false
+typing-modules = ["airflow.typing_compat"]
+ignore = ["F631"]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]

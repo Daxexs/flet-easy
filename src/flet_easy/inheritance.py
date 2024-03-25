@@ -1,29 +1,30 @@
+from dataclasses import dataclass
+from functools import wraps
+from inspect import iscoroutinefunction
+from typing import Any, Callable, List
+
 from flet import (
+    AppBar,
+    BottomAppBar,
+    ControlEvent,
+    CrossAxisAlignment,
+    CupertinoNavigationBar,
+    FloatingActionButton,
+    FloatingActionButtonLocation,
+    KeyboardEvent,
+    MainAxisAlignment,
+    NavigationBar,
+    NavigationDrawer,
+    OptionalNumber,
     PaddingValue,
     Page,
-    Text,
-    MainAxisAlignment,
-    CrossAxisAlignment,
-    KeyboardEvent,
-    FloatingActionButton,
-    AppBar,
     ScrollMode,
-    NavigationBar,
-    OptionalNumber,
-    NavigationDrawer,
-    BottomAppBar,
-    FloatingActionButtonLocation,
-    CupertinoNavigationBar,
+    Text,
     alignment,
-    ControlEvent,
 )
-from dataclasses import dataclass
-from typing import Any, Callable, List, Dict
+from flet.canvas import Canvas
 from flet_core import Control
 from flet_core.session_storage import SessionStorage
-from functools import wraps
-from flet.canvas import Canvas
-from inspect import iscoroutinefunction
 
 
 class SessionStorageEdit(SessionStorage):
@@ -31,12 +32,12 @@ class SessionStorageEdit(SessionStorage):
         super().__init__(page)
 
     def contains(self) -> bool:
-        return False if len(self._SessionStorage__store) == 0 else True
+        return len(self._SessionStorage__store) != 0
 
     def get_values(self) -> List[Any]:
         return list(self._SessionStorage__store.values())
 
-    def get_all(self) -> Dict[str, Any]:
+    def get_all(self) -> dict[str, Any]:
         return self._SessionStorage__store
 
 
@@ -68,10 +69,7 @@ class Keyboardsy:
         self.__call = call
 
     def _controls(self) -> bool:
-        if len(self.__controls) != 0:
-            return True
-        else:
-            return False
+        return len(self.__controls) != 0
 
     def clear(self):
         self.__controls.clear()
@@ -212,7 +210,7 @@ class Pagesy:
 
     route: str
     view: Callable
-    title:str = None
+    title: str = None
     clear: bool = False
     share_data: bool = False
     protected_route: bool = False
@@ -222,14 +220,7 @@ class Pagesy:
         return hash((self.route, self.view, self.title, self.clear, self.protected_route))
 
     def __eq__(self, other):
-        return (
-            isinstance(other, Pagesy)
-            and self.route == other.route
-            and self.view == other.view
-            and self.tilte == other.title
-            and self.clear == other.clear
-            and self.protected_route == other.protected_route
-        )
+        return isinstance(other, Pagesy) and self.route == other.route and self.view == other.view and self.tilte == other.title and self.clear == other.clear and self.protected_route == other.protected_route
 
 
 # Add new attributes if flet adds in its updates.
@@ -318,14 +309,7 @@ class AddPagesy:
             def wrapper(*args, **kwargs):
                 return func(*args, **kwargs)
 
-            if self.route_prefix:
-                route = (
-                    self.route_prefix
-                    if data.get("route") == "/"
-                    else self.route_prefix + data.get("route")
-                )
-            else:
-                route = data.get("route")
+            route = (self.route_prefix if data.get("route") == "/" else self.route_prefix + data.get("route")) if self.route_prefix else data.get("route")
 
             self.__pages.add(
                 Pagesy(

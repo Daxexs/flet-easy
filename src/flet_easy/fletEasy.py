@@ -1,14 +1,13 @@
 try:
-    from flet import Page, app, AppView, WebRenderer
+    from flet import AppView, Page, WebRenderer, app
 except ImportError:
-    raise Exception(
-        'Install "flet" the latest version available -> pip install flet --upgrade.'
-    )
+    raise Exception('Install "flet" the latest version available -> pip install flet --upgrade.')
 
-from flet_easy.inheritance import Pagesy, Viewsy, AddPagesy
-from flet_easy.route import FletEasyX
 from functools import wraps
 from typing import Callable, Optional
+
+from flet_easy.inheritance import AddPagesy, Pagesy, Viewsy
+from flet_easy.route import FletEasyX
 
 
 class FletEasy:
@@ -204,9 +203,7 @@ class FletEasy:
                 export_asgi_app=export_asgi_app,
             )
         except RuntimeError:
-            Exception(
-                "If you are using fastapi from flet, set the 'fastapi = True' parameter of the run() method."
-            )
+            Exception("If you are using fastapi from flet, set the 'fastapi = True' parameter of the run() method.")
 
     # -- decorators --------------------------------
 
@@ -217,14 +214,7 @@ class FletEasy:
                 return func(data, *args, **kwargs)
 
             if data:
-                if self.__route_prefix and data.get("route"):
-                    route = (
-                        self.__route_prefix
-                        if data.get("route") == "/"
-                        else self.__route_prefix + data.get("route")
-                    )
-                else:
-                    route = data.get("route")
+                route = (self.__route_prefix if data.get("route") == "/" else self.__route_prefix + data.get("route")) if self.__route_prefix and data.get("route") else data.get("route")
 
             if value == "page_404":
                 self.__page_404 = Pagesy(route, func, data.get("title"), data.get("page_clear"))

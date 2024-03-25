@@ -30,7 +30,7 @@ class Datasy:
     * `route_init` : Value entered in the `FletEasy` class parameters to create the app object.
     * `route_login` : Value entered in the `FletEasy` class parameters to create the app object.
     ---
-    * `share` : It is used to be able to store and to obtain values in the client session, the utility is to be able to have greater control in the pages in which it is wanted to share and not in all the pages, for it the `share_data` parameter of the `page` decorator must be used. The methods to use are similar `page.session` (https://flet.dev/docs/guides/python/session-storage).
+    * `share` : It is used to be able to store and to obtain values in the client session, the utility is to be able to have greater control in the pages in which it is wanted to share, for it the parameter `share_data` of the `page` decorator must be used. The methods to use are similar `page.session` (https://flet.dev/docs/guides/python/session-storage).
 
     Besides that you get some extra methods:
 
@@ -213,11 +213,7 @@ class Datasy:
                 decode=await _decode_payload_async(
                     page=self.page,
                     key_login=self.key_login,
-                    secret_key=(
-                        self.secret_key.secret
-                        if self.secret_key.secret is not None
-                        else self.secret_key.pem_key.public
-                    ),
+                    secret_key=(self.secret_key.secret if self.secret_key.secret is not None else self.secret_key.pem_key.public),
                     algorithms=self.secret_key.algorithm,
                 )
             )
@@ -272,9 +268,7 @@ class Datasy:
                 self._create_tasks(time_expiry, key, sleep)
 
         self.page.run_task(self.page.client_storage.set_async, key, value)
-        self.page.pubsub.send_others_on_topic(
-            self.page.client_ip, Msg("login", key, value)
-        )
+        self.page.pubsub.send_others_on_topic(self.page.client_ip, Msg("login", key, value))
 
         if next_route is not None:
             self.page.go(next_route)
@@ -290,9 +284,4 @@ class Datasy:
 
 
 def evaluate_secret_key(data: Datasy):
-    assert (
-        data.secret_key.secret is None
-        and data.secret_key.algorithm == "RS256"
-        or data.secret_key.pem_key is None
-        and data.secret_key.algorithm == "HS256"
-    ), "The algorithm is not set correctly in the 'secret_key' parameter of the 'FletEasy' class."
+    assert data.secret_key.secret is None and data.secret_key.algorithm == "RS256" or data.secret_key.pem_key is None and data.secret_key.algorithm == "HS256", "The algorithm is not set correctly in the 'secret_key' parameter of the 'FletEasy' class."

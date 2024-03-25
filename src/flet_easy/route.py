@@ -1,11 +1,13 @@
-from flet import Page, RouteChangeEvent, KeyboardEvent, ControlEvent, View
-from flet_easy.extra import Msg
-from flet_easy.inheritance import Keyboardsy, Resizesy, Pagesy, Viewsy
-from flet_easy.datasy import Datasy
-from flet_easy.view_404 import ViewError
-from typing import Callable
 from inspect import iscoroutinefunction
+from typing import Callable
+
+from flet import ControlEvent, KeyboardEvent, Page, RouteChangeEvent, View
 from parse import parse
+
+from flet_easy.datasy import Datasy
+from flet_easy.extra import Msg
+from flet_easy.inheritance import Keyboardsy, Pagesy, Resizesy, Viewsy
+from flet_easy.view_404 import ViewError
 
 
 class FletEasyX:
@@ -54,7 +56,7 @@ class FletEasyX:
         self.__view_config: Callable = view_config
         self.__config_event: Callable = config_event_handler
 
-        self.__pubsub_user: bool = True if self.__route_login is not None else False
+        self.__pubsub_user: bool = self.__route_login is not None
 
     # ----------- Supports async
     def __route_change(self, route: RouteChangeEvent):
@@ -70,17 +72,10 @@ class FletEasyX:
                 try:
                     route_math = parse(page.route, path, page.custom_params)
 
-                    if route_math:
-                        route_check = all(
-                            valor is not False and valor is not None
-                            for valor in dict(route_math.named).values()
-                        )
-                    else:
-                        route_check = route_math
+                    route_check = all(valor is not False and valor is not None for valor in dict(route_math.named).values()) if route_math else route_math
+
                 except Exception as e:
-                    raise Exception(
-                        f"The url parse has failed, check the url -> ({route.route}) parameters for correctness. Error-> {e}"
-                    )
+                    raise Exception(f"The url parse has failed, check the url -> ({route.route}) parameters for correctness. Error-> {e}")
 
             if route_check:
                 pg_404 = False
@@ -88,9 +83,7 @@ class FletEasyX:
                     if page.protected_route:
                         if iscoroutinefunction(self.__config_login):
                             try:
-                                auth = self.__page.run_task(
-                                    self.__config_login, self.__data
-                                ).result()
+                                auth = self.__page.run_task(self.__config_login, self.__data).result()
                             except TimeoutError as e:
                                 raise Exception(
                                     "Use async methods in the function decorated by 'login', to avoid conflicts.",
@@ -140,16 +133,12 @@ class FletEasyX:
                 if self.__page_404.route:
                     self.__page.route = self.__page_404.route
 
-                self.__page.run_task(
-                    self.__add_events_params, self.__page_404.view, page.title
-                )
+                self.__page.run_task(self.__add_events_params, self.__page_404.view, page.title)
             else:
                 self.__page.views.append(self.__view_404.view(self.__page))
                 self.__page.update()
 
-    async def __add_events_params(
-        self, view: View, title: str, url_params: dict = None
-    ):
+    async def __add_events_params(self, view: View, title: str, url_params: dict = None):
         self.__data.on_keyboard_event = self.__page_on_keyboard
         self.__data.on_resize = self.__page_on_resize
         self.__data.url_params = url_params
