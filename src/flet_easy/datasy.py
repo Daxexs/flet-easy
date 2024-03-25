@@ -1,11 +1,20 @@
+from datetime import datetime, timedelta, timezone
+from typing import Any
+
 from flet import (
+    ControlEvent,
     Page,
     View,
-    ControlEvent,
 )
-from typing import Any
-from flet_easy.inheritance import SessionStorageEdit, Keyboardsy, Resizesy
+
 from flet_easy.extra import Msg
+from flet_easy.extrasJwt import (
+    SecretKey,
+    _decode_payload_async,
+    encode_verified,
+)
+from flet_easy.inheritance import Keyboardsy, Resizesy, SessionStorageEdit
+from flet_easy.job import Job
 
 
 class Datasy:
@@ -31,8 +40,8 @@ class Datasy:
     ----
     * `on_keyboard_event` : get event values to use in the page.
     * `on_resize` : get event values to use in the page.
-    * `logaut` : method to close sessions of all sections in the browser (client storage), requires as parameter the key or the control (the parameter key of the control must have the value to delete), this is to avoid creating an extra function.
-    * `update_login` : method to create sessions of all sections in the browser (client storage), requires as parameters the key and the value, the same used in the `page.client_storage.set` method.
+    * `logout` : method to close sessions of all sections in the browser (client storage), requires as parameter the key or the control (the parameter key of the control must have the value to delete), this is to avoid creating an extra function.
+    * `login` : method to create sessions of all sections in the browser (client storage), requires as parameters the key and the value, the same used in the `page.client_storage.set` method.
     * `go` : Method to change the path of the application, in order to reduce the code, you must assign the value of the `key` parameter of the `control` used, for example buttons.
     """
 
@@ -42,7 +51,9 @@ class Datasy:
         route_prefix: str,
         route_init: str,
         route_login: str,
-        fastapi: bool,
+        secret_key: str,
+        auto_logout: bool,
+        login_async: bool = False,
     ) -> None:
         self.__page: Page = page
         self.__url_params: dict = None
@@ -53,8 +64,13 @@ class Datasy:
         self.__share = SessionStorageEdit(self.__page)
         self.__on_keyboard_event: Keyboardsy = None
         self.__on_resize: Resizesy = None
-        self.__fastapi: bool = fastapi
-        self.__client_storage: Msg = None
+
+        self.__secret_key: SecretKey = secret_key
+        self.__key_login: str = None
+        self.__auto_logout: bool = auto_logout
+        self.__sleep: int = 1
+        self._login_done: bool = False
+        self._login_async: bool = login_async
 
     @property
     def page(self):
@@ -125,51 +141,143 @@ class Datasy:
     def on_resize(self, on_resize: object):
         self.__on_resize = on_resize
 
+    @property
+    def key_login(self):
+        return self.__key_login
+
+    @property
+    def auto_logout(self):
+        return self.__auto_logout
+
+    @property
+    def secret_key(self):
+        return self.__secret_key
+
     """--------- login authentication : asynchronously | synchronously -------"""
 
-    async def __fastapi_async(self):
-        """Solution to using the methods of
-        client_storage with fastapi
+    def _login_done_evaluate(self):
+        return self._login_done
+
+    def _create_task_login_update(self, decode: dict[str, Any]):
+        """Updates the login status, in case it does not exist it creates a new task that checks the user's login status."""
+        time_exp = datetime.fromtimestamp(float(decode.get("exp")), tz=timezone.utc)
+        time_now = datetime.now(tz=timezone.utc)
+        time_res = time_exp - time_now
+        self._login_done = True
+        Job(
+            self.logout,
+            self.key_login,
+            every=time_res,
+            sleep_time=self.__sleep,
+            page=self.page,
+            login_done=self._login_done_evaluate,
+        ).start()
+
+    def logout(self, key: str):
+        """Closes the sessions of all browser tabs or the device used, which has been previously configured with the `login` method.
+
+        ### Example:
+        ```python
+        import flet as ft
+        import flet_easy as fs
+
+        @app.page('/Dashboard', title='Dashboard', protected_route=True)
+        def dashboard(data:fs.Datasy)
+            return ft.View(
+                controls=[
+                    ft.FilledButton('Logout', onclick=data.logout('key-login')),
+            )
+        ```
         """
-        if self.__client_storage.method == "set":
-            if self.__fastapi:
-                await self.page.client_storage.set_async(
-                    self.__client_storage.key, self.__client_storage.value
-                )
-            else:
-                self.page.client_storage.set(
-                    self.__client_storage.key, self.__client_storage.value
-                )
-        elif self.__client_storage.method == "remove":
-            if self.__fastapi:
-                await self.page.client_storage.remove_async(self.__client_storage.key)
-            else:
-                self.page.client_storage.set(self.__client_storage.key)
-
-    def logaut(self, key: str):
-        self.page.pubsub.send_all_on_topic(self.page.client_ip, Msg("logaut", key))
-
-    def __logaut_init(self, topic, msg: Msg):
-        if msg.method == "login":
-            self.__client_storage = Msg("set", msg.key, msg.value)
-            self.page.run_task(self.__fastapi_async)
-
-        elif msg.method == "logaut":
-            self.__client_storage = Msg("remove", msg.key)
-            self.page.run_task(self.__fastapi_async)
+        if self.page.web:
+            self.page.pubsub.send_all_on_topic(self.page.client_ip, Msg("logout", key))
+        else:
+            self.page.client_storage.remove_async(key)
             self.page.go(self.route_login)
 
+    async def __logaut_init(self, topic, msg: Msg):
+        if msg.method == "login":
+            self.page.run_task(self.page.client_storage.set_async, msg.key, msg.value)
+
+        elif msg.method == "logout":
+            self._login_done = False
+            self.page.run_task(self.page.client_storage.remove_async, msg.key)
+            self.page.go(self.route_login)
+
+        elif msg.method == "updateLogin":
+            self._login_done = msg.value
+
+        elif msg.method == "updateLoginSessions":
+            self._login_done = msg.value
+            self._create_task_login_update(
+                decode=await _decode_payload_async(
+                    page=self.page,
+                    key_login=self.key_login,
+                    secret_key=(
+                        self.secret_key.secret
+                        if self.secret_key.secret is not None
+                        else self.secret_key.pem_key.public
+                    ),
+                    algorithms=self.secret_key.algorithm,
+                )
+            )
+        else:
+            Exception("Method not implemented in logout_init method.")
+
     def _create_login(self):
+        """Create the connection between sessions."""
         self.page.pubsub.subscribe_topic(self.page.client_ip, self.__logaut_init)
 
-    def update_login(self, key: str, value: Any):
-        """Registering in the client's storage the key and value in all browser sessions."""
-        self.__client_storage = Msg("set", key, value)
-        self.page.run_task(self.__fastapi_async)
+    def _create_tasks(self, time_expiry: timedelta, key: str, sleep: int) -> None:
+        """Creates the logout task when logging in."""
+        if time_expiry is not None:
+            Job(
+                self.logout,
+                key,
+                every=time_expiry,
+                sleep_time=sleep,
+                page=self.page,
+                login_done=self._login_done_evaluate,
+            ).start()
 
+    def login(
+        self,
+        key: str,
+        value: dict[str, Any] | Any,
+        time_expiry: timedelta = None,
+        next_route: str = None,
+        sleep: int = 1,
+        jwt: bool = False,
+    ):
+        """Registering in the client's storage the key and value in all browser sessions.
+
+        ### Parameters to use:
+
+        * `key` : It is the identifier to store the value in the client storage.
+        * `value` : Recommend to use a dict if you use JWT.
+        * `time_expiry` : Time to expire the session, use the `timedelta` class  to configure. (Optional)
+        * `next_route` : Redirect to next route after creating login. (Optional)
+        * `sleep` : Time to do login checks, default is 1s. (Optional)
+        * `jwt` : JWT to use. (Optional)
+
+        """
+        if jwt:
+            evaluate_secret_key(self)
+            self.__key_login = key
+            self.__sleep = sleep
+            value = encode_verified(self.secret_key, value, time_expiry)
+            self._login_done = True
+
+            if self.__auto_logout:
+                self._create_tasks(time_expiry, key, sleep)
+
+        self.page.run_task(self.page.client_storage.set_async, key, value)
         self.page.pubsub.send_others_on_topic(
             self.page.client_ip, Msg("login", key, value)
         )
+
+        if next_route is not None:
+            self.page.go(next_route)
 
     """ Page go  """
 
@@ -179,3 +287,12 @@ class Datasy:
             self.page.go(route)
         else:
             self.page.go(route.control.key)
+
+
+def evaluate_secret_key(data: Datasy):
+    assert (
+        data.secret_key.secret is None
+        and data.secret_key.algorithm == "RS256"
+        or data.secret_key.pem_key is None
+        and data.secret_key.algorithm == "HS256"
+    ), "The algorithm is not set correctly in the 'secret_key' parameter of the 'FletEasy' class."

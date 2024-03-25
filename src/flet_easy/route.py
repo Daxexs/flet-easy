@@ -1,4 +1,5 @@
 from flet import Page, RouteChangeEvent, KeyboardEvent, ControlEvent, View
+from flet_easy.extra import Msg
 from flet_easy.inheritance import Keyboardsy, Resizesy, Pagesy, Viewsy
 from flet_easy.datasy import Datasy
 from flet_easy.view_404 import ViewError
@@ -22,7 +23,8 @@ class FletEasyX:
         config_event_handler: Callable,
         on_resize: bool,
         on_Keyboard: bool,
-        fastapi: bool,
+        secret_key: str,
+        auto_logout: bool,
     ):
         self.__page = page
         self.__page_on_keyboard = Keyboardsy()
@@ -33,7 +35,6 @@ class FletEasyX:
         self.__config_login = config_login
         self.__on_resize = on_resize
         self.__on_Keyboard = on_Keyboard
-        self.__fastapi = fastapi
         # ----
         self.__pages = pages
 
@@ -42,7 +43,9 @@ class FletEasyX:
             "" if route_prefix is None else route_prefix,
             self.__route_init,
             self.__route_login,
-            self.__fastapi,
+            secret_key,
+            auto_logout,
+            iscoroutinefunction(self.__config_login),
         )
 
         self.__view_404 = ViewError(route_init)
@@ -54,7 +57,7 @@ class FletEasyX:
         self.__pubsub_user: bool = True if self.__route_login is not None else False
 
     # ----------- Supports async
-    async def __route_change(self, route: RouteChangeEvent):
+    def __route_change(self, route: RouteChangeEvent):
         pg_404 = True
         self.__page_on_keyboard.clear()
         path = self.__route_init if route.route == "/" else route.route
@@ -74,24 +77,41 @@ class FletEasyX:
                         )
                     else:
                         route_check = route_math
-                except:  # noqa: E722
-                    break
+                except Exception as e:
+                    raise Exception(
+                        f"The url parse has failed, check the url -> ({route.route}) parameters for correctness. Error-> {e}"
+                    )
 
             if route_check:
                 pg_404 = False
                 try:
                     if page.protected_route:
                         if iscoroutinefunction(self.__config_login):
-                            auth = await self.__config_login(self.__page)
+                            try:
+                                auth = self.__page.run_task(
+                                    self.__config_login, self.__data
+                                ).result()
+                            except TimeoutError as e:
+                                raise Exception(
+                                    "Use async methods in the function decorated by 'login', to avoid conflicts.",
+                                    e,
+                                )
                         else:
-                            auth = self.__config_login(self.__page)
+                            auth = self.__config_login(self.__data)
+
+                        assert auth, "Use async methods in the function decorated by 'login', to avoid conflicts."
 
                         if auth:
                             if page.clear:
                                 self.__page.views.clear()
                             if not page.share_data:
                                 self.__data.share.clear()
-                            await self.__add_events_params(page.view, page.title, route_math.named)
+                            self.__page.run_task(
+                                self.__add_events_params,
+                                page.view,
+                                page.title,
+                                route_math.named,
+                            )
                             break
                         else:
                             self.__page.go(self.__route_login)
@@ -102,7 +122,12 @@ class FletEasyX:
                             self.__page.views.clear()
                         if not page.share_data:
                             self.__data.share.clear()
-                        await self.__add_events_params(page.view, page.title, route_math.named)
+                        self.__page.run_task(
+                            self.__add_events_params,
+                            page.view,
+                            page.title,
+                            route_math.named,
+                        )
                         break
 
                 except Exception as e:
@@ -115,12 +140,16 @@ class FletEasyX:
                 if self.__page_404.route:
                     self.__page.route = self.__page_404.route
 
-                await self.__add_events_params(self.__page_404.view, page.title)
+                self.__page.run_task(
+                    self.__add_events_params, self.__page_404.view, page.title
+                )
             else:
                 self.__page.views.append(self.__view_404.view(self.__page))
                 self.__page.update()
 
-    async def __add_events_params(self, view: View, title:str, url_params: dict = None):
+    async def __add_events_params(
+        self, view: View, title: str, url_params: dict = None
+    ):
         self.__data.on_keyboard_event = self.__page_on_keyboard
         self.__data.on_resize = self.__page_on_resize
         self.__data.url_params = url_params
@@ -165,13 +194,20 @@ class FletEasyX:
             if iscoroutinefunction(self.__view_config):
                 await self.__view_config(self.__page)
             else:
-                self.__view_config(self.__page)
+                self.__page.run_thread(self.__view_config, self.__page)
 
         if self.__config_event:
             if iscoroutinefunction(self.__view_config):
                 await self.__config_event(self.__page)
             else:
-                self.__config_event(self.__page)
+                self.__page.run_thread(self.__config_event, self.__page)
+
+    def __disconnect(self, e):
+        if self.__data._login_done:
+            self.__page.pubsub.send_others_on_topic(
+                self.__page.client_ip,
+                Msg("updateLoginSessions", value=self.__data._login_done),
+            )
 
     # -- initialization
 
@@ -189,6 +225,7 @@ class FletEasyX:
         self.__page.on_route_change = self.__route_change
         self.__page.on_view_pop = self.__view_pop
         self.__page.on_error = lambda e: print("Page error:", e.data)
+        self.__page.on_disconnect = self.__disconnect
 
         """ activation of charter events """
         if self.__on_resize:

@@ -130,12 +130,16 @@ class FletEasy:
         route_login: str = None,
         on_resize: bool = False,
         on_Keyboard: bool = False,
+        secret_key: str = None,
+        auto_logout: bool = False,
     ):
         self.__route_prefix = route_prefix
         self.__route_init = route_init
         self.__route_login = route_login
         self.__on_resize = on_resize
         self.__on_Keyboard = on_Keyboard
+        self.__secret_key = secret_key
+        self.__auto_logout = auto_logout
         self.__config_login: Callable = None
         # ----
         self.__pages = set()
@@ -177,7 +181,8 @@ class FletEasy:
                 config_event_handler=self.__config_event,
                 on_resize=self.__on_resize,
                 on_Keyboard=self.__on_Keyboard,
-                fastapi=fastapi,
+                secret_key=self.__secret_key,
+                auto_logout=self.__auto_logout,
             )
 
             app.run()
@@ -199,7 +204,7 @@ class FletEasy:
                 export_asgi_app=export_asgi_app,
             )
         except RuntimeError:
-            raise Exception(
+            Exception(
                 "If you are using fastapi from flet, set the 'fastapi = True' parameter of the run() method."
             )
 

@@ -8,3 +8,5 @@ from flet_easy.inheritance import (
     ResponsiveControlsy,
 )
 from flet_easy.datasy import Datasy
+from flet_easy.extrasJwt import SecretKey, encode_HS256, encode_RS256, Algorithm, PemKey
+from flet_easy.jwt import decode, decode_async, EasyKey
