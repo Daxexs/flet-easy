@@ -20,9 +20,12 @@ class PemKey:
 
 @dataclass
 class SecretKey:
+    """Correctly add the secret key in the `FletEasy` class parameter."""
+
     algorithm: str = "HS256"
     secret: str = None
     pem_key: PemKey = None
+    Jwt: bool = False
 
 
 def _time_exp(time_expiry: timezone, payload: dict[str, Any]) -> dict[str, Any]:

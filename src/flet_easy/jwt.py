@@ -93,6 +93,8 @@ def decode(key_login: str, data: Datasy) -> dict[str, Any] | bool:
     * `data` : Instance object of the `Datasy` class.
     """
     assert not data._login_async, "Use the 'decode_async' method instead of 'decode'."
+    assert data.secret_key.Jwt, "Activate the 'jwt' parameter of the 'login' method to be able to use the 'decode' method, the methods are of the class (Datasy)."
+    
     value = data.page.run_task(_handle_decode_errors, data, key_login).result()
     if value:
         return value
@@ -108,6 +110,8 @@ async def decode_async(key_login: str, data: Datasy) -> dict[str, Any] | bool:
     * `data` : Instance object of the `Datasy` class.
     """
     assert data._login_async, "Use the 'decode' method instead of 'decode_async'."
+    assert data.secret_key.Jwt, "Activate the 'jwt' parameter of the 'login' method to be able to use the 'decode_async' method, the methods are of the class (Datasy)."
+    
     value = await _handle_decode_errors(data, key_login)
     if value:
         return value

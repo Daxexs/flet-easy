@@ -84,16 +84,13 @@ class FletEasyX:
                         if iscoroutinefunction(self.__config_login):
                             try:
                                 auth = self.__page.run_task(self.__config_login, self.__data).result()
-                            except TimeoutError as e:
+                            except Exception as e:
                                 raise Exception(
                                     "Use async methods in the function decorated by 'login', to avoid conflicts.",
                                     e,
                                 )
                         else:
                             auth = self.__config_login(self.__data)
-
-                        assert auth, "Use async methods in the function decorated by 'login', to avoid conflicts."
-
                         if auth:
                             if page.clear:
                                 self.__page.views.clear()

@@ -243,7 +243,6 @@ class Datasy:
         time_expiry: timedelta = None,
         next_route: str = None,
         sleep: int = 1,
-        jwt: bool = False,
     ):
         """Registering in the client's storage the key and value in all browser sessions.
 
@@ -254,10 +253,8 @@ class Datasy:
         * `time_expiry` : Time to expire the session, use the `timedelta` class  to configure. (Optional)
         * `next_route` : Redirect to next route after creating login. (Optional)
         * `sleep` : Time to do login checks, default is 1s. (Optional)
-        * `jwt` : JWT to use. (Optional)
-
         """
-        if jwt:
+        if self.__secret_key.Jwt:
             evaluate_secret_key(self)
             self.__key_login = key
             self.__sleep = sleep

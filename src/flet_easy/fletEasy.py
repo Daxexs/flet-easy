@@ -6,6 +6,7 @@ except ImportError:
 from functools import wraps
 from typing import Callable, Optional
 
+from flet_easy.extrasJwt import SecretKey
 from flet_easy.inheritance import AddPagesy, Pagesy, Viewsy
 from flet_easy.route import FletEasyX
 
@@ -129,7 +130,7 @@ class FletEasy:
         route_login: str = None,
         on_resize: bool = False,
         on_Keyboard: bool = False,
-        secret_key: str = None,
+        secret_key: SecretKey = None,
         auto_logout: bool = False,
     ):
         self.__route_prefix = route_prefix
