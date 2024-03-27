@@ -275,9 +275,9 @@ class Datasy:
     def go(self, route: ControlEvent | str):
         """To change the path of the app, in order to reduce code, you must assign the value of the `key` parameter of the `control` used, for example buttons."""
         if isinstance(route, str):
-            self.page.go(route)
+            return lambda _: self.page.go(route)
         else:
-            self.page.go(route.control.key)
+            return lambda _: self.page.go(route.control.key)
 
 
 def evaluate_secret_key(data: Datasy):
