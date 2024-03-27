@@ -10,6 +10,8 @@ dependencies = [
     "parse>=1.20.1",
     "pyJWT>=2.8.0",
     "rsa>=4.9",
+    "rich-argparse>=1.4.0",
+    "tomlkit>=0.12.4",
 ]
 requires-python = ">=3.8"
 readme = "README.md"
@@ -44,6 +46,16 @@ test = [
     "flet>=0.21.1",
     "ruff>=0.3.4",
 ]
+
+[tool.pdm.build]
+excludes = ["./**/.git"]
+package-dir = "src"
+includes = ["src/flet_easy"]
+source-includes = ["LICENSE", "README.md"]
+
+[project.scripts]
+fs = "flet_easy.cli.main:run"
+
 
 [tool.ruff]
 line-length = 320
