@@ -54,7 +54,9 @@ def encode_HS256(payload: dict[str, Any], secret_key: str, time_expiry: timezone
 
 def encode_verified(secret_key: SecretKey, value: str, time_expiration) -> str | None:
     """Verify the possible encryption of the value sent."""
-    assert secret_key.algorithm is not None, "The secret_key algorithm is not supported, only (RS256, HS256) is accepted."
+    assert (
+        secret_key.algorithm is not None
+    ), "The secret_key algorithm is not supported, only (RS256, HS256) is accepted."
 
     if secret_key.algorithm == "RS256":
         return encode_RS256(
@@ -72,9 +74,13 @@ def encode_verified(secret_key: SecretKey, value: str, time_expiration) -> str |
         Exception("Algorithm not implemented in encode_verified method.")
 
 
-async def _decode_payload_async(page: Page, key_login: str, secret_key: str, algorithms: str) -> dict[str, Any]:
+async def _decode_payload_async(
+    page: Page, key_login: str, secret_key: str, algorithms: str
+) -> dict[str, Any]:
     """Decodes the payload stored in the client storage."""
-    assert secret_key is not None, "The secret_key algorithm is not supported, only (RS256, HS256) is accepted."
+    assert (
+        secret_key is not None
+    ), "The secret_key algorithm is not supported, only (RS256, HS256) is accepted."
 
     return decode(
         jwt=await page.client_storage.get_async(key_login),

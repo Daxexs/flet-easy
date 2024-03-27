@@ -27,7 +27,9 @@ def init_app():
     )
     author = Prompt.ask("Project Author")
     email = Prompt.ask("Email Author")
-    manifest = Prompt.ask("Requires creation of manifest.json (Web-PWA)", choices=["n", "y"], default="n")
+    manifest = Prompt.ask(
+        "Requires creation of manifest.json (Web-PWA)", choices=["n", "y"], default="n"
+    )
 
     toml_dict["project"]["name"] = name
     toml_dict["project"]["version"] = version
@@ -42,13 +44,22 @@ def init_app():
 
 
 def run():
-    parser = argparse.ArgumentParser(description="CLI for Flet-Easys.", formatter_class=RichHelpFormatter)
-    parser.add_argument("--version", "-v", action="version", help=" Flet-Easy Version", version=VERSION)
+    parser = argparse.ArgumentParser(
+        description="CLI for Flet-Easys.", formatter_class=RichHelpFormatter
+    )
+    parser.add_argument(
+        "--version", "-v", action="version", help=" Flet-Easy Version", version=VERSION
+    )
 
     subparsers = parser.add_subparsers(dest="command", title="Comandos")
 
     #  Subcommand 'init'
-    subparsers.add_parser("init", aliases=["i"], help="Create the structure of the app", formatter_class=RichHelpFormatter)
+    subparsers.add_parser(
+        "init",
+        aliases=["i"],
+        help="Create the structure of the app",
+        formatter_class=RichHelpFormatter,
+    )
 
     args = parser.parse_args()
 

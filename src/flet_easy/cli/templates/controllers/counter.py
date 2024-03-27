@@ -17,9 +17,7 @@ class CounterHook:
 
     def is_number(self):
         if not self.input.c.value.isdigit():
-            self.alert.c.content = ft.Text(
-                "Enter number", text_align="center", color="#ffffff"
-            )
+            self.alert.c.content = ft.Text("Enter number", text_align="center", color="#ffffff")
             self.alert.c.bgcolor = "#ef233c"
             self.alert.c.open = True
             self.alert.c.update()
@@ -28,16 +26,12 @@ class CounterHook:
 
     def add(self, e):
         if self.is_number():
-            self.number.c.text = str(
-                int(self.number.c.text) + self.get_input()
-            )
+            self.number.c.text = str(int(self.number.c.text) + self.get_input())
             self.number.c.update()
 
     def remove(self, e):
         if self.is_number():
-            self.number.c.text = str(
-                int(self.number.c.text) - self.get_input()
-            )
+            self.number.c.text = str(int(self.number.c.text) - self.get_input())
             self.number.c.update()
 
     def reload(self, e):

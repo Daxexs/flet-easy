@@ -23,9 +23,10 @@ class FletEasy:
     import flet_easy as fs
 
     app = fs.FletEasy(
-        route_prefix='/index',
-        route_init='/index/hi',
+        route_prefix="/index",
+        route_init="/index/hi",
     )
+
 
     @app.view()
     async def view(page: ft.Page):
@@ -34,92 +35,87 @@ class FletEasy:
                 page.theme_mode = ft.ThemeMode.LIGHT
             else:
                 page.theme_mode = ft.ThemeMode.DARK
+
         async def theme(e):
             if page.theme_mode == ft.ThemeMode.SYSTEM:
                 modify_theme()
             modify_theme()
             await page.update_async()
+
         async def go_home(e):
-            await page.go_async('/index/hi')
+            await page.go_async("/index/hi")
+
         return fs.Viewsy(
             appbar=ft.AppBar(
                 title=ft.Text("AppBar Example"),
                 center_title=False,
                 bgcolor=ft.colors.SURFACE_VARIANT,
                 actions=[
-                    ft.IconButton(ft.icons.WB_SUNNY_OUTLINED,
-                                  on_click=theme
-                                  ),
+                    ft.IconButton(ft.icons.WB_SUNNY_OUTLINED, on_click=theme),
                     ft.PopupMenuButton(
                         items=[
-                            ft.PopupMenuItem(
-                                text="🔥 Home",
-                                on_click=go_home
-                            ),
+                            ft.PopupMenuItem(text="🔥 Home", on_click=go_home),
                         ]
                     ),
                 ],
             ),
             vertical_alignment=ft.MainAxisAlignment.CENTER,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
         )
 
-    @app.page('/hi', page_clear=True)
+
+    @app.page("/hi", page_clear=True)
     async def index_page(data: fs.Datasy):
         page = data.page
         view = data.view
-        page.title = 'Index - Home'
+        page.title = "Index - Home"
 
-        view.appbar.title = ft.Text('Index - Home')
+        view.appbar.title = ft.Text("Index - Home")
 
         async def go_test(e):
-            await page.go_async(f'/index/test/10/user/junior')
-
+            await page.go_async(f"/index/test/10/user/junior")
 
         return ft.View(
-            '/index/hi',
+            "/index/hi",
             controls=[
-
-                ft.Text('Menú', size=40),
+                ft.Text("Menú", size=40),
                 ft.ElevatedButton(
-                    'Go to Test', on_click=go_test,
-                )
-
+                    "Go to Test",
+                    on_click=go_test,
+                ),
             ],
             appbar=view.appbar,
             vertical_alignment=ft.MainAxisAlignment.CENTER,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
         )
 
-    @app.page('/test/{id:d}/user/{name:l}')
-    async def test_page(data: fs.Datasy, id:int, name:str):
+
+    @app.page("/test/{id:d}/user/{name:l}")
+    async def test_page(data: fs.Datasy, id: int, name: str):
         page = data.page
         view = data.view
 
-        page.title = 'Test'
-        view.appbar.title = ft.Text('test')
+        page.title = "Test"
+        view.appbar.title = ft.Text("test")
 
         async def go_index(e):
-            await page.go_async(f'/index/hi')
+            await page.go_async(f"/index/hi")
 
         return ft.View(
-            '/index/test',
+            "/index/test",
             controls=[
-
-                ft.Text(f'Test {data.url_params}'),
-                ft.Text(f'Test Id is: {id}'),
-                ft.ElevatedButton(
-                    'Go to Home', on_click=go_index),
-
+                ft.Text(f"Test {data.url_params}"),
+                ft.Text(f"Test Id is: {id}"),
+                ft.ElevatedButton("Go to Home", on_click=go_index),
             ],
             appbar=view.appbar,
             vertical_alignment=ft.MainAxisAlignment.CENTER,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
         )
+
 
     # Execute the app (synchronous / asynchronous)
     app.run()
-
     ```
     """
 
@@ -204,7 +200,9 @@ class FletEasy:
                 export_asgi_app=export_asgi_app,
             )
         except RuntimeError:
-            Exception("If you are using fastapi from flet, set the 'fastapi = True' parameter of the run() method.")
+            Exception(
+                "If you are using fastapi from flet, set the 'fastapi = True' parameter of the run() method."
+            )
 
     # -- decorators --------------------------------
 
@@ -215,7 +213,15 @@ class FletEasy:
                 return func(data, *args, **kwargs)
 
             if data:
-                route = (self.__route_prefix if data.get("route") == "/" else self.__route_prefix + data.get("route")) if self.__route_prefix and data.get("route") else data.get("route")
+                route = (
+                    (
+                        self.__route_prefix
+                        if data.get("route") == "/"
+                        else self.__route_prefix + data.get("route")
+                    )
+                    if self.__route_prefix and data.get("route")
+                    else data.get("route")
+                )
 
             if value == "page_404":
                 self.__page_404 = Pagesy(route, func, data.get("title"), data.get("page_clear"))
@@ -277,19 +283,18 @@ class FletEasy:
         import flet_easy as fs
 
         app = fs.FletEasy(
-            route_prefix='/FletEasy',
-            route_init='/FletEasy',
+            route_prefix="/FletEasy",
+            route_init="/FletEasy",
         )
 
-        @app.page('/', title='FletEasy')
+
+        @app.page("/", title="FletEasy")
         async def index_page(data: fs.Datasy):
             return ft.View(
-                route='/FletEasy',
-                controls=[
-                    ft.Text('FletEasy')
-                ],
+                route="/FletEasy",
+                controls=[ft.Text("FletEasy")],
                 vertical_alignment=view.vertical_alignment,
-                horizontal_alignment=view.horizontal_alignment
+                horizontal_alignment=view.horizontal_alignment,
             )
         ```
         """
@@ -323,20 +328,20 @@ class FletEasy:
         import flet_easy as fs
 
         app = fs.FletEasy(
-            route_prefix='/FletEasy',
-            route_init='/FletEasy',
+            route_prefix="/FletEasy",
+            route_init="/FletEasy",
         )
 
-        @app.page_404('/FletEasy-404', title='Error 404', page_clear=True)
-        async def page404(data: fs.Datasy):
 
+        @app.page_404("/FletEasy-404", title="Error 404", page_clear=True)
+        async def page404(data: fs.Datasy):
             return ft.View(
-                route='/error404',
+                route="/error404",
                 controls=[
-                    ft.Text(f'Error 404', size=30),
+                    ft.Text(f"Error 404", size=30),
                 ],
                 vertical_alignment=ft.MainAxisAlignment.CENTER,
-                horizontal_alignment=ft.CrossAxisAlignment.CENTER
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             )
         ```
         """
@@ -356,13 +361,13 @@ class FletEasy:
         import flet_easy as fs
 
         app = fs.FletEasy(
-            route_prefix='/FletEasy',
-            route_init='/FletEasy',
+            route_prefix="/FletEasy",
+            route_init="/FletEasy",
         )
+
 
         @app.view
         async def view(data: fs.Datasy):
-
             page = data.page
 
             def modify_theme():
@@ -372,7 +377,6 @@ class FletEasy:
                     page.theme_mode = ft.ThemeMode.DARK
 
             async def theme(e):
-
                 if page.theme_mode == ft.ThemeMode.SYSTEM:
                     modify_theme()
 
@@ -380,7 +384,7 @@ class FletEasy:
                 await page.update_async()
 
             async def go_home(e):
-                await page.go_async('/FletEasy')
+                await page.go_async("/FletEasy")
 
             return fs.Viewsy(
                 appbar=ft.AppBar(
@@ -388,21 +392,16 @@ class FletEasy:
                     center_title=False,
                     bgcolor=ft.colors.SURFACE_VARIANT,
                     actions=[
-                        ft.IconButton(ft.icons.WB_SUNNY_OUTLINED,
-                                      on_click=theme
-                                      ),
+                        ft.IconButton(ft.icons.WB_SUNNY_OUTLINED, on_click=theme),
                         ft.PopupMenuButton(
                             items=[
-                                ft.PopupMenuItem(
-                                    text="🔥 Home",
-                                    on_click=go_home
-                                ),
+                                ft.PopupMenuItem(text="🔥 Home", on_click=go_home),
                             ]
                         ),
                     ],
                 ),
                 vertical_alignment=ft.MainAxisAlignment.CENTER,
-                horizontal_alignment=ft.CrossAxisAlignment.CENTER
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             )
         ```
         """
@@ -421,17 +420,16 @@ class FletEasy:
 
         app = fs.FletEasy()
 
+
         @app.config
         async def config(page: ft.Page):
             theme = ft.Theme()
             platforms = ["android", "ios", "macos", "linux", "windows"]
             for platform in platforms:  # Removing animation on route change.
-                setattr(theme.page_transitions, platform,
-                        ft.PageTransitionTheme.NONE)
+                setattr(theme.page_transitions, platform, ft.PageTransitionTheme.NONE)
 
             theme.text_theme = ft.TextTheme()
             page.theme = theme
-
         ```
         """
         self.__view_config = func
@@ -448,6 +446,7 @@ class FletEasy:
         import flet_easy as fs
 
         app = fs.FletEasy()
+
 
         # Basic demo example for login test
         @app.login
@@ -466,7 +465,6 @@ class FletEasy:
         ```python
         @app.config_event_handler
         async def event_handler(page: ft.Page):
-
             async def on_disconnect_async(e):
                 print("Disconnect test application")
 
@@ -481,13 +479,17 @@ class FletEasy:
 
         Example:
         ```python
-        app.add_routes(add_views=[
-            fs.Pagesy('/hi', index_page, True),
-            fs.Pagesy('/test/{id:d}/user/{name:l}', test_page, protected_route=True),
-            fs.Pagesy('/counter', counter_page),
-            fs.Pagesy('/task', task_page),
-            fs.Pagesy('/login/user', login_page),
-        ])
+        app.add_routes(
+            add_views=[
+                fs.Pagesy("/hi", index_page, True),
+                fs.Pagesy(
+                    "/test/{id:d}/user/{name:l}", test_page, protected_route=True
+                ),
+                fs.Pagesy("/counter", counter_page),
+                fs.Pagesy("/task", task_page),
+                fs.Pagesy("/login/user", login_page),
+            ]
+        )
         ```
         """
 

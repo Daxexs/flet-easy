@@ -120,7 +120,6 @@ class Resizesy:
     * `widthx()` : This method is similar to the previous one in terms of page width.
 
     ```
-
     """
 
     def __init__(self, page: Page = None) -> None:
@@ -207,7 +206,7 @@ class Pagesy:
 
     Example:
     ```python
-    Pagesy('/test/{id:d}/user/{name:l}', test_page, protected_route=True)
+    Pagesy("/test/{id:d}/user/{name:l}", test_page, protected_route=True)
     ```
     """
 
@@ -223,7 +222,14 @@ class Pagesy:
         return hash((self.route, self.view, self.title, self.clear, self.protected_route))
 
     def __eq__(self, other):
-        return isinstance(other, Pagesy) and self.route == other.route and self.view == other.view and self.tilte == other.title and self.clear == other.clear and self.protected_route == other.protected_route
+        return (
+            isinstance(other, Pagesy)
+            and self.route == other.route
+            and self.view == other.view
+            and self.tilte == other.title
+            and self.clear == other.clear
+            and self.protected_route == other.protected_route
+        )
 
 
 # Add new attributes if flet adds in its updates.
@@ -257,46 +263,42 @@ class AddPagesy:
 
     Example:
     ```python
-    users = fs.AddPagesy(
-        route_prefix='/user'
-    )
+    users = fs.AddPagesy(route_prefix="/user")
 
     # -> Urls to be created:
     # * '/user/task'
     # * '/user/information'
 
-    @users.page('/task')
-    async def task_page(data: fs.Datasy):
 
+    @users.page("/task")
+    async def task_page(data: fs.Datasy):
         page = data.page
 
-        page.title = 'Task'
+        page.title = "Task"
 
         return ft.View(
-            route='/users/task',
+            route="/users/task",
             controls=[
-                ft.Text('Task'),
+                ft.Text("Task"),
             ],
             vertical_alignment=view.vertical_alignment,
-            horizontal_alignment=view.horizontal_alignment
-
+            horizontal_alignment=view.horizontal_alignment,
         )
 
-    @users.page('/information')
-    async def information_page(data: fs.Datasy):
 
+    @users.page("/information")
+    async def information_page(data: fs.Datasy):
         page = data.page
 
-        page.title = 'Information'
+        page.title = "Information"
 
         return ft.View(
-            route='/users/information',
+            route="/users/information",
             controls=[
-                ft.Text('Information'),
+                ft.Text("Information"),
             ],
             vertical_alignment=view.vertical_alignment,
-            horizontal_alignment=view.horizontal_alignment
-
+            horizontal_alignment=view.horizontal_alignment,
         )
     ```
 
@@ -312,7 +314,15 @@ class AddPagesy:
             def wrapper(*args, **kwargs):
                 return func(*args, **kwargs)
 
-            route = (self.route_prefix if data.get("route") == "/" else self.route_prefix + data.get("route")) if self.route_prefix else data.get("route")
+            route = (
+                (
+                    self.route_prefix
+                    if data.get("route") == "/"
+                    else self.route_prefix + data.get("route")
+                )
+                if self.route_prefix
+                else data.get("route")
+            )
 
             self.__pages.add(
                 Pagesy(
@@ -416,10 +426,10 @@ class ResponsiveControlsy(Canvas):
             content=ft.Text("on_resize"),
             bgcolor=ft.colors.RED,
             alignment=ft.alignment.center,
-            height=100
+            height=100,
         ),
         expand=1,
-        show_resize=True
+        show_resize=True,
     )
     ```
 

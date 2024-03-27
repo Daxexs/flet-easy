@@ -13,7 +13,7 @@ class EasyKey:
     """To obtain a `secret_key` more easily, support algorithms [ HS256, RS256 ]
 
     ### Example:
-    ```
+    ```python
     import flet_easy as fs
 
     key = fs.EasyKey()
@@ -51,12 +51,18 @@ async def _handle_decode_errors(data: Datasy, key_login: str) -> Union[dict[str,
             return False
 
         if data.auto_logout and not data._login_done:
-            data.page.pubsub.send_others_on_topic(data.page.client_ip, Msg("updateLogin", value=data._login_done))
+            data.page.pubsub.send_others_on_topic(
+                data.page.client_ip, Msg("updateLogin", value=data._login_done)
+            )
 
         decode = await _decode_payload_async(
             page=data.page,
             key_login=key_login,
-            secret_key=(data.secret_key.secret if data.secret_key.secret is not None else data.secret_key.pem_key.public),
+            secret_key=(
+                data.secret_key.secret
+                if data.secret_key.secret is not None
+                else data.secret_key.pem_key.public
+            ),
             algorithms=data.secret_key.algorithm,
         )
 
@@ -94,7 +100,7 @@ def decode(key_login: str, data: Datasy) -> dict[str, Any] | bool:
     """
     assert not data._login_async, "Use the 'decode_async' method instead of 'decode'."
     assert data.secret_key.Jwt, "Activate the 'jwt' parameter of the 'login' method to be able to use the 'decode' method, the methods are of the class (Datasy)."
-    
+
     value = data.page.run_task(_handle_decode_errors, data, key_login).result()
     if value:
         return value
@@ -111,7 +117,7 @@ async def decode_async(key_login: str, data: Datasy) -> dict[str, Any] | bool:
     """
     assert data._login_async, "Use the 'decode' method instead of 'decode_async'."
     assert data.secret_key.Jwt, "Activate the 'jwt' parameter of the 'login' method to be able to use the 'decode_async' method, the methods are of the class (Datasy)."
-    
+
     value = await _handle_decode_errors(data, key_login)
     if value:
         return value

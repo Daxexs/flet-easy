@@ -72,10 +72,19 @@ class FletEasyX:
                 try:
                     route_math = parse(page.route, path, page.custom_params)
 
-                    route_check = all(valor is not False and valor is not None for valor in dict(route_math.named).values()) if route_math else route_math
+                    route_check = (
+                        all(
+                            valor is not False and valor is not None
+                            for valor in dict(route_math.named).values()
+                        )
+                        if route_math
+                        else route_math
+                    )
 
                 except Exception as e:
-                    raise Exception(f"The url parse has failed, check the url -> ({route.route}) parameters for correctness. Error-> {e}")
+                    raise Exception(
+                        f"The url parse has failed, check the url -> ({route.route}) parameters for correctness. Error-> {e}"
+                    )
 
             if route_check:
                 pg_404 = False
@@ -83,7 +92,9 @@ class FletEasyX:
                     if page.protected_route:
                         if iscoroutinefunction(self.__config_login):
                             try:
-                                auth = self.__page.run_task(self.__config_login, self.__data).result()
+                                auth = self.__page.run_task(
+                                    self.__config_login, self.__data
+                                ).result()
                             except Exception as e:
                                 raise Exception(
                                     "Use async methods in the function decorated by 'login', to avoid conflicts.",

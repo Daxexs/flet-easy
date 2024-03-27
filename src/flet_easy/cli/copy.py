@@ -62,9 +62,13 @@ def _copy_template(from_path: str, to_path: str, manifest: bool):
         print("[light_sky_blue3] : pyproject.toml [/light_sky_blue3] created")
 
         if manifest == "y":
-            print("\n[blue]● It has ended correctly. Remember to customize manifest.json and the icons in the assets folder :)[/blue]")
+            print(
+                "\n[blue]● It has ended correctly. Remember to customize manifest.json and the icons in the assets folder :)[/blue]"
+            )
         else:
             print("\n[blue]● It has finished correctly.[/blue]")
 
     except FileExistsError:
-        print(f"\n[red1 bold]Alert:[/red1 bold] A folder with the same name already exists. [green]({to_path})[/green]")
+        print(
+            f"\n[red1 bold]Alert:[/red1 bold] A folder with the same name already exists. [green]({to_path})[/green]"
+        )

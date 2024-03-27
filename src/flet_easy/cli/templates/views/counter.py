@@ -6,6 +6,7 @@ counter = fs.AddPagesy(
     route_prefix="/counter",
 )
 
+
 # We add a second page
 @counter.page(route="/test/{id}", title="Counter")
 def counter_page(data: fs.Datasy, id: str):
@@ -13,10 +14,7 @@ def counter_page(data: fs.Datasy, id: str):
     view = data.view
 
     return ft.View(
-        controls=[
-            Counter(page=page, id=id, width=250),
-            SwoDrawer("Show_drawer", view.drawer)
-        ],
+        controls=[Counter(page=page, id=id, width=250), SwoDrawer("Show_drawer", view.drawer)],
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
         drawer=view.drawer,

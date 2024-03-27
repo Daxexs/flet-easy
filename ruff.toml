@@ -1,0 +1,19 @@
+line-length = 100
+target-version = "py38"
+
+[lint]
+extend-select = ["E", "F", "UP", "SIM", "I", "Q", "RUF100"]
+ignore-init-module-imports = false
+typing-modules = ["airflow.typing_compat"]
+ignore = ["F631"]
+
+[per-file-ignores]
+"__init__.py" = ["F401"]
+
+[format]
+docstring-code-format = true
+docstring-code-line-length = 80
+
+[lint.pycodestyle]
+ignore-overlong-task-comments = true
+max-line-length = 320

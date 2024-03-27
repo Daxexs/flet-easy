@@ -3,7 +3,9 @@ from controllers import CounterHook
 
 
 class Counter(ft.UserControl):
-    def __init__(self, page: ft.Page, id: str, width: int | float, height: int | float = None) -> ft.Control:
+    def __init__(
+        self, page: ft.Page, id: str, width: int | float, height: int | float = None
+    ) -> ft.Control:
         super().__init__()
         self.counter = CounterHook()
         self.id = id

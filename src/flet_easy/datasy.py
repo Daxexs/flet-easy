@@ -213,7 +213,11 @@ class Datasy:
                 decode=await _decode_payload_async(
                     page=self.page,
                     key_login=self.key_login,
-                    secret_key=(self.secret_key.secret if self.secret_key.secret is not None else self.secret_key.pem_key.public),
+                    secret_key=(
+                        self.secret_key.secret
+                        if self.secret_key.secret is not None
+                        else self.secret_key.pem_key.public
+                    ),
                     algorithms=self.secret_key.algorithm,
                 )
             )
@@ -281,4 +285,9 @@ class Datasy:
 
 
 def evaluate_secret_key(data: Datasy):
-    assert data.secret_key.secret is None and data.secret_key.algorithm == "RS256" or data.secret_key.pem_key is None and data.secret_key.algorithm == "HS256", "The algorithm is not set correctly in the 'secret_key' parameter of the 'FletEasy' class."
+    assert (
+        data.secret_key.secret is None
+        and data.secret_key.algorithm == "RS256"
+        or data.secret_key.pem_key is None
+        and data.secret_key.algorithm == "HS256"
+    ), "The algorithm is not set correctly in the 'secret_key' parameter of the 'FletEasy' class."

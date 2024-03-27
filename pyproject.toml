@@ -55,17 +55,3 @@ source-includes = ["LICENSE", "README.md"]
 
 [project.scripts]
 fs = "flet_easy.cli.main:run"
-
-
-[tool.ruff]
-line-length = 320
-target-version = "py38"
-
-[tool.ruff.lint]
-extend-select = ["E", "F", "UP", "SIM", "I", "Q", "RUF100"]
-ignore-init-module-imports = false
-typing-modules = ["airflow.typing_compat"]
-ignore = ["F631"]
-
-[tool.ruff.per-file-ignores]
-"__init__.py" = ["F401"]
