@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from functools import wraps
 from inspect import iscoroutinefunction
-from typing import Any, Callable, List
+from typing import Any, Callable, List, TypeVar
 
 from flet import (
     AppBar,
@@ -18,6 +18,7 @@ from flet import (
     OptionalNumber,
     PaddingValue,
     Page,
+    Ref,
     ScrollMode,
     Text,
     alignment,
@@ -25,6 +26,8 @@ from flet import (
 from flet.canvas import Canvas
 from flet_core import Control
 from flet_core.session_storage import SessionStorage
+
+T = TypeVar("T")
 
 
 class SessionStorageEdit(SessionStorage):
@@ -455,3 +458,11 @@ class ResponsiveControlsy(Canvas):
 
         if self.show_resize_terminal:
             print(f"{e.width} x {e.height}")
+
+
+class Ref(Ref[T]):
+    """Get the reference of the control used by flet, it is linked to the created component. It is similar to flet, but more reduced by getting the value of the control with (c)."""
+
+    @property
+    def c(self) -> T:
+        return super().current

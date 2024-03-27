@@ -5,6 +5,7 @@ from flet_easy.inheritance import (
     AddPagesy,
     Keyboardsy,
     Pagesy,
+    Ref,
     Resizesy,
     ResponsiveControlsy,
     Viewsy,
