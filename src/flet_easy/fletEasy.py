@@ -4,10 +4,14 @@ except ImportError:
     raise Exception('Install "flet" the latest version available -> pip install flet --upgrade.')
 
 from functools import wraps
-from typing import Callable, Optional
+from typing import Any, Callable, Dict, List, Optional
 
+from flet import View
+
+from flet_easy.datasy import Datasy
 from flet_easy.extrasJwt import SecretKey
-from flet_easy.inheritance import AddPagesy, Pagesy, Viewsy
+from flet_easy.inheritance import Viewsy
+from flet_easy.pagesy import AddPagesy, Middleware, Pagesy
 from flet_easy.route import FletEasyX
 
 
@@ -136,13 +140,14 @@ class FletEasy:
         self.__on_Keyboard = on_Keyboard
         self.__secret_key = secret_key
         self.__auto_logout = auto_logout
-        self.__config_login: Callable = None
+        self.__config_login: Callable[[Datasy], View] = None
         # ----
         self.__pages = set()
         self.__page_404: Pagesy = None
         self.__view_data: Viewsy = None
-        self.__view_config: Callable = None
-        self.__config_event: Callable = None
+        self.__view_config: Callable[[Datasy], None] = None
+        self.__config_event: Callable[[Datasy], None] = None
+        self.__middlewares: Middleware = None
 
     # -------------------------------------------------------------------
     # -- initialize / Supports async
@@ -161,7 +166,7 @@ class FletEasy:
         export_asgi_app: bool = False,
         fastapi: bool = False,
     ) -> Page:
-        """* Execute the app. | Supports async and fastapi."""
+        """* Execute the app. | Soporta async, fastapi y export_asgi_app."""
 
         def main(page: Page):
             app = FletEasyX(
@@ -179,6 +184,7 @@ class FletEasy:
                 on_Keyboard=self.__on_Keyboard,
                 secret_key=self.__secret_key,
                 auto_logout=self.__auto_logout,
+                middleware=self.__middlewares,
             )
 
             app.run()
@@ -186,7 +192,7 @@ class FletEasy:
         if fastapi:
             return main
         try:
-            app(
+            return app(
                 target=main,
                 name=name,
                 host=host,
@@ -200,13 +206,13 @@ class FletEasy:
                 export_asgi_app=export_asgi_app,
             )
         except RuntimeError:
-            Exception(
-                "If you are using fastapi from flet, set the 'fastapi = True' parameter of the run() method."
+            raise Exception(
+                "Ifs you are using fastapi from flet, set the 'fastapi = True' parameter of the run() method."
             )
 
     # -- decorators --------------------------------
 
-    def __decorator(self, value: str, data: dict = None):
+    def __decorator(self, value: str, data: Dict[str, Any] = None):
         def decorator(func: Callable):
             @wraps(func)
             def wrapper(data, *args, **kwargs):
@@ -235,13 +241,14 @@ class FletEasy:
                         share_data=data.get("share_data"),
                         protected_route=data.get("protected_route"),
                         custom_params=data.get("custom_params"),
+                        middleware=data.get("middleware"),
                     )
                 )
             return wrapper
 
         return decorator
 
-    def add_pages(self, group_pages: list[AddPagesy]):
+    def add_pages(self, group_pages: List[AddPagesy]):
         """Add pages from other archives
         * In the list you enter objects of class `AddPagesy` from other .py files.
 
@@ -266,14 +273,17 @@ class FletEasy:
         page_clear: bool = False,
         share_data: bool = False,
         protected_route: bool = False,
-        custom_params: dict = None,
+        custom_params: Dict[str, Any] = None,
+        middleware: Middleware = None,
     ):
         """Decorator to add a new page to the app, you need the following parameters:
         * route: text string of the url, for example(`'/FletEasy'`).
         * `title` : Define the title of the page. (optional).
         * clear: Removes the pages from the `page.views` list of flet. (optional)
+        * `share_data` : It is a boolean value, which is useful if you want to share data between pages, in a more restricted way. (optional)
         * protected_route: Protects the route of the page, according to the configuration of the `login` decorator of the `FletEasy` class. (optional)
         * custom_params: To add validation of parameters in the custom url using a list, where the key is the name of the parameter validation and the value is the custom function that must report a boolean value.
+        * `middleware` : It acts as an intermediary between different software components, intercepting and processing requests and responses. They allow adding functionalities to an application in a flexible and modular way. (optional)
 
         -> The decorated function must receive a parameter, for example `data:fs.Datasy`.
 
@@ -306,6 +316,7 @@ class FletEasy:
             "share_data": share_data,
             "protected_route": protected_route,
             "custom_params": custom_params,
+            "middleware": middleware,
         }
         return self.__decorator("page", data)
 
@@ -348,7 +359,7 @@ class FletEasy:
         data = {"route": route, "title": title, "page_clear": page_clear}
         return self.__decorator("page_404", data)
 
-    def view(self, func):
+    def view(self, func: Callable[[Datasy], Viewsy]):
         """
         Decorator to add custom controls to the application, the decorator function will return the `Viewsy` class of `FletEasy`. Which will be obtained in functions with `data:fs.Datasy` parameter and can be added to the page view decorated with `data.view` of `FletEasy` class.
 
@@ -407,7 +418,7 @@ class FletEasy:
         """
         self.__view_data = func
 
-    def config(self, func):
+    def config(self, func: Callable[[Datasy], None]):
         """Decorator to add a custom configuration to the app:
 
         * The decorator function must receive a mandatory parameter, for example: `page:ft.Page`. Which can be used to make universal app configurations.
@@ -434,7 +445,7 @@ class FletEasy:
         """
         self.__view_config = func
 
-    def login(self, func):
+    def login(self, func: Callable[[Datasy], bool]):
         """Decorator to add a login configuration to the app (protected_route):
 
         * The decorator function must receive a mandatory parameter, for example: `page:ft.Page`. Which can be used to get information and perform universal settings of the app.
@@ -458,7 +469,7 @@ class FletEasy:
         """
         self.__config_login = func
 
-    def config_event_handler(self, func):
+    def config_event_handler(self, func: Callable[[Datasy], None]):
         """Decorator to add charter event settings -> https://flet.dev/docs/controls/page#events
 
         Example:
@@ -474,7 +485,7 @@ class FletEasy:
 
         self.__config_event = func
 
-    def add_routes(self, add_views: list[Pagesy]):
+    def add_routes(self, add_views: List[Pagesy]):
         """-> Add routes without the use of decorators.
 
         Example:
@@ -499,3 +510,7 @@ class FletEasy:
                 page.route = self.__route_prefix + page.route
 
             self.__pages.add(page)
+
+    def add_middleware(self, middleware: Middleware):
+        """The function that will act as middleware will receive as a single mandatory parameter `data : Datasy` and its structure or content may vary depending on the context and the specific requirements of the middleware."""
+        self.__middlewares = middleware

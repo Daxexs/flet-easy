@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import Any
+from typing import Any, Dict
 
 from flet import Page
 from jwt import decode, encode
@@ -28,13 +28,13 @@ class SecretKey:
     Jwt: bool = False
 
 
-def _time_exp(time_expiry: timezone, payload: dict[str, Any]) -> dict[str, Any]:
+def _time_exp(time_expiry: timezone, payload: Dict[str, Any]) -> dict[str, Any]:
     if time_expiry is not None:
         payload["exp"] = datetime.now(tz=timezone.utc) + time_expiry
     return payload
 
 
-def encode_RS256(payload: dict[str, Any], private: str, time_expiry: timezone = None) -> str:
+def encode_RS256(payload: Dict[str, Any], private: str, time_expiry: timezone = None) -> str:
     payload = _time_exp(time_expiry, payload)
     return encode(
         payload=payload,
@@ -43,7 +43,7 @@ def encode_RS256(payload: dict[str, Any], private: str, time_expiry: timezone = 
     )
 
 
-def encode_HS256(payload: dict[str, Any], secret_key: str, time_expiry: timezone = None) -> str:
+def encode_HS256(payload: Dict[str, Any], secret_key: str, time_expiry: timezone = None) -> str:
     payload = _time_exp(time_expiry, payload)
     return encode(
         payload=payload,
@@ -76,7 +76,7 @@ def encode_verified(secret_key: SecretKey, value: str, time_expiration) -> str |
 
 async def _decode_payload_async(
     page: Page, key_login: str, secret_key: str, algorithms: str
-) -> dict[str, Any]:
+) -> Dict[str, Any]:
     """Decodes the payload stored in the client storage."""
     assert (
         secret_key is not None

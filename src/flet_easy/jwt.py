@@ -1,5 +1,5 @@
 from secrets import token_bytes
-from typing import Any, Union
+from typing import Any, Dict, Union
 
 from jwt import DecodeError, ExpiredSignatureError, InvalidKeyError
 from rsa import newkeys
@@ -29,20 +29,20 @@ class EasyKey:
 
     def __init__(self):
         (public_key, private_key) = newkeys(2048)
-        self.public_key = public_key
-        self.private_key = private_key
+        self.public = public_key
+        self.private = private_key
 
-    def private(self) -> str:
-        return self.private_key.save_pkcs1().decode("utf-8")
+    def private_key(self) -> str:
+        return self.private.save_pkcs1().decode("utf-8")
 
-    def public(self) -> str:
-        return self.public_key.save_pkcs1().decode("utf-8")
+    def public_key(self) -> str:
+        return self.public.save_pkcs1().decode("utf-8")
 
     def secret_key(self) -> str:
         return token_bytes(64).hex().encode("utf-8")
 
 
-async def _handle_decode_errors(data: Datasy, key_login: str) -> Union[dict[str, Any], bool]:
+async def _handle_decode_errors(data: Datasy, key_login: str) -> Union[Dict[str, Any], bool]:
     """decodes the jwt and updates the browser sessions."""
     try:
         evaluate_secret_key(data)
@@ -73,25 +73,24 @@ async def _handle_decode_errors(data: Datasy, key_login: str) -> Union[dict[str,
         return decode
 
     except ExpiredSignatureError:
-        data.logout(key_login)
+        data.logout(key_login)()
         return False
     except InvalidKeyError:
-        data.logout(key_login)
+        data.logout(key_login)()
         return False
     except DecodeError as e:
-        data.logout(key_login)
+        data.logout(key_login)()
         Exception(
             "Decoding error, possibly there is a double use of the 'client_storage' 'key', Secret key invalid! or ",
             e,
         )
         return False
     except Exception as e:
-        data.logout(key_login)
-        Exception("Login error:", e)
-        return False
+        data.logout(key_login)()
+        raise Exception("Login error:", e)
 
 
-def decode(key_login: str, data: Datasy) -> dict[str, Any] | bool:
+def decode(key_login: str, data: Datasy) -> Dict[str, Any] | bool:
     """decodes the jwt and updates the browser sessions.
 
     ### Parameters to use:
@@ -99,16 +98,12 @@ def decode(key_login: str, data: Datasy) -> dict[str, Any] | bool:
     * `data` : Instance object of the `Datasy` class.
     """
     assert not data._login_async, "Use the 'decode_async' method instead of 'decode'."
-    assert data.secret_key.Jwt, "Activate the 'jwt' parameter of the 'login' method to be able to use the 'decode' method, the methods are of the class (Datasy)."
+    assert data.secret_key is not None, "set the 'secret_key' in the class parameter (FletEasy)."
 
-    value = data.page.run_task(_handle_decode_errors, data, key_login).result()
-    if value:
-        return value
-    else:
-        return False
+    return data.page.run_task(_handle_decode_errors, data, key_login).result()
 
 
-async def decode_async(key_login: str, data: Datasy) -> dict[str, Any] | bool:
+async def decode_async(key_login: str, data: Datasy) -> Dict[str, Any] | bool:
     """decodes the jwt and updates the browser sessions.
 
     ### Parameters to use:
@@ -116,10 +111,6 @@ async def decode_async(key_login: str, data: Datasy) -> dict[str, Any] | bool:
     * `data` : Instance object of the `Datasy` class.
     """
     assert data._login_async, "Use the 'decode' method instead of 'decode_async'."
-    assert data.secret_key.Jwt, "Activate the 'jwt' parameter of the 'login' method to be able to use the 'decode_async' method, the methods are of the class (Datasy)."
+    assert data.secret_key is not None, "set the 'secret_key' in the class parameter (FletEasy)."
 
-    value = await _handle_decode_errors(data, key_login)
-    if value:
-        return value
-    else:
-        return False
+    return await _handle_decode_errors(data, key_login)

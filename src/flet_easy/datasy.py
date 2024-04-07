@@ -1,19 +1,15 @@
 from datetime import datetime, timedelta, timezone
-from typing import Any
+from typing import Any, Callable, Dict
 
-from flet import (
-    ControlEvent,
-    Page,
-    View,
-)
+from flet import Page
 
-from flet_easy.extra import Msg
+from flet_easy.extra import Msg, Redirect
 from flet_easy.extrasJwt import (
     SecretKey,
     _decode_payload_async,
     encode_verified,
 )
-from flet_easy.inheritance import Keyboardsy, Resizesy, SessionStorageEdit
+from flet_easy.inheritance import Keyboardsy, Resizesy, SessionStorageEdit, Viewsy
 from flet_easy.job import Job
 
 
@@ -43,6 +39,8 @@ class Datasy:
     * `logout` : method to close sessions of all sections in the browser (client storage), requires as parameter the key or the control (the parameter key of the control must have the value to delete), this is to avoid creating an extra function.
     * `login` : method to create sessions of all sections in the browser (client storage), requires as parameters the key and the value, the same used in the `page.client_storage.set` method.
     * `go` : Method to change the path of the application, in order to reduce the code, you must assign the value of the `key` parameter of the `control` used, for example buttons.
+    * `route` : route provided by the route event, it is useful when using middlewares to check if the route is assecible.
+    * `redirect` : To redirect to a path before the page loads, it is used in middleware.
     """
 
     def __init__(
@@ -53,17 +51,22 @@ class Datasy:
         route_login: str,
         secret_key: str,
         auto_logout: bool,
+        page_on_keyboard: Keyboardsy,
+        page_on_resize: Resizesy,
         login_async: bool = False,
+        go: Callable[[str], None] = None,
     ) -> None:
         self.__page: Page = page
-        self.__url_params: dict = None
-        self.__view: View = None
-        self.__route_prefix: str = route_prefix
-        self.__route_init: str = route_init
-        self.__route_login: str = route_login
+        self.__url_params: Dict[str, Any] = None
+        self.__view: Viewsy = None
+        self.__route_prefix = route_prefix
+        self.__route_init = route_init
+        self.__route_login = route_login
         self.__share = SessionStorageEdit(self.__page)
-        self.__on_keyboard_event: Keyboardsy = None
-        self.__on_resize: Resizesy = None
+        self.__on_keyboard_event = page_on_keyboard
+        self.__on_resize = page_on_resize
+        self.__route: str = None
+        self.__go = go
 
         self.__secret_key: SecretKey = secret_key
         self.__key_login: str = None
@@ -71,6 +74,7 @@ class Datasy:
         self.__sleep: int = 1
         self._login_done: bool = False
         self._login_async: bool = login_async
+        self._check_event_router: bool = False
 
     @property
     def page(self):
@@ -85,7 +89,7 @@ class Datasy:
         return self.__url_params
 
     @url_params.setter
-    def url_params(self, url_params: dict):
+    def url_params(self, url_params: Dict[str, Any]):
         self.__url_params = url_params
 
     @property
@@ -93,7 +97,7 @@ class Datasy:
         return self.__view
 
     @view.setter
-    def view(self, view: View):
+    def view(self, view: Viewsy):
         self.__view = view
 
     @property
@@ -153,24 +157,32 @@ class Datasy:
     def secret_key(self):
         return self.__secret_key
 
+    @property
+    def route(self):
+        return self.__route
+
+    @route.setter
+    def route(self, route: str):
+        self.__route = route
+
     """--------- login authentication : asynchronously | synchronously -------"""
 
     def _login_done_evaluate(self):
         return self._login_done
 
-    def _create_task_login_update(self, decode: dict[str, Any]):
+    def _create_task_login_update(self, decode: Dict[str, Any]):
         """Updates the login status, in case it does not exist it creates a new task that checks the user's login status."""
         time_exp = datetime.fromtimestamp(float(decode.get("exp")), tz=timezone.utc)
         time_now = datetime.now(tz=timezone.utc)
         time_res = time_exp - time_now
         self._login_done = True
         Job(
-            self.logout,
-            self.key_login,
+            func=self.logout,
+            key=self.key_login,
             every=time_res,
-            sleep_time=self.__sleep,
             page=self.page,
             login_done=self._login_done_evaluate,
+            sleep_time=self.__sleep,
         ).start()
 
     def logout(self, key: str):
@@ -189,19 +201,28 @@ class Datasy:
             )
         ```
         """
-        if self.page.web:
-            self.page.pubsub.send_all_on_topic(self.page.client_ip, Msg("logout", key))
-        else:
-            self.page.client_storage.remove_async(key)
-            self.page.go(self.route_login)
+
+        def execute():
+            assert self.route_login is not None, "Adds a login path in the FletEasy Class"
+            if self.page.web:
+                self.page.pubsub.send_all_on_topic(self.page.client_ip, Msg("logout", key))
+            else:
+                self.page.run_task(self.page.client_storage.remove_async, key)
+                self.page.go(self.route_login)
+
+        return lambda _=None: execute()
 
     async def __logaut_init(self, topic, msg: Msg):
         if msg.method == "login":
-            self.page.run_task(self.page.client_storage.set_async, msg.key, msg.value)
+            self._check_event_router = False
+            await self.page.client_storage.set_async(msg.key, msg.value.get("value"))
+            if self.page.route == self.route_login:
+                self.page.go(msg.value.get("next_route"))
 
         elif msg.method == "logout":
             self._login_done = False
-            self.page.run_task(self.page.client_storage.remove_async, msg.key)
+            self._check_event_router = False
+            await self.page.client_storage.remove_async(msg.key)
             self.page.go(self.route_login)
 
         elif msg.method == "updateLogin":
@@ -222,7 +243,7 @@ class Datasy:
                 )
             )
         else:
-            Exception("Method not implemented in logout_init method.")
+            raise ValueError("Method not implemented in logout_init method.")
 
     def _create_login(self):
         """Create the connection between sessions."""
@@ -232,20 +253,20 @@ class Datasy:
         """Creates the logout task when logging in."""
         if time_expiry is not None:
             Job(
-                self.logout,
-                key,
+                func=self.logout,
+                key=key,
                 every=time_expiry,
-                sleep_time=sleep,
                 page=self.page,
                 login_done=self._login_done_evaluate,
+                sleep_time=sleep,
             ).start()
 
     def login(
         self,
         key: str,
-        value: dict[str, Any] | Any,
+        value: Dict[str, Any] | Any,
+        next_route: str,
         time_expiry: timedelta = None,
-        next_route: str = None,
         sleep: int = 1,
     ):
         """Registering in the client's storage the key and value in all browser sessions.
@@ -254,11 +275,19 @@ class Datasy:
 
         * `key` : It is the identifier to store the value in the client storage.
         * `value` : Recommend to use a dict if you use JWT.
+        * `next_route` : Redirect to next route after creating login.
         * `time_expiry` : Time to expire the session, use the `timedelta` class  to configure. (Optional)
-        * `next_route` : Redirect to next route after creating login. (Optional)
         * `sleep` : Time to do login checks, default is 1s. (Optional)
         """
-        if self.__secret_key.Jwt:
+        if time_expiry:
+            assert isinstance(
+                value, Dict
+            ), "Use a dict in login method values or don't use time_expiry."
+            assert (
+                self.__secret_key is not None
+            ), "Set the secret_key in the FletEasy class parameter or don't use time_expiry."
+
+        if self.__secret_key:
             evaluate_secret_key(self)
             self.__key_login = key
             self.__sleep = sleep
@@ -268,20 +297,23 @@ class Datasy:
             if self.__auto_logout:
                 self._create_tasks(time_expiry, key, sleep)
 
-        self.page.run_task(self.page.client_storage.set_async, key, value)
-        self.page.pubsub.send_others_on_topic(self.page.client_ip, Msg("login", key, value))
-
-        if next_route is not None:
-            self.page.go(next_route)
+        if self.page.web:
+            self.page.pubsub.send_all_on_topic(
+                self.page.client_ip, Msg("login", key, {"value": value, "next_route": next_route})
+            )
+        else:
+            self.page.run_task(self.page.client_storage.set_async, key, value)
+            self.__go(next_route)
 
     """ Page go  """
 
-    def go(self, route: ControlEvent | str):
-        """To change the path of the app, in order to reduce code, you must assign the value of the `key` parameter of the `control` used, for example buttons."""
-        if isinstance(route, str):
-            return lambda _: self.page.go(route)
-        else:
-            return lambda _: self.page.go(route.control.key)
+    def go(self, route: str):
+        """To change the application path, it is important for better validation to avoid using `page.go()`."""
+        return lambda _=None: self.__go(route)
+
+    def redirect(self, route: str):
+        """Useful if you do not want to access a route that has already been sent."""
+        return Redirect(route)
 
 
 def evaluate_secret_key(data: Datasy):

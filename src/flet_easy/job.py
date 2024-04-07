@@ -11,14 +11,14 @@ class Job:
     def __init__(
         self,
         func: Callable,
-        *arg,
+        key: str,
         every: timedelta,
-        sleep_time: int = 1,
         page: Page,
         login_done: bool,
+        sleep_time: int = 1,
     ):
         self.func = func
-        self.arg = arg
+        self.key = key
         self.every = every
         self.sleep_time = sleep_time
         self.task_running = False
@@ -40,7 +40,7 @@ class Job:
         while datetime.now() <= self.next_run_time and self.login_done():
             await sleep(self.sleep_time)
         if self.login_done():
-            self.func(self.arg)
+            self.func(self.key)()
 
     def stop(self):
         self.task_running = False

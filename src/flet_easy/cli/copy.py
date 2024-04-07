@@ -32,7 +32,7 @@ def _copy_template(from_path: str, to_path: str, manifest: bool):
                         ignore=ignore_patterns(*patterns_to_ignore),
                     )
             except Exception as e:
-                print(e)
+                raise Exception(e)
 
         colors = [
             "orange_red1",

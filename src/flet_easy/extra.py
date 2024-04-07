@@ -5,4 +5,9 @@ from dataclasses import dataclass
 class Msg:
     method: str
     key: str = None
-    value: str = None
+    value: str | dict = None
+
+
+@dataclass
+class Redirect:
+    route: str = None
