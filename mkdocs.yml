@@ -1,0 +1,137 @@
+site_name: Flet-Easy
+site_url: https://daxexs.github.io/flet-easy/
+site_author: Daxexs
+site_description: >-
+  Flet-Easy is a package created as a Flet add-on, designed to be easy to use with a cleaner order in the code, having many customizable features.
+edit_uri: edit/main/docs/
+copyright: Copyright &copy; 2024 Daxexs
+repo_name: Daxexs/flet-easy
+repo_url: https://github.com/Daxexs/flet-easy
+
+theme:
+  custom_dir: docs/overrides
+  name: material
+  palette:
+    - media: "(prefers-color-scheme)"
+      primary: cyan
+      accent: cyan
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: cyan
+      accent: cyan
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: cyan
+      accent: cyan
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+  font:
+    text: Lexend
+    code: Fira Code
+    font: false
+  language: en
+  direction: ltr
+  logo: assets/logo.png
+  favicon: images/favicon.png
+  icon:
+    edit: material/pencil-remove-outline
+    view: material/eye
+    admonition:
+      note: octicons/tag-16
+      abstract: octicons/checklist-16
+      info: octicons/info-16
+      tip: octicons/squirrel-16
+      success: octicons/check-16
+      question: octicons/question-16
+      warning: octicons/alert-16
+      failure: octicons/x-circle-16
+      danger: octicons/zap-16
+      bug: octicons/bug-16
+      example: octicons/beaker-16
+      quote: octicons/quote-16
+  features:
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.instant.progress
+    - navigation.instant.preview
+    - navigation.tracking
+    - navigation.path
+    - navigation.indexes
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - search.share
+    - navigation.footer
+    - content.code.copy
+    - content.code.select
+    - content.code.annotate
+    - content.action.edit
+
+plugins:
+  - search:
+      separator: '[\s\-,:!=\[\]()"/]+|(?!\b)(?=[A-Z][a-z])|\.(?!\d)|&[lg]t;'
+      pipeline:
+        - stemmer
+        - stopWordFilter
+        - trimmer
+
+extra_css:
+  - stylesheets/extra.css
+
+extra:
+  status:
+    new: Recently added
+    deprecated: Deprecated
+  version:
+    provider: mike
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/Daxexs/flet-easy
+      name: Repository
+  generator: false
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - attr_list
+  - md_in_html
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - attr_list
+  - md_in_html
+
+nav:
+  - index.md
+  - Starting.md
+  - How-to-use.md
+  - Run-the-app.md
+  - Data-sharing-between-pages.md
+  - dynamic-routes.md
+  - Add pages:
+      - Through decorators: Add-pages/Through-decorators.md
+      - By means of functions: Add-pages/By-means-of-functions.md
+  - Customized app:
+      - Route protection: Customized-app/Route-protection.md
+      - General settings: Customized-app/General-settings.md
+      - control view configuration: Customized-app/Control-view-configuration.md
+      - Page 404: Customized-app/Page-404.md
+      - events: Customized-app/Events.md
+  - Events:
+      - On keyboard event: Events/keyboard-event.md
+      - On resize: Events/On-resize.md
+  - ResponsiveControlsy.md
+  - Working-with-other-apps.md

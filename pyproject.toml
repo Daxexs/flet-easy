@@ -46,6 +46,10 @@ test = [
     "flet>=0.21.1",
     "ruff>=0.3.4",
 ]
+docs = [
+    "mkdocs-material>=9.5.17",
+    "mike>=2.0.0",
+]
 
 [tool.pdm.build]
 excludes = ["./**/.git"]
