@@ -4,10 +4,12 @@ except ImportError:
     raise Exception('Install "flet" the latest version available -> pip install flet --upgrade.')
 
 from functools import wraps
+from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
 from flet import View
 
+from flet_easy.auto_route import automatic_routing
 from flet_easy.datasy import Datasy
 from flet_easy.extrasJwt import SecretKey
 from flet_easy.inheritance import Viewsy
@@ -132,6 +134,7 @@ class FletEasy:
         on_Keyboard: bool = False,
         secret_key: SecretKey = None,
         auto_logout: bool = False,
+        path_view: Path = None,
     ):
         self.__route_prefix = route_prefix
         self.__route_init = route_init
@@ -148,6 +151,9 @@ class FletEasy:
         self.__view_config: Callable[[Datasy], None] = None
         self.__config_event: Callable[[Datasy], None] = None
         self.__middlewares: Middleware = None
+
+        if path_view is not None:
+            self.add_pages(automatic_routing(path_view))
 
     # -------------------------------------------------------------------
     # -- initialize / Supports async
