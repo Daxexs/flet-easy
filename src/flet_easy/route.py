@@ -61,14 +61,23 @@ class FletEasyX:
             login_async=iscoroutinefunction(self.__config_login),
             go=self._go,
         )
-        self.__data.view = self.__page.run_task(self.__view_data_config).result()
+        self.__data.view = (
+            self.__page.run_task(self.__view_data_config).result()
+            if self.__view_data is not None
+            else None
+        )
         if self.__route_login is not None:
             self.__data._create_login()
 
     # ----------- Supports async
     def __route_change(self, e: RouteChangeEvent):
         if not self.__data._check_event_router:
-            self._go(e.route)
+            route = (
+                self.__data.route_init
+                if self.__data.route_init != "/" and e.route == "/"
+                else e.route
+            )
+            self._go(route)
         self.__data._check_event_router = False
 
     def __view_pop(self, e):
@@ -93,10 +102,10 @@ class FletEasyX:
                 self.__view_config(self.__page)
 
         if self.__config_event:
-            if iscoroutinefunction(self.__view_config):
-                await self.__config_event(self.__page)
+            if iscoroutinefunction(self.__config_event):
+                await self.__config_event(self.__data)
             else:
-                self.__config_event(self.__page)
+                self.__config_event(self.__data)
 
     def __disconnect(self, e):
         if self.__data._login_done:
@@ -206,12 +215,12 @@ class FletEasyX:
 
     def __process_route(self, custom_params: Dict[str, Callable[[], bool]], path: str, route: str):
         if custom_params is None:
-            route_math = parse(route, path)
+            route_math = parse(route, path, case_sensitive=True)
             return [route_math, route_math]
 
         else:
             try:
-                route_math = parse(route, path, custom_params)
+                route_math = parse(route, path, custom_params, case_sensitive=True)
                 route_check = (
                     all(
                         valor is not False and valor is not None
@@ -235,7 +244,7 @@ class FletEasyX:
 
         for page in self.__pages:
             route_math, route_check = self.__process_route(page.custom_params, path, page.route)
-            if route_check is not None:
+            if route_check:
                 pg_404 = False
                 self.__pagesy = page
                 try:

@@ -18,10 +18,17 @@ from flet_easy.route import FletEasyX
 
 
 class FletEasy:
-    """we create the app object, in it you can configure:
-    * The path that is different from '/'.
-    * The initial path when initializing the app
-    * The path that will be redirected when the app has path protection configured.
+    """
+    we create the app object, in it you can configure:
+
+    * `route_prefix` : The route that is different from ` /`.
+    * `route_init` : The initial route to initialize the app, by default is `/`.
+    * `route_login` : The route that will be redirected when the app has route protectionconfigured.
+    * `on_Keyboard` : Enables the on_Keyboard event, by default it is disabled (False).
+    * `on_resize` : Triggers the on_resize event, by default it is disabled (False).
+    * `secret_key` : Used with `SecretKey` class of Flet easy, to configure JWT or client storage.
+    * `auto_logout` : If you use JWT, you can configure it.
+    * `path_views` : Configuration of the folder where are the .py files of the pages, you use the `Path` class to configure it.
 
     Example:
     ```python
@@ -29,40 +36,26 @@ class FletEasy:
     import flet_easy as fs
 
     app = fs.FletEasy(
-        route_prefix="/index",
-        route_init="/index/hi",
+        route_prefix="/FletEasy",
+        route_init="/FletEasy/home",
     )
 
 
-    @app.view()
-    async def view(page: ft.Page):
-        def modify_theme():
-            if page.theme_mode == ft.ThemeMode.DARK:
-                page.theme_mode = ft.ThemeMode.LIGHT
-            else:
-                page.theme_mode = ft.ThemeMode.DARK
-
-        async def theme(e):
-            if page.theme_mode == ft.ThemeMode.SYSTEM:
-                modify_theme()
-            modify_theme()
-            await page.update_async()
-
-        async def go_home(e):
-            await page.go_async("/index/hi")
-
+    @app.view
+    async def view(data: fs.Datasy):
         return fs.Viewsy(
             appbar=ft.AppBar(
                 title=ft.Text("AppBar Example"),
                 center_title=False,
                 bgcolor=ft.colors.SURFACE_VARIANT,
                 actions=[
-                    ft.IconButton(ft.icons.WB_SUNNY_OUTLINED, on_click=theme),
                     ft.PopupMenuButton(
                         items=[
-                            ft.PopupMenuItem(text="🔥 Home", on_click=go_home),
+                            ft.PopupMenuItem(
+                                text="🔥 Home", on_click=data.go(data.route_init)
+                            ),
                         ]
-                    ),
+                    )
                 ],
             ),
             vertical_alignment=ft.MainAxisAlignment.CENTER,
@@ -70,24 +63,17 @@ class FletEasy:
         )
 
 
-    @app.page("/hi", page_clear=True)
+    @app.page("/home", title="Index - Home", page_clear=True)
     async def index_page(data: fs.Datasy):
-        page = data.page
         view = data.view
-        page.title = "Index - Home"
-
         view.appbar.title = ft.Text("Index - Home")
-
-        async def go_test(e):
-            await page.go_async(f"/index/test/10/user/junior")
-
         return ft.View(
-            "/index/hi",
+            data.route_init,
             controls=[
                 ft.Text("Menú", size=40),
                 ft.ElevatedButton(
                     "Go to Test",
-                    on_click=go_test,
+                    on_click=data.go(f"{data.route_prefix}/test/10/user/dxs"),
                 ),
             ],
             appbar=view.appbar,
@@ -96,23 +82,16 @@ class FletEasy:
         )
 
 
-    @app.page("/test/{id:d}/user/{name:l}")
-    async def test_page(data: fs.Datasy, id: int, name: str):
-        page = data.page
+    @app.page("/test/{id:d}/user/{name:l}", title="Test")
+    def test_page(data: fs.Datasy, id: int, name: str):
         view = data.view
-
-        page.title = "Test"
         view.appbar.title = ft.Text("test")
-
-        async def go_index(e):
-            await page.go_async(f"/index/hi")
-
         return ft.View(
             "/index/test",
             controls=[
-                ft.Text(f"Test {data.url_params}"),
+                ft.Text(f"Test {id} | {name}"),
                 ft.Text(f"Test Id is: {id}"),
-                ft.ElevatedButton("Go to Home", on_click=go_index),
+                ft.ElevatedButton("Go to Home", on_click=data.go(data.route_init)),
             ],
             appbar=view.appbar,
             vertical_alignment=ft.MainAxisAlignment.CENTER,
@@ -134,7 +113,7 @@ class FletEasy:
         on_Keyboard: bool = False,
         secret_key: SecretKey = None,
         auto_logout: bool = False,
-        path_view: Path = None,
+        path_views: Path = None,
     ):
         self.__route_prefix = route_prefix
         self.__route_init = route_init
@@ -152,8 +131,8 @@ class FletEasy:
         self.__config_event: Callable[[Datasy], None] = None
         self.__middlewares: Middleware = None
 
-        if path_view is not None:
-            self.add_pages(automatic_routing(path_view))
+        if path_views is not None:
+            self.add_pages(automatic_routing(path_views))
 
     # -------------------------------------------------------------------
     # -- initialize / Supports async

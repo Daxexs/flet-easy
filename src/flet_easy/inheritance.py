@@ -117,6 +117,8 @@ class Resizesy:
     * `width` : Returns its updated value.
     * `heightX()` :This method allows to obtain the values of the height of the page, which requires as parameter to enter an integer value from 1 to 100 (100 = 100%).
     * `widthx()` : This method is similar to the previous one in terms of page width.
+    * `margin_y` : Requires an integer value on the y-axis.
+    * `margin_x` : Requires an integer value on the x-axis.
 
     ```
     """
@@ -193,6 +195,7 @@ class Resizesy:
 
 
 # Add new attributes if flet adds in its updates.
+
 
 @dataclass
 class Viewsy:

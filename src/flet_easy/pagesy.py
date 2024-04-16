@@ -163,25 +163,23 @@ class AddPagesy:
         import flet as ft
         import flet_easy as fs
 
-        counter = fs.AddPagesy(
-            route_prefix='/counter'
-        )
+        counter = fs.AddPagesy(route_prefix="/counter")
 
-        @counter.page('/', title='Counter)
+
+        @counter.page("/", title="Counter")
         async def counter_page(data: fs.Datasy):
-
             view = data.view
 
-            view.appbar.title = ft.Text('Counter')
+            view.appbar.title = ft.Text("Counter")
 
             return ft.View(
-                route='/counter',
+                route="/counter",
                 controls=[
-                    ft.Text('Counter'),
+                    ft.Text("Counter"),
                 ],
                 appbar=view.appbar,
                 vertical_alignment=view.vertical_alignment,
-                horizontal_alignment=view.horizontal_alignment
+                horizontal_alignment=view.horizontal_alignment,
             )
         ```
         """

@@ -30,7 +30,7 @@ def automatic_routing(dir: str) -> List[AddPagesy]:
                     pages.append(object_page)
     if len(pages) == 0:
         raise ValueError(
-            "No instances of AddPagesy found. Check the assigned path of the 'path_view' parameter of the class (FletEasy)."
+            "No instances of AddPagesy found. Check the assigned path of the 'path_views' parameter of the class (FletEasy)."
         )
 
     return pages

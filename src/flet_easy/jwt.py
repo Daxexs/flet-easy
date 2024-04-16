@@ -45,6 +45,7 @@ class EasyKey:
 async def _handle_decode_errors(data: Datasy, key_login: str) -> Union[Dict[str, Any], bool]:
     """decodes the jwt and updates the browser sessions."""
     try:
+        data._key_login = key_login
         evaluate_secret_key(data)
 
         if not await data.page.client_storage.contains_key_async(key_login):

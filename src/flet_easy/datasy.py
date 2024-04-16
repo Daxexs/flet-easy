@@ -69,9 +69,9 @@ class Datasy:
         self.__go = go
 
         self.__secret_key: SecretKey = secret_key
-        self.__key_login: str = None
         self.__auto_logout: bool = auto_logout
         self.__sleep: int = 1
+        self._key_login: str = None
         self._login_done: bool = False
         self._login_async: bool = login_async
         self._check_event_router: bool = False
@@ -147,7 +147,7 @@ class Datasy:
 
     @property
     def key_login(self):
-        return self.__key_login
+        return self._key_login
 
     @property
     def auto_logout(self):
@@ -202,7 +202,7 @@ class Datasy:
         ```
         """
 
-        def execute():
+        def execute(key: str):
             assert self.route_login is not None, "Adds a login path in the FletEasy Class"
             if self.page.web:
                 self.page.pubsub.send_all_on_topic(self.page.client_ip, Msg("logout", key))
@@ -210,7 +210,7 @@ class Datasy:
                 self.page.run_task(self.page.client_storage.remove_async, key)
                 self.page.go(self.route_login)
 
-        return lambda _=None: execute()
+        return lambda _=None: execute(key)
 
     async def __logaut_init(self, topic, msg: Msg):
         if msg.method == "login":
@@ -289,7 +289,7 @@ class Datasy:
 
         if self.__secret_key:
             evaluate_secret_key(self)
-            self.__key_login = key
+            self._key_login = key
             self.__sleep = sleep
             value = encode_verified(self.secret_key, value, time_expiry)
             self._login_done = True
@@ -302,7 +302,7 @@ class Datasy:
                 self.page.client_ip, Msg("login", key, {"value": value, "next_route": next_route})
             )
         else:
-            self.page.run_task(self.page.client_storage.set_async, key, value)
+            self.page.run_task(self.page.client_storage.set_async, key, value).result()
             self.__go(next_route)
 
     """ Page go  """
