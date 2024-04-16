@@ -59,3 +59,8 @@ source-includes = ["LICENSE", "README.md"]
 
 [project.scripts]
 fs = "flet_easy.cli.main:run"
+
+[tool.pdm.scripts]
+doc = "mkdocs serve"
+format = "ruff format"
+check = "ruff check"
