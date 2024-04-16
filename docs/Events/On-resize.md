@@ -2,23 +2,19 @@ In order to use this event, it is obtained from `data` of the function decorated
 
 ### **1. Example**
 
-```python hl_lines="6"
-@app.page(route="/resize")
+```python hl_lines="5"
+@app.page(route="/resize", title="Use Resize)
 def resize_page(data:fs.Datasy):
-    page = data.page
 
     # obtaining the values of the event.
     on_resize = data.on_resize
     
-    page.title = 'Use resize'
-    
     return ft.View(
-        route='/resize',
         controls=[
             ft.Text('Use Resize', size=30),
         ],
-        vertical_alignment=ft.MainAxisAlignment.CENTER,
-        horizontal_alignment=ft.CrossAxisAlignment.CENTER
+        vertical_alignment="center",
+        horizontal_alignment="center"
     )
 ```
 When we get the values of the event, we can use the methods that this `on_resize` object has.
@@ -36,10 +32,9 @@ Manipulation of the margin or padding of the page, this is important since it al
 * `margin_x` : Requires an integer value on the x-axis.
 
 ### **2. Example**
-```python hl_lines="6 9 18 22 23 27"
-@app.page(route="/resize")
+```python hl_lines="5 8 14 18-19 23"
+@app.page(route="/resize", title="Use resize")
 def resize_page(data:fs.Datasy):
-    page = data.page
 
     # obtaining the values of the event.
     on_resize = data.on_resize
@@ -47,10 +42,7 @@ def resize_page(data:fs.Datasy):
     # Modifying the customized margin.
     on_resize.margin_y = 10
     
-    page.title = 'Use resize'
-    
     return ft.View(
-        route='/resize',
         controls=[
             ft.Container(
                 bgcolor=ft.colors.GREEN_600,
@@ -62,11 +54,10 @@ def resize_page(data:fs.Datasy):
                 width=on_resize.widthX(50)
             )
         ],
-        vertical_alignment=ft.MainAxisAlignment.CENTER,
+        vertical_alignment="center",
         padding=10, # Customized padding
     )
 
 ```
-#### Mode
-
-![on-resize](../images/on-resize.png "on-resize")
+### 📷 **Mode**
+![on-resize](../assets/images/on-resize.png "on-resize")

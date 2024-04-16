@@ -12,36 +12,42 @@ Manages keyboard input of values, contains the following methods:
 
 ### **Example**
 
-```python hl_lines="7 21 13-18"
+```python hl_lines="6 12 16-18 21"
 import flet as ft
 import flet_easy as fs
 
-@app.page(route="/keyboard")
-def keyboard_page(data:fs.Datasy):
+app = fs.FletEasy(
+    route_init="/keyboard",
+    on_Keyboard=True
+    )
+
+@app.page(route="/keyboard", title="Use Keyboard")
+def keyboard_page(data: fs.Datasy):
     page = data.page
     on_keyboard = data.on_keyboard_event
-    
-    page.title = 'Use Keyboard'
-    
+
     use_keyboard = ft.Column()
-    
+
     def show_event():
-        use_keyboard.controls.append(
-            ft.Text(on_keyboard.test())
-        )
-        
+        use_keyboard.controls.append(ft.Text(on_keyboard.test()))
         page.update()
-          
+
     # Add function to be executed by pressing the keyboard.
     on_keyboard.add_control(show_event)
-    
+
     return ft.View(
-        route='/keyboard',
         controls=[
-            ft.Text('Use Keyboard', size=30),
+            ft.Text(
+                "Use Keyboard",
+                size=30
+            ),
             use_keyboard
         ],
-        vertical_alignment=ft.MainAxisAlignment.CENTER,
-        horizontal_alignment=ft.CrossAxisAlignment.CENTER
+        vertical_alignment="center",
+        horizontal_alignment="center",
     )
+
+app.run()
 ```
+### 🎬 **Mode**
+![alt video](../assets/gifs/on_keyboard.gif "use keyboard")

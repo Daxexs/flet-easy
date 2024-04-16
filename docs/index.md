@@ -3,7 +3,7 @@
 [![Downloads](https://static.pepy.tech/badge/flet-easy)](https://pepy.tech/project/flet-easy)
 
 <div align="center">
-    <img src="https://github.com/Daxexs/flet-easy/blob/main/media/logo.png?raw=true" alt="logo" width="250">
+    <img src="assets/images/logo.png" alt="logo" width="250">
 </div>
 
 Flet-Easy is a package created as a Flet add-on, designed to be easy to use with a cleaner order in the code, having many customizable features. 

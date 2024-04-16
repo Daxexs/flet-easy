@@ -40,8 +40,8 @@ theme:
     font: false
   language: en
   direction: ltr
-  logo: assets/logo.png
-  favicon: images/favicon.png
+  logo: assets/images/logo.png
+  favicon: assets/images/favicon.png
   icon:
     edit: material/pencil-remove-outline
     view: material/eye
@@ -119,11 +119,13 @@ nav:
   - Starting.md
   - How-to-use.md
   - Run-the-app.md
+  - CLI-to-create-app.md
   - Data-sharing-between-pages.md
   - dynamic-routes.md
   - Add pages:
       - Through decorators: Add-pages/Through-decorators.md
       - By means of functions: Add-pages/By-means-of-functions.md
+      - In automatic: Add-pages/In-automatic.md
   - Customized app:
       - Route protection: Customized-app/Route-protection.md
       - General settings: Customized-app/General-settings.md
@@ -133,5 +135,8 @@ nav:
   - Events:
       - On keyboard event: Events/keyboard-event.md
       - On resize: Events/On-resize.md
+  - Midleware.md
+  - Basic-JWT.md
+  - Ref.md
   - ResponsiveControlsy.md
   - Working-with-other-apps.md

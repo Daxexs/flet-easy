@@ -10,69 +10,74 @@ Decorator `view` to add custom controls to the app, the decorator function will 
 !!! example ""
     We create an `AppBar` control of `Flet`, to be able to be reused in the other pages.
   
-```python hl_lines="25-37"
+```python hl_lines="9-27 35 37 44 52 54 61"
 import flet as ft
 import flet_easy as fs
 
+app = fs.FletEasy(route_init="/home")
+
 @app.view
 def view(data: fs.Datasy):
-    page = data.page
-    
-    def modify_theme():
-        if page.theme_mode == ft.ThemeMode.DARK:
-            page.theme_mode = ft.ThemeMode.LIGHT
-        else:
-            page.theme_mode = ft.ThemeMode.DARK
-
-    def theme(e):
-        if page.theme_mode == ft.ThemeMode.SYSTEM:
-            modify_theme()
-
-        modify_theme()
-        page.update()
-
-    def go_home(e):
-        page.go(data.route_init)
-
     return fs.Viewsy(
         appbar=ft.AppBar(
             title=ft.Text("AppBar Example"),
             center_title=False,
             bgcolor=ft.colors.SURFACE_VARIANT,
             actions=[
-                ft.IconButton(ft.icons.WB_SUNNY_OUTLINED, on_click=theme),
                 ft.PopupMenuButton(
                     items=[
-                        ft.PopupMenuItem(text="🔥 Home", on_click=go_home),
+                        ft.PopupMenuItem(
+                            text="🔥 Home",
+                            on_click=data.go(data.route_init)
+                            ),
+                        ft.PopupMenuItem(
+                            text="🔥 Dasboard",
+                            on_click=data.go("/dasboard")
+                            ),
                     ]
                 ),
             ],
         ),
-        vertical_alignment=ft.MainAxisAlignment.CENTER,
-        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        vertical_alignment="center",
+        horizontal_alignment="center",
     )
-```
-Now we can reuse it in a page.
-```python hl_lines="7 9 16"
-@app.page(route="/home")
+
+@app.page(route="/home", title="Flet-Easy", page_clear=True)
 def home_page(data: fs.Datasy):
-    page = data.page
-    page.title = "Flet-Easy"
-    
     # we obtain the values
     view = data.view
     # We can change the values of the appBar object, for example in title.
-    view.appbar.title = ft.Text('Home')
+    view.appbar.title = ft.Text("Home")
 
     return ft.View(
-        route="/flet-easy",
+        route="/home",
         controls=[
-            ft.Text("Home page"),
+            ft.Text("Home page", size=50),
         ],
-        appbar=view.appbar, # We reuse control
-        vertical_alignment=ft.MainAxisAlignment.CENTER,
-        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        appbar=view.appbar,  # We reuse control
+        vertical_alignment="center",
+        horizontal_alignment="center",
     )
+
+@app.page(route="/dasboard", title="Dasboard")
+def dasboard_page(data: fs.Datasy):
+    # we obtain the values
+    view = data.view
+    # We can change the values of the appBar object, for example in title.
+    view.appbar.title = ft.Text("Dasboard")
+
+    return ft.View(
+        route="/dasboard",
+        controls=[
+            ft.Text("Dasboard page", size=50),
+        ],
+        appbar=view.appbar,  # We reuse control
+        vertical_alignment="center",
+        horizontal_alignment="center",
+    )
+
+app.run()
 ```
 
-[page-404]: page-404
+### 🎬 **Mode**
+![alt video](../assets/gifs/view-config.gif "view config")

@@ -12,75 +12,76 @@ It can be created in different file.py, for example using the `AddPagesy` class 
 
 In this case page #1 creates the data to be shared with the other pages that have the `share_data` parameter of the `page` decorator enabled. With that in mind page #3 will not be able to access the shared data, in which case the shared data will be deleted automatically. (This works on pages that redirect continuously, if you switch to a page that does not allow data sharing, it will be deleted).
 
-```python hl_lines="11 16-17 35 41-46 69 75-81"
+```python hl_lines="6 16 21-22 38 44-49 69 76-81 97"
 from dataclasses import dataclass
-....
-...
+
+import flet as ft
+import flet_easy as fs
+
+app = fs.FletEasy(route_init="/send-data")
+
 
 @dataclass
 class Test:
-    name:int
-    version:str
+    name: int
+    version: str
 
-# 1  
-@app.page('/send-data', share_data=True)
-async def send_data_page(data:fs.Datasy):
+
+# 1
+@app.page("/send-data", share_data=True)
+async def send_data_page(data: fs.Datasy):
     page = data.page
-    page.title = 'send data'
-    
-    data.share.set('test', Test('Flet-Easy', '0.1'))
-    data.share.set('owner', 'Daxexs')
-    
+    page.title = "send data"
+
+    data.share.set("test", Test("Flet-Easy", "0.1"))
+    data.share.set("owner", "Daxexs")
+
     return ft.View(
-        route='/send-data',
         controls=[
-            ft.Text(f'data keys: {data.share.get_keys()}'),
-            ft.Text(f'data values: {data.share.get_values()}'),
-            ft.Text(f'data dict: {data.share.get_all()}'),
+            ft.Text(f"data keys: {data.share.get_keys()}"),
+            ft.Text(f"data values: {data.share.get_values()}"),
+            ft.Text(f"data dict: {data.share.get_all()}"),
             ft.ElevatedButton(
-                'View shared data',
-                key='/data',
-                on_click=data.go_async)
+                "View shared data",
+                on_click=data.go("/data")),
         ],
-        vertical_alignment=ft.MainAxisAlignment.CENTER,
-        horizontal_alignment=ft.CrossAxisAlignment.CENTER
+        vertical_alignment="center",
+        horizontal_alignment="center",
     )
 
 # 2
-@app.page('/data',share_data=True)
+@app.page("/data", share_data=True)
 async def get_data_page(data: fs.Datasy):
     page = data.page
-    page.title = 'data'
-    
+    page.title = "data"
+
     # It is checked if there is data stored in the dictionary (data.share.set).
     if data.share.contains():
-        x: Test = data.share.get('test')
-        y: str = data.share.get('owner')
-        res = ft.Text(f'Name: {x.name}\nVersion: {x.version}\n-----\nOwner: {y}')
+        x: Test = data.share.get("test")
+        y: str = data.share.get("owner")
+        res = ft.Text(f"Name: {x.name}\nVersion: {x.version}\n-----\nOwner: {y}")
     else:
-        res = ft.Text('No value passed on the page!.')
+        res = ft.Text("No value passed on the page!.")
 
     return ft.View(
-        route='/data',
         controls=[
             ft.Container(
                 content=res,
                 padding=20,
                 border_radius=20,
                 bgcolor=ft.colors.BLACK26
-            ),
+                ),
             ft.ElevatedButton(
-                'Check the following page for matched data',
-                key='/info',
-                on_click=data.go_async
-            )
+                "Check the following page for matched data",
+                on_click=data.go("/info")
+            ),
         ],
-        vertical_alignment=ft.MainAxisAlignment.CENTER,
-        horizontal_alignment=ft.CrossAxisAlignment.CENTER
+        vertical_alignment="center",
+        horizontal_alignment="center",
     )
 
 # 3
-@app.page('/info')
+@app.page("/info")
 async def info_page(data: fs.Datasy):
     page = data.page
 
@@ -88,27 +89,27 @@ async def info_page(data: fs.Datasy):
 
     # It is checked if there is data stored in the dictionary (data.share.set).
     if data.share.contains():
-        x: Test = data.share.get('test')
-        y: str = data.share.get('owner')
-        res = ft.Text(
-            f'Name: {x.name}\nVersion: {x.version}\n-----\nOwner: {y}')
+        x: Test = data.share.get("test")
+        y: str = data.share.get("owner")
+        res = ft.Text(f"Name: {x.name}\nVersion: {x.version}\n-----\nOwner: {y}")
     else:
-        res = ft.Text('No value passed on the page!.')
+        res = ft.Text("No value passed on the page!.")
 
     return ft.View(
-        route='/info',
         controls=[
-            ft.Text('Access to shared data?'),
+            ft.Text("Access to shared data?"),
             ft.Container(
                 content=res,
                 padding=20,
                 border_radius=20,
                 bgcolor=ft.colors.BLACK26
-            )
+                ),
         ],
-        vertical_alignment=ft.MainAxisAlignment.CENTER,
-        horizontal_alignment=ft.CrossAxisAlignment.CENTER
+        vertical_alignment="center",
+        horizontal_alignment="center",
     )
+
+app.run(view=ft.AppView.WEB_BROWSER)
 ```
-### Mode
-![alt video](images/share_data.gif "share data")
+### 🎬 **Mode**
+![alt video](assets/gifs/share-data.gif "share data")

@@ -1,10 +1,7 @@
-## Add pages from other files to the main application.
-In order to create a page in a `file.py` different from the `main.py` file of the app, you need to use the `AddPagesy` class. Requires the parameter:
-
-* `route_prefix`: text string that will bind to the url of the page decorator, example(/users) this will encompass all urls of this class. (optional)
+It forgets the imports of each of the .py files and the functions or variables of the pages. For this you must have a proper order where all the .py files that contain each page must be in a folder, for example `views`. The configuration is done in the FletEasy class of the `path_views` parameter and in each of the .py files use the `AddPages` class.
 
 ### App structure
-![FletEasy](../assets/images/struct-views.png "App structure")
+![FletEasy](../assets/images/funtion_add_page.png "App structure")
 
 ### **Example**
 
@@ -44,17 +41,17 @@ async def information_page(data: fs.Datasy):
 
     )
 ```
-Now how to add to the main app the `main.py` file. For this we use the `add_pages` method that requires as parameter a list of all the pages of other files that we want to add.
 
-```Python title="main.py" hl_lines="2 8"
+The `main.py` file will automatically recognize the pages created in each of the .py files in the `views` folder.
+
+```Python title="main.py" hl_lines="2 6"
 import flet_easy as fs
-from views.user import users
+from pathlib import Path
 
 app = fs.FletEasy(
     route_init='/user/task',
+    path_views=Path(__file__).parent / "views",
 )
-
-app.add_pages([users])
 
 app.run()
 ```

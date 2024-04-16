@@ -1,17 +1,25 @@
 # Flet-Easy
-`Flet-Easy` is a package built as an add-on for [`Flet`](https://github.com/flet-dev/flet), designed for beginners what it does is to make `Flet` easier when building your apps, with a tidier and simpler code. Some functions:
+`Flet-Easy` is a package built as an add-on for [`Flet`](https://github.com/flet-dev/flet), designed for beginners, what it does is to facilitate the use of `Flet` when building your applications, with a tidier and simpler code.
 
-* Facilitates the handling of `flet` events.
-* Page building using decorators, which allows you to make numerous custom configurations to flet for desktop, mobile and website application.
-* Designed to work with numerous pages of your created application.
-* Provides better MVC construction of your code, which can be scalable and easy to read.
-* Not only limits the MVC model but you can customize it according to your preferences.
-* Customized URLs for more precision in sending data.
-* Controlled data sharing between pages.
-* Support asynchronous.
-* Supports Application Packaging for distribution.
-
-and more extra features.....
+## Features
+* Easy to use (**hence the name**).
+* Facilitates `flet` event handling.
+* Simple page routing (There are three ways) for whichever one suits you best. [`view`](/flet-easy/dynamic-routes/)
+* App construction with numerous pages and custom flet configurations for desktop, mobile and web sites.
+* Provides a better construction of your code, which can be scalable and easy to read (it adapts to your preferences, there are no limitations).
+* Dynamic routing, customization in the routes for greater accuracy in sending data. [`view`](/flet-easy/dynamic-routes/#custom-validation)
+* Routing protection [`view`](/flet-easy/Customized-app/Route-protection/)
+* Custom Page 404 [`view`](/flet-easy/Customized-app/Page-404/)
+* Controlled data sharing between pages. [`view`](/flet-easy/Data-sharing-between-pages/)
+* Asynchronous support.
+* Middleware Support (in the app in general and in each of the pages). [`view`](/flet-easy/Midleware/)
+* JWT support for authentication sessions in the data parameter. (useful to control the time of sessions) [`view`](/flet-easy/Basic-JWT/)
+* Working with other applications. [`view`](/flet-easy/Data-sharing-between-pages/)
+* CLI to create app structure `FletEasy` (`fs init`) [`view`](/flet-easy/CLI-to-create-app/)
+* Easy integration of `on_keyboard_event` in each of the pages. [`view`](/flet-easy/Events/keyboard-event/)
+* Use the percentage of the page width and height of the page with `on_resize`. [`view`](/flet-easy/Events/On-resize/)
+* `ResponsiveControlsy` control to make the app responsive, useful for desktop applications. [`view`](/flet-easy/ResponsiveControlsy/)
+* Soporta Application Packaging para su distribución. [view](https://flet.dev/docs/publish)
 
 ## Flet events it handles
 
@@ -26,10 +34,11 @@ and more extra features.....
 
 Requires installation for use:
 
-* `Flet` (Installed automatically)
-* `Flet-fastapi` (Optional)
-* `uvicorn` (Optional)
+* `Flet`
   
+```bash
+  pip install flet
+```
 ```bash
   pip install flet-easy
 ```
@@ -43,38 +52,28 @@ Requires installation for use:
 ## Flet-Easy app example
 Here is an example of an application with 2 pages, "Home" and "Counter":
 
-```python
+```python hl_lines="4 7 19 50"
 import flet as ft
 import flet_easy as fs
 
 app = fs.FletEasy(route_init="/flet-easy")
 
 # We add a page
-@app.page(route="/flet-easy")
+@app.page(route="/flet-easy", title="Flet-Easy")
 def index_page(data: fs.Datasy):
-    page = data.page
-
-    page.title = "Flet-Easy"
-
-    def go_counter(e):
-        page.go("/counter")
-
     return ft.View(
-        route="/flet-easy",
         controls=[
             ft.Text("Home page"),
-            ft.FilledButton("Go to Counter", on_click=go_counter),
+            ft.FilledButton("Go to Counter", on_click=data.go("/counter")),
         ],
-        vertical_alignment=ft.MainAxisAlignment.CENTER,
-        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        vertical_alignment="center",
+        horizontal_alignment="center",
     )
 
 # We add a second page
-@app.page(route="/counter")
+@app.page(route="/counter", title="Counter")
 def counter_page(data: fs.Datasy):
     page = data.page
-
-    page.title = "Counter"
 
     txt_number = ft.TextField(value="0", text_align="right", width=100)
 
@@ -86,11 +85,7 @@ def counter_page(data: fs.Datasy):
         txt_number.value = str(int(txt_number.value) + 1)
         page.update()
 
-    def go_home(e):
-        page.go("/flet-easy")
-
     return ft.View(
-        route="/counter",
         controls=[
             ft.Row(
                 [
@@ -100,12 +95,15 @@ def counter_page(data: fs.Datasy):
                 ],
                 alignment="center",
             ),
-            ft.FilledButton("Go to Home", on_click=go_home),
+            ft.FilledButton("Go to Home", on_click=data.go("/flet-easy")),
         ],
-        vertical_alignment=ft.MainAxisAlignment.CENTER,
-        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        vertical_alignment="center",
+        horizontal_alignment="center",
     )
 
 # We run the application
 app.run()
 ```
+
+### 🎬 **Mode**
+![app example](assets/gifs/app-example.gif "app example")
