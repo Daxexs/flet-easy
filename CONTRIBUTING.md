@@ -32,6 +32,8 @@ pdm update
 ### 4. Code formatting and check
 If you make some changes in the src/ and you want to preview the result of the code if it is optimal, just do it:
 
+!!! info Recommended to install the Ruff extension to get the errors immediately. [See here](https://marketplace.visualstudio.com/items?itemName=charliermarsh.ruff).
+
 ```bash
 pdm run format
 ```
