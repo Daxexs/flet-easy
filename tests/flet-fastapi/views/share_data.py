@@ -2,9 +2,8 @@ from dataclasses import dataclass
 
 import flet as ft
 import flet_easy as fs
-from components import Drawer
 
-share = fs.AddPagesy(route_prefix="/share")
+data = fs.AddPagesy(route_prefix="/data")
 
 
 @dataclass
@@ -13,30 +12,12 @@ class Test:
     version: str
 
 
-@share.page("/send-data", title="Send Data", share_data=True)
-async def send_data_page(data: fs.Datasy):
-    data.share.set("test", Test("Flet-Easy", "0.1"))
-    data.share.set("owner", "Daxexs")
-
-    def go_data(e):
-        data.go("/share/data")()
-
-    return ft.View(
-        controls=[
-            ft.Text(f"data keys: {data.share.get_keys()}"),
-            ft.Text(f"data values: {data.share.get_values()}"),
-            ft.Text(f"data dict: {data.share.get_all()}"),
-            ft.ElevatedButton("View shared data", on_click=go_data),
-            Drawer(text="Show_drawer", drawer=data.view.drawer),
-        ],
-        drawer=data.view.drawer,
-        vertical_alignment=ft.MainAxisAlignment.CENTER,
-        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-    )
-
-
-@share.page("/data", title="Data", share_data=True)
+@data.page("/", title="Data", share_data=True)
 async def get_data_page(data: fs.Datasy):
+    view = data.view
+
+    view.appbar.title = ft.Text("Data")
+
     # It is checked if there is data stored in the dictionary (data.share.set).
     if data.share.contains():
         x: Test = data.share.get("test")
@@ -46,22 +27,26 @@ async def get_data_page(data: fs.Datasy):
         res = ft.Text("No value passed on the page!.")
 
     return ft.View(
-        # route="/data",
+        route=f"{data.route_prefix}/data",
         controls=[
             ft.Container(content=res, padding=20, border_radius=20, bgcolor=ft.colors.BLACK26),
             ft.ElevatedButton(
-                "Check the following page for matched data", on_click=data.go("/share/info")
+                "Check the following page for matched data",
+                on_click=data.go(f"{data.route_prefix}/data/info"),
             ),
-            Drawer(text="Show_drawer", drawer=data.view.drawer),
         ],
-        drawer=data.view.drawer,
+        appbar=view.appbar,
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
     )
 
 
-@share.page("/info", title="Information")
-def info_page(data: fs.Datasy):
+@data.page("/info", title="Information")
+async def info_page(data: fs.Datasy):
+    view = data.view
+
+    view.appbar.title = ft.Text("Information")
+
     # It is checked if there is data stored in the dictionary (data.share.set).
     if data.share.contains():
         x: Test = data.share.get("test")
@@ -71,13 +56,12 @@ def info_page(data: fs.Datasy):
         res = ft.Text("No value passed on the page!.")
 
     return ft.View(
-        # route="/info",
+        route=f"{data.route_prefix}/data/info",
         controls=[
             ft.Text("Access to shared data?"),
             ft.Container(content=res, padding=20, border_radius=20, bgcolor=ft.colors.BLACK26),
-            Drawer(text="Show_drawer", drawer=data.view.drawer),
         ],
-        drawer=data.view.drawer,
+        appbar=view.appbar,
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
     )

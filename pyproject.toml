@@ -45,6 +45,7 @@ distribution = true
 test = [
     "flet>=0.21.1",
     "ruff>=0.3.4",
+    "peewee>=3.17.2",
 ]
 docs = [
     "mkdocs-material>=9.5.17",
@@ -57,10 +58,10 @@ package-dir = "src"
 includes = ["src/flet_easy"]
 source-includes = ["LICENSE", "README.md"]
 
-[project.scripts]
-fs = "flet_easy.cli.main:run"
-
 [tool.pdm.scripts]
 doc = "mkdocs serve"
 format = "ruff format"
 check = "ruff check"
+
+[project.scripts]
+fs = "flet_easy.cli.main:run"

@@ -4,12 +4,12 @@ import flet_easy as fs
 keyboard = fs.AddPagesy()
 
 
-@keyboard.page("/keyboard", title='Use Keyboard')
+@keyboard.page("/keyboard", title="Use Keyboard")
 async def keyboard_page(data: fs.Datasy):
     page = data.page
     on_keyboard = data.on_keyboard_event
     view = data.view
-    
+
     view.appbar.title = ft.Text("Use Keyboard")
 
     use_keyboard = ft.Column(scroll=ft.ScrollMode.AUTO)
@@ -23,7 +23,7 @@ async def keyboard_page(data: fs.Datasy):
     on_keyboard.add_control(show_event)
 
     return ft.View(
-        route="/keyboard",
+        route=f"{data.route_prefix}/keyboard",
         controls=[ft.Text("Use Keyboard", size=30), use_keyboard],
         appbar=view.appbar,
         vertical_alignment=ft.MainAxisAlignment.CENTER,

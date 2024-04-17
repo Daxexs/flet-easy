@@ -15,9 +15,7 @@ class Contador(ft.UserControl):
 
     def build(self):
         self.test = "test inicio"
-        self.numero = ft.TextButton(
-            "0", style=ft.ButtonStyle(bgcolor=ft.colors.BLACK12)
-        )
+        self.numero = ft.TextButton("0", style=ft.ButtonStyle(bgcolor=ft.colors.BLACK12))
         return ft.Container(
             content=ft.Row(
                 controls=[
@@ -43,17 +41,17 @@ class Contador(ft.UserControl):
         )
 
 
-@counter.page("/", title='Counter', protected_route=True)
+@counter.page("/", title="Counter", protected_route=True, page_clear=True)
 async def counter_page(data: fs.Datasy):
     view = data.view
-    
+
     counter = Contador()
     counter2 = Contador()
 
     view.appbar.title = ft.Text("Counter")
 
     return ft.View(
-        route="/index/counter",
+        route=f"{data.route_prefix}/counter",
         controls=[
             counter,
             counter2,

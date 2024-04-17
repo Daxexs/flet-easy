@@ -1,7 +1,8 @@
-import flet_easy as fs
-import flet as ft
 from dataclasses import dataclass
 from uuid import UUID
+
+import flet as ft
+import flet_easy as fs
 
 ROUTE = "/index"
 
@@ -13,47 +14,45 @@ class Test:
     name: int
     version: str
 
+
 """ Checking data shared between pages in a controlled manner """
-@test.page('/send-data', title='Send Data', share_data=True)
+
+
+@test.page("/send-data", title="Send Data", share_data=True)
 async def send_data_page(data: fs.Datasy):
     view = data.view
 
-    view.appbar.title = ft.Text('Send data')
+    view.appbar.title = ft.Text("Send data")
 
-    data.share.set('test', Test('Flet-Easy', '0.1'))
-    data.share.set('owner', 'Daxexs')
+    data.share.set("test", Test("Flet-Easy", "0.1"))
+    data.share.set("owner", "Daxexs")
 
     return ft.View(
-        route=f'{data.route_prefix}/test/send-data',
+        route=f"{data.route_prefix}/test/send-data",
         controls=[
-            ft.Text(f'data keys: {data.share.get_keys()}'),
-            ft.Text(f'data values: {data.share.get_values()}'),
-            ft.Text(f'data dict: {data.share.get_all()}'),
-            ft.ElevatedButton(
-                'Data transfer', key=f'{data.route_prefix}/data', on_click=data.go)
+            ft.Text(f"data keys: {data.share.get_keys()}"),
+            ft.Text(f"data values: {data.share.get_values()}"),
+            ft.Text(f"data dict: {data.share.get_all()}"),
+            ft.ElevatedButton("Data transfer", on_click=data.go(f"{data.route_prefix}/data")),
         ],
         appbar=view.appbar,
         vertical_alignment=ft.MainAxisAlignment.CENTER,
-        horizontal_alignment=ft.CrossAxisAlignment.CENTER
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
     )
 
 
-@test.page("/{id:d}/user/{name:l}", title='Test', protected_route=True)
+@test.page("/{id:d}/user/{name:l}", title="Test", protected_route=True)
 async def test_page(data: fs.Datasy, id: int, name: str):
     view = data.view
 
     view.appbar.title = ft.Text("test")
 
     return ft.View(
-        "/test",
+        route=f"{data.route_prefix}/test/id/user/name",
         controls=[
             ft.Text(f"Test {data.url_params}"),
             ft.Text(f"Test Id is: {id}"),
-            ft.ElevatedButton(
-                "Go to Home",
-                key=data.route_init,
-                on_click=data.go
-            ),
+            ft.ElevatedButton("Go to Home", on_click=data.go(data.route_init)),
         ],
         appbar=view.appbar,
         vertical_alignment=ft.MainAxisAlignment.CENTER,
@@ -69,11 +68,13 @@ def is_uuid(value):
         return False
 
 
-@test.page("/get-params/{time:%Y/%m/%d}/{uuid:Uuid}", title='Get Params', custom_params={"Uuid": is_uuid})
+@test.page(
+    "/get-params/{time:%Y/%m/%d}/{uuid:Uuid}", title="Get Params", custom_params={"Uuid": is_uuid}
+)
 def get_params_page(data: fs.Datasy, time: str, uuid: UUID):
     view = data.view
     on_resize = data.on_resize
-    
+
     view.appbar.title = ft.Text("Get params")
 
     return ft.View(

@@ -1,5 +1,5 @@
 from flet_core.constrained_control import ConstrainedControl
-from flet_easy import Resizesy, Keyboardsy
+from flet_easy import Keyboardsy, Resizesy
 from model import ModelTest
 
 

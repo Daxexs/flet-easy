@@ -1,8 +1,8 @@
+import asyncio
+from dataclasses import dataclass
+
 import flet as ft
 import flet_easy as fs
-from dataclasses import dataclass
-import asyncio
-
 
 pbs = fs.AddPagesy(route_prefix="/chat")
 
@@ -141,7 +141,7 @@ class Chat(ft.UserControl):
         )
 
 
-@pbs.page("/", title='Chat Users')
+@pbs.page("/", title="Chat Users")
 async def pubsub_page(data: fs.Datasy):
     page = data.page
     view = data.view
@@ -152,11 +152,9 @@ async def pubsub_page(data: fs.Datasy):
     view.appbar.title = ft.Text("Chat Users")
 
     return ft.View(
-        "/pubsub",
+        route=f"{data.route_prefix}/chat/pubsub",
         controls=[
-            fs.ResponsiveControlsy(
-                content=Chat(page), expand=1
-            ),
+            fs.ResponsiveControlsy(content=Chat(page), expand=1),
         ],
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,

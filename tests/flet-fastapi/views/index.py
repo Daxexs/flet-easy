@@ -1,5 +1,5 @@
-import flet_easy as fs
 import flet as ft
+import flet_easy as fs
 
 index = fs.AddPagesy()
 
@@ -11,52 +11,46 @@ async def index_page(data: fs.Datasy):
     view.appbar.title = ft.Text("Home - Test [Flet-Easy]")
 
     return ft.View(
-        "/tools/index",
+        route=f"{data.route_prefix}/index",
         controls=[
             ft.Text("Menú", size=40),
             ft.ElevatedButton(
                 "Go to Test",
-                key=f"{data.route_prefix}/test/10/user/junior",
-                on_click=data.go,
+                on_click=data.go(f"{data.route_prefix}/test/10/user/junior"),
             ),
             ft.ElevatedButton(
                 "Go to Test (get-params)",
-                key=f"{data.route_prefix}/test/get-params/2023/11/25/550e8400-e29b-41d4-a716-446655440000",
-                on_click=data.go,
+                on_click=data.go(
+                    f"{data.route_prefix}/test/get-params/2023/11/25/550e8400-e29b-41d4-a716-446655440000"
+                ),
             ),
             ft.ElevatedButton(
                 "Go to Contador",
-                key=f"{data.route_prefix}/counter",
-                on_click=data.go,
+                on_click=data.go(
+                    f"{data.route_prefix}/counter",
+                ),
             ),
-            ft.ElevatedButton(
-                "Go to Task", key=f"{data.route_prefix}/task", on_click=data.go
-            ),
+            ft.ElevatedButton("Go to Task", on_click=data.go(f"{data.route_prefix}/task")),
             ft.ElevatedButton(
                 "Go to Resize",
-                key=f"{data.route_prefix}/markdown",
-                on_click=data.go,
+                on_click=data.go(f"{data.route_prefix}/resize"),
             ),
             ft.ElevatedButton(
                 "Go to Response",
-                key=f"{data.route_prefix}/response",
-                on_click=data.go,
+                on_click=data.go(f"{data.route_prefix}/response"),
             ),
             ft.ElevatedButton(
                 "Go to keyboard Test",
-                key=f"{data.route_prefix}/keyboard",
-                on_click=data.go,
+                on_click=data.go(f"{data.route_prefix}/keyboard"),
             ),
             ft.ElevatedButton(
                 "Go to Chat",
-                key=f"{data.route_prefix}/chat",
-                on_click=data.go,
+                on_click=data.go(f"{data.route_prefix}/chat"),
             ),
-            ft.ElevatedButton("Go to Login", key=data.route_login, on_click=data.go),
+            ft.ElevatedButton("Go to Login", on_click=data.go(data.route_login)),
             ft.ElevatedButton(
                 "Go to send-data",
-                key=f"{data.route_prefix}/test/send-data",
-                on_click=data.go,
+                on_click=data.go(f"{data.route_prefix}/test/send-data"),
             ),
         ],
         appbar=view.appbar,

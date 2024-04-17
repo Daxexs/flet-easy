@@ -5,7 +5,7 @@
 groups = ["default", "test", "docs"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:5035b006f50f80e84fd67a0c58fa7808177c87afe84fef8b3a64843378f99ec0"
+content_hash = "sha256:4248bf0ea85c78e00b8ebd8784e82334059773ee3507b486b3f980edb4d0da3f"
 
 [[package]]
 name = "annotated-types"
@@ -716,6 +716,15 @@ groups = ["docs"]
 files = [
     {file = "pathspec-0.12.1-py3-none-any.whl", hash = "sha256:a0d503e138a4c123b27490a4f7beda6a01c6f288df0e4a8b79c7eb0dc7b4cc08"},
     {file = "pathspec-0.12.1.tar.gz", hash = "sha256:a482d51503a1ab33b1c67a6c3813a26953dbdc71c31dacaef9a838c4e29f5712"},
+]
+
+[[package]]
+name = "peewee"
+version = "3.17.2"
+summary = "a little orm"
+groups = ["test"]
+files = [
+    {file = "peewee-3.17.2.tar.gz", hash = "sha256:2fe35224317d6b50e162ac44880a0d281d4ac0d53c7ae9d228eb769299618fb1"},
 ]
 
 [[package]]

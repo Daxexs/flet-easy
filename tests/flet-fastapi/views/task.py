@@ -9,13 +9,12 @@ class Task(ft.UserControl):
         super().__init__()
         self.page = page
         self.on_resize = on_resize
-        self.input = ft.TextField(
-            col=11, height=40, text_align=ft.TextAlign.CENTER, expand=True
-        )
+        self.input = ft.TextField(col=11, height=40, text_align=ft.TextAlign.CENTER, expand=True)
 
         self.input_dialog = ft.TextField(
             multiline=True,
-            expand=True,)
+            expand=True,
+        )
 
         self.column = ft.Column()
 
@@ -49,16 +48,16 @@ class Task(ft.UserControl):
                             alignment=ft.MainAxisAlignment.CENTER,
                         ),
                     ],
-                    #expand=True
+                    # expand=True
                 ),
                 bgcolor=ft.colors.BLACK12,
-                #expand=True,
+                # expand=True,
                 height=self.on_resize.heightX(50),
                 width=self.on_resize.widthX(50),
-                padding=5
+                padding=5,
             ),
             content_padding=10,
-            #adaptive=True
+            # adaptive=True
         )
 
     def build(self):
@@ -88,16 +87,14 @@ class Task(ft.UserControl):
         await self.page.update_async()
 
     async def add_tasks(self, e):
-        self.column.controls.append(
-            ft.TextField(value=self.input_dialog.value, multiline=True)
-        )
+        self.column.controls.append(ft.TextField(value=self.input_dialog.value, multiline=True))
         self.add_task.open = False
         self.input_dialog.value = ""
         await self.page.update_async()
         await self.update_async()
 
 
-@task.page("/", title='Task')
+@task.page("/", title="Task")
 async def task_page(data: fs.Datasy):
     page = data.page
     view = data.view
@@ -108,9 +105,9 @@ async def task_page(data: fs.Datasy):
     task = Task(page, on_resize)
 
     return ft.View(
-        route="/task",
+        route=f"{data.route_prefix}/task",
         controls=[task],
         appbar=view.appbar,
         floating_action_button=task.add,
-        scroll=ft.ScrollMode.AUTO
+        scroll=ft.ScrollMode.AUTO,
     )

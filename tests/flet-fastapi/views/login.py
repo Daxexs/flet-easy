@@ -1,6 +1,7 @@
+import asyncio
+
 import flet as ft
 import flet_easy as fs
-import asyncio
 
 login = fs.AddPagesy(route_prefix="/login")
 
@@ -21,8 +22,9 @@ class Login(ft.UserControl):
     async def login(self, e):
         if self.username.value and self.password.value:
             # Registering in the client's storage the key and value in all browser sessions.
-            self.data.update_login("login", self.username.value)
-            await self.page.go_async(f"{self.data.route_prefix}/counter")
+            self.data.login(
+                "login", self.username.value, next_route=f"{self.data.route_prefix}/counter"
+            )
         else:
             if len(self.menssage.controls) == 0:
                 self.menssage.controls.append(ft.Text("Enter the fields"))
@@ -44,8 +46,7 @@ class Login(ft.UserControl):
                     ft.ElevatedButton("Login", on_click=self.login),
                     ft.ElevatedButton(
                         "Go to Index",
-                        key=self.data.route_init,
-                        on_click=self.data.go,
+                        on_click=self.data.go(self.data.route_init),
                     ),
                 ],
                 alignment=ft.MainAxisAlignment.CENTER,
@@ -55,12 +56,10 @@ class Login(ft.UserControl):
             padding=20,
             border_radius=10,
         )
-        return ft.ResponsiveRow(
-            controls=[conteiner], alignment=ft.MainAxisAlignment.CENTER
-        )
+        return ft.ResponsiveRow(controls=[conteiner], alignment=ft.MainAxisAlignment.CENTER)
 
 
-@login.page("/user", title='Login')
+@login.page("/user", title="Login")
 async def login_page(data: fs.Datasy):
     page = data.page
     view = data.view
@@ -71,7 +70,7 @@ async def login_page(data: fs.Datasy):
     conteiner_login = Login(page, data)
 
     return ft.View(
-        route="/user",
+        route=f"{data.route_prefix}/login/user",
         controls=[conteiner_login],
         appbar=view.appbar,
         vertical_alignment=view.vertical_alignment,
