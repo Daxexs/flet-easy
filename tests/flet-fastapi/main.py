@@ -6,6 +6,8 @@ from flet import fastapi
 
 ROUTE = "/tools"
 
+print(Path(__file__).parent.joinpath("views").resolve())
+
 app = fs.FletEasy(
     route_prefix=ROUTE,
     route_init=f"{ROUTE}/index",

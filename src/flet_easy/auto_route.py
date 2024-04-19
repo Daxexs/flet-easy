@@ -19,10 +19,8 @@ def automatic_routing(dir: str) -> List[AddPagesy]:
 
     pages = []
     for file in listdir(dir):
-        if file.endswith(".py") and file != "__init__.py":
-            module_name = file[:-3]
-            module_route = path.join(dir, file)
-            spec = spec_from_file_location(module_name, module_route)
+        if (file.endswith(".py") or file.endswith(".pyc")) and file != "__init__.py":
+            spec = spec_from_file_location(path.splitext(file)[0], path.join(dir, file))
             module = module_from_spec(spec)
             spec.loader.exec_module(module)
             for _, object_page in getmembers(module):
