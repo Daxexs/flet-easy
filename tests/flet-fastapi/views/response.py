@@ -89,7 +89,6 @@ async def response_page(data: fs.Datasy):
         await page.update_async()
 
     return ft.View(
-        f"{data.route_prefix}/response",
         controls=[
             fs.ResponsiveControlsy(
                 content=ft.Container(

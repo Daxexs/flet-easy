@@ -105,7 +105,6 @@ async def task_page(data: fs.Datasy):
     task = Task(page, on_resize)
 
     return ft.View(
-        route=f"{data.route_prefix}/task",
         controls=[task],
         appbar=view.appbar,
         floating_action_button=task.add,

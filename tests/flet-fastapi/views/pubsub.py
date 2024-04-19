@@ -152,7 +152,6 @@ async def pubsub_page(data: fs.Datasy):
     view.appbar.title = ft.Text("Chat Users")
 
     return ft.View(
-        route=f"{data.route_prefix}/chat/pubsub",
         controls=[
             fs.ResponsiveControlsy(content=Chat(page), expand=1),
         ],

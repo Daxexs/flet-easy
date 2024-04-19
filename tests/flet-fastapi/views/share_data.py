@@ -27,7 +27,6 @@ async def get_data_page(data: fs.Datasy):
         res = ft.Text("No value passed on the page!.")
 
     return ft.View(
-        route=f"{data.route_prefix}/data",
         controls=[
             ft.Container(content=res, padding=20, border_radius=20, bgcolor=ft.colors.BLACK26),
             ft.ElevatedButton(
@@ -56,7 +55,6 @@ async def info_page(data: fs.Datasy):
         res = ft.Text("No value passed on the page!.")
 
     return ft.View(
-        route=f"{data.route_prefix}/data/info",
         controls=[
             ft.Text("Access to shared data?"),
             ft.Container(content=res, padding=20, border_radius=20, bgcolor=ft.colors.BLACK26),

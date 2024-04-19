@@ -6,8 +6,6 @@ from flet import fastapi
 
 ROUTE = "/tools"
 
-print(Path(__file__).parent.joinpath("views").resolve())
-
 app = fs.FletEasy(
     route_prefix=ROUTE,
     route_init=f"{ROUTE}/index",
@@ -26,7 +24,6 @@ assets = Path(__file__).resolve().parent / "assets"
 """ Execute the app through flet_fastapi (async)"""
 run = fastapi.app(
     app.run(fastapi=True),
-    app_name="Flet Easy",
     app_short_name="Easy app",
     app_description="test Flet-Easy",
     assets_dir=assets,

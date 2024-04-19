@@ -28,7 +28,6 @@ async def send_data_page(data: fs.Datasy):
     data.share.set("owner", "Daxexs")
 
     return ft.View(
-        route=f"{data.route_prefix}/test/send-data",
         controls=[
             ft.Text(f"data keys: {data.share.get_keys()}"),
             ft.Text(f"data values: {data.share.get_values()}"),
@@ -48,7 +47,6 @@ async def test_page(data: fs.Datasy, id: int, name: str):
     view.appbar.title = ft.Text("test")
 
     return ft.View(
-        route=f"{data.route_prefix}/test/id/user/name",
         controls=[
             ft.Text(f"Test {data.url_params}"),
             ft.Text(f"Test Id is: {id}"),
@@ -78,7 +76,6 @@ def get_params_page(data: fs.Datasy, time: str, uuid: UUID):
     view.appbar.title = ft.Text("Get params")
 
     return ft.View(
-        route=f"{data.route_prefix}/test/get-params",
         controls=[
             ft.Container(
                 content=ft.Text(

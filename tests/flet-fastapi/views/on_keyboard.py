@@ -23,7 +23,6 @@ async def keyboard_page(data: fs.Datasy):
     on_keyboard.add_control(show_event)
 
     return ft.View(
-        route=f"{data.route_prefix}/keyboard",
         controls=[ft.Text("Use Keyboard", size=30), use_keyboard],
         appbar=view.appbar,
         vertical_alignment=ft.MainAxisAlignment.CENTER,

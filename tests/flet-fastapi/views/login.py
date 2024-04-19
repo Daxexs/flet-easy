@@ -70,8 +70,10 @@ async def login_page(data: fs.Datasy):
     conteiner_login = Login(page, data)
 
     return ft.View(
-        route=f"{data.route_prefix}/login/user",
-        controls=[conteiner_login],
+        controls=[
+            conteiner_login,
+            ft.FilledButton("go resize", on_click=data.go(f"{data.route_prefix}/resize")),
+        ],
         appbar=view.appbar,
         vertical_alignment=view.vertical_alignment,
         horizontal_alignment=view.horizontal_alignment,

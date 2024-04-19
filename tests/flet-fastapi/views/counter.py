@@ -51,7 +51,6 @@ async def counter_page(data: fs.Datasy):
     view.appbar.title = ft.Text("Counter")
 
     return ft.View(
-        route=f"{data.route_prefix}/counter",
         controls=[
             counter,
             counter2,

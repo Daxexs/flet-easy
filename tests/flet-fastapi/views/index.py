@@ -4,14 +4,13 @@ import flet_easy as fs
 index = fs.AddPagesy()
 
 
-@index.page("/index", title="Home", page_clear=True)
+@index.page("/index", title="Home")
 async def index_page(data: fs.Datasy):
     view = data.view
 
     view.appbar.title = ft.Text("Home - Test [Flet-Easy]")
 
     return ft.View(
-        route=f"{data.route_prefix}/index",
         controls=[
             ft.Text("Menú", size=40),
             ft.ElevatedButton(

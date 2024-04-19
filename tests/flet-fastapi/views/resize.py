@@ -14,7 +14,6 @@ async def markdown_page(data: fs.Datasy):
     on_resize.margin_y = 28
 
     return ft.View(
-        route=f"{data.route_prefix}/resize",
         controls=[
             ft.Container(bgcolor=ft.colors.GREEN_600, height=on_resize.heightX(50)),
             ft.Container(
