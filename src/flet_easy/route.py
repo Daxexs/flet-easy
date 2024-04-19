@@ -83,7 +83,8 @@ class FletEasyX:
     def __view_pop(self, e):
         self.__page.views.pop()
         top_view = self.__page.views[-1]
-        self.__page.go(top_view.route)
+        self._go(top_view.route)
+        self.__page.views.pop()
 
     async def __on_keyboard(self, e: KeyboardEvent):
         self.__page_on_keyboard.call = e
@@ -151,18 +152,13 @@ class FletEasyX:
     async def _view_append(self, route: str):
         """Add a new page and update it."""
         if iscoroutinefunction(self.__pagesy.view):
-            if self.__data.url_params:
-                self.__page.views.append(
-                    await self.__pagesy.view(self.__data, **self.__data.url_params)
-                )
-            else:
-                self.__page.views.append(await self.__pagesy.view(self.__data))
-
+            view = await self.__pagesy.view(self.__data, **self.__data.url_params)
+            view.route = route
+            self.__page.views.append(view)
         else:
-            if self.__data.url_params:
-                self.__page.views.append(self.__pagesy.view(self.__data, **self.__data.url_params))
-            else:
-                self.__page.views.append(self.__pagesy.view(self.__data))
+            view = self.__pagesy.view(self.__data, **self.__data.url_params)
+            view.route = route
+            self.__page.views.append(self.__pagesy.view(self.__data, **self.__data.url_params))
 
         self.__page.route = route
         self.__page.query()
