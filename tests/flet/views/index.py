@@ -12,7 +12,6 @@ index = fs.AddPagesy()
 async def index_page(data: fs.Datasy):
     view = data.view
     return ft.View(
-        route="/",
         controls=[
             ft.Text("Home page"),
             Drawer(text="Show_drawer", drawer=view.drawer),

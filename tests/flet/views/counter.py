@@ -19,7 +19,6 @@ async def counter_page(data: fs.Datasy, id: str):
     view = data.view
 
     return ft.View(
-        route="/counter",
         controls=[
             Counter(data.on_resize, id=id),
             Drawer(text="Show_drawer", drawer=view.drawer),

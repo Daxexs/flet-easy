@@ -25,7 +25,14 @@ async def starting_page_two(data: fs.Datasy):
     print("2. Loading the page")
     # We allow the following paths, otherwise it redirects to the path ('/login').
     # Note: To check the urls you should use (data.route) and not (data.page.route), as this will cause an infinite loop.
-    routes = ["/login", "/register", "/home", "/share/send-data", "/dashboard"]
+    routes = [
+        "/login",
+        "/register",
+        "/home",
+        "/share/send-data",
+        "/dashboard",
+        "/counter/test/{id:d}",
+    ]
     if data.route not in routes:
         print("-> Redirection to path (/login)")
         return data.redirect("/login")
