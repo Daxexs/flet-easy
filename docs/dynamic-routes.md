@@ -4,7 +4,7 @@ FletEasy provides a simple and powerful routing to manage the access to the page
 Obtain the values of the parameters of the url, by means of the parameter data of the function.
 
 ### **Example**
-```python hl_lines="6 12"
+```python hl_lines="6 11"
 import flet as ft
 import flet_easy as fs
 
@@ -14,7 +14,6 @@ app = fs.FletEasy(route_init="/test/10/user/dxs")
 def home_page(data: fs.Datasy, id, name):
 
     return ft.View(
-        route="/flet-easy",
         controls=[
             ft.Text(f"ID: {id} \nNAME: {name}", size=50),
         ],
@@ -31,7 +30,7 @@ app.run(view=ft.AppView.WEB_BROWSER)
 Use dynamic parameters in the url to contain specific data, for example `id` is requested to be a number and `name` a string. For more information [here](https://github.com/r1chardj0n3s/parse#format-specification)
 
 ### **Example**
-```python hl_lines="4 6-7"
+```python hl_lines="4 6-7 11"
 import flet as ft
 import flet_easy as fs
 
@@ -41,7 +40,6 @@ app = fs.FletEasy(route_init="/test/10/user/dxs")
 def home_page(data: fs.Datasy, id:int, name:str):
 
     return ft.View(
-        route="/flet-easy",
         controls=[
             ft.Text(f"ID: {id} \nNAME: {name}", size=50),
         ],

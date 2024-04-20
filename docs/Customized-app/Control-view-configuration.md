@@ -10,7 +10,7 @@ Decorator `view` to add custom controls to the app, the decorator function will 
 !!! example ""
     We create an `AppBar` control of `Flet`, to be able to be reused in the other pages.
   
-```python hl_lines="9-27 35 37 44 52 54 61"
+```python hl_lines="9-27 35 37 43 51 53 59"
 import flet as ft
 import flet_easy as fs
 
@@ -50,7 +50,6 @@ def home_page(data: fs.Datasy):
     view.appbar.title = ft.Text("Home")
 
     return ft.View(
-        route="/home",
         controls=[
             ft.Text("Home page", size=50),
         ],
@@ -67,7 +66,6 @@ def dasboard_page(data: fs.Datasy):
     view.appbar.title = ft.Text("Dasboard")
 
     return ft.View(
-        route="/dasboard",
         controls=[
             ft.Text("Dasboard page", size=50),
         ],

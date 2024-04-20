@@ -45,7 +45,6 @@ app.add_middleware([login_middleware])
 @app.page(route="/dashboard", title="Dashboard")
 def dashboard_page(data: fs.Datasy):
     return ft.View(
-        route="/dashboard",
         controls=[
             ft.Text("Dash", size=30),
             # We delete the key that we have previously registered
@@ -72,7 +71,6 @@ def login_page(data: fs.Datasy):
         data.login(key="login", value=username.value, next_route="/dashboard")
 
     return ft.View(
-        route="/login",
         controls=[
             ft.Text("login", size=30),
             username,
@@ -114,7 +112,6 @@ async def login_middleware(data: fs.Datasy):
 @app.page(route="/dashboard", title="Dashboard", middleware=[login_middleware])
 def dashboard_page(data: fs.Datasy):
     return ft.View(
-        route="/dashboard",
         controls=[
             ft.Text("Dash", size=30),
             # We delete the key that we have previously registered
@@ -139,7 +136,6 @@ def login_page(data: fs.Datasy):
         data.login(key="login", value=username.value, next_route="/dashboard")
 
     return ft.View(
-        route="/login",
         controls=[
             ft.Text("login", size=30),
             username,
