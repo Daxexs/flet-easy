@@ -1,8 +1,6 @@
 import flet as ft
 import flet_easy as fs
 
-ROUTE = "/tools"
-
 
 class ConfigApp:
     def __init__(self, app: fs.FletEasy) -> None:
@@ -13,8 +11,8 @@ class ConfigApp:
         """ " route protection configuration"""
 
         @self.app.login
-        async def login_x(page: ft.Page):
-            username = await page.client_storage.get_async("login")
+        async def login_x(data: fs.Datasy):
+            username = await data.page.client_storage.get_async("login")
             if username is None:
                 return False
             return True
@@ -26,8 +24,7 @@ class ConfigApp:
             theme = ft.Theme()
             platforms = ["android", "ios", "macos", "linux", "windows"]
             for platform in platforms:  # Removing animation on route change.
-                setattr(theme.page_transitions, platform,
-                        ft.PageTransitionTheme.NONE)
+                setattr(theme.page_transitions, platform, ft.PageTransitionTheme.NONE)
 
             theme.text_theme = ft.TextTheme()
             page.theme = theme
@@ -51,12 +48,6 @@ class ConfigApp:
                 modify_theme()
                 await page.update_async()
 
-            async def go_home(e):
-                await page.go_async(data.route_init)
-
-            async def logauth(e):
-                await data.logaut_async("login")
-
             async def reload(e):
                 await page.launch_url_async(
                     url=page.route,
@@ -69,16 +60,15 @@ class ConfigApp:
                     center_title=False,
                     bgcolor=ft.colors.SURFACE_VARIANT,
                     actions=[
-                        ft.IconButton(ft.icons.WB_SUNNY_OUTLINED,
-                                      on_click=theme),
+                        ft.IconButton(ft.icons.WB_SUNNY_OUTLINED, on_click=theme),
                         ft.PopupMenuButton(
                             items=[
+                                ft.PopupMenuItem(text="🔥 Home", on_click=data.go(data.route_init)),
                                 ft.PopupMenuItem(
-                                    text="🔥 Home", on_click=go_home),
-                                ft.PopupMenuItem(
-                                    text="❌ Logaut", on_click=logauth),
-                                ft.PopupMenuItem(
-                                    text="🔃 Reload", on_click=reload),
+                                    text="❌ Logaut",
+                                    on_click=data.logout("login"),
+                                ),
+                                ft.PopupMenuItem(text="🔃 Reload", on_click=reload),
                             ]
                         ),
                     ],
@@ -89,11 +79,10 @@ class ConfigApp:
 
         """ Add a custom page, which will be activated when a page (path) is not found. """
 
-        @self.app.page_404("/FletEasy-404", page_clear=True)
+        @self.app.page_404("/FletEasy-404", title="Error 404", page_clear=True)
         async def page404(data: fs.Datasy):
-            page = data.page
             view = data.view
-            page.title = "Error 404"
+
             view.appbar.title = ft.Text("Error 404")
 
             return ft.View(
@@ -103,7 +92,7 @@ class ConfigApp:
                     ft.ElevatedButton(
                         "Go to Home",
                         key=data.route_init,
-                        on_click=data.go_async,
+                        on_click=data.go,
                     ),
                 ],
                 appbar=view.appbar,
@@ -112,7 +101,9 @@ class ConfigApp:
             )
 
         @self.app.config_event_handler
-        async def event_handler(page: ft.Page):
+        async def event_handler(data: fs.Datasy):
+            page = data.page
+
             async def on_disconnect_async(e):
                 print("Disconnect test application")
 

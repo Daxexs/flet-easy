@@ -8,14 +8,13 @@ class ConfigApp:
         self.start()
 
     def start(self):
+        @self.app.login
+        async def login_required(data: ft.Page):
+            # Using Jwt to authenticate user, which has been previously configured with the `data.login()` method.
+            return await fs.decode_async(key_login="login", data=data)
+
         @self.app.view
-        def view_config(page: ft.Page):
-            def counter_go(e):
-                page.go("/counter/test/15")
-
-            def home_go(e):
-                page.go("/home")
-
+        async def view_config(data: fs.Datasy):
             return fs.Viewsy(
                 drawer=ft.NavigationDrawer(
                     controls=[
@@ -26,11 +25,27 @@ class ConfigApp:
                                 ft.Divider(thickness=2),
                                 ft.FilledButton(
                                     text="Home",
-                                    on_click=home_go,
+                                    on_click=data.go(data.route_init),
                                 ),
                                 ft.FilledButton(
                                     text="Counter",
-                                    on_click=counter_go,
+                                    on_click=data.go("/counter/test/10"),
+                                ),
+                                ft.FilledButton(
+                                    text="Share Data",
+                                    on_click=data.go("/share/send-data"),
+                                ),
+                                ft.FilledButton(
+                                    text="Login",
+                                    on_click=data.go("/login"),
+                                ),
+                                ft.FilledButton(
+                                    text="Dashboard",
+                                    on_click=data.go("/dashboard"),
+                                ),
+                                ft.FilledButton(
+                                    text="Logout",
+                                    on_click=data.logout("login"),
                                 ),
                             ],
                             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
@@ -47,3 +62,12 @@ class ConfigApp:
             for platform in platforms:  # Removing animation on route change.
                 setattr(theme.page_transitions, platform, ft.PageTransitionTheme.NONE)
             page.theme = theme
+
+        @self.app.config_event_handler
+        async def event_handler(data: fs.Datasy):
+            page = data.page
+
+            async def on_disconnect(e):
+                print("Disconnect test application")
+
+            page.on_disconnect = on_disconnect
