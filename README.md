@@ -15,22 +15,22 @@
 ## Features
 * Easy to use (**hence the name**).
 * Facilitates `flet` event handling.
-* Simple page routing (There are three ways) for whichever one suits you best. ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/flet-easy/dynamic-routes/))
+* Simple page routing (There are three ways) for whichever one suits you best. ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/dynamic-routes/))
 * App construction with numerous pages and custom flet configurations for desktop, mobile and web sites.
 * Provides a better construction of your code, which can be scalable and easy to read (it adapts to your preferences, there are no limitations).
-* Dynamic routing, customization in the routes for greater accuracy in sending data. ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/flet-easy/dynamic-routes/#custom-validation))
-* Routing protection ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/flet-easy/Customized-app/Route-protection/))
-* Custom Page 404 ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/flet-easy/Customized-app/Page-404/))
-* Controlled data sharing between pages. ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/flet-easy/Data-sharing-between-pages/))
+* Dynamic routing, customization in the routes for greater accuracy in sending data. ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/dynamic-routes/#custom-validation))
+* Routing protection ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/Customized-app/Route-protection/))
+* Custom Page 404 ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/Customized-app/Page-404/))
+* Controlled data sharing between pages. ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/Data-sharing-between-pages/))
 * Asynchronous support.
-* Middleware Support (in the app in general and in each of the pages). ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/flet-easy/Midleware/))
-* JWT support for authentication sessions in the data parameter. (useful to control the time of sessions) ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/flet-easy/Basic-JWT/))
-* Working with other applications. ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/flet-easy/Data-sharing-between-pages/))
-* CLI to create app structure `FletEasy` (`fs init`) ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/flet-easy/CLI-to-create-app/))
-* Easy integration of `on_keyboard_event` in each of the pages. ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/flet-easy/Events/keyboard-event/))
-* Use the percentage of the page width and height of the page with `on_resize`. ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/flet-easy/Events/On-resize/))
-* `ResponsiveControlsy` control to make the app responsive, useful for desktop applications. ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/flet-easy/ResponsiveControlsy/))
-* Soporta Application Packaging para su distribución. [view](https://flet.dev/docs/publish)
+* Middleware Support (in the app in general and in each of the pages). ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/Midleware/))
+* JWT support for authentication sessions in the data parameter. (useful to control the time of sessions) ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/Basic-JWT/))
+* Working with other applications. ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/Data-sharing-between-pages/))
+* CLI to create app structure `FletEasy` (`fs init`) ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/CLI-to-create-app/))
+* Easy integration of `on_keyboard_event` in each of the pages. ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/Events/keyboard-event/))
+* Use the percentage of the page width and height of the page with `on_resize`. ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/Events/On-resize/))
+* `ResponsiveControlsy` control to make the app responsive, useful for desktop applications. ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/ResponsiveControlsy/))
+* Soporta Application Packaging para su distribución. ([view](https://flet.dev/docs/publish))
 
 ## 📌Flet events it handles
 
