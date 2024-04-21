@@ -1201,11 +1201,11 @@
 <li><code>route_prefix</code> : The route that is different from <code>/</code>.</li>
 <li><code>route_init</code> : The initial route to initialize the app, by default is <code>/</code>.</li>
 <li><code>route_login</code> : The route that will be redirected when the app has route protectionconfigured.</li>
-<li><code>on_Keyboard</code> : Enables the on_Keyboard event, by default it is disabled (False). <a href="/flet-easy/Events/keyboard-event/"><code>view</code></a></li>
-<li><code>on_resize</code> : Triggers the on_resize event, by default it is disabled (False). <a href="/flet-easy/Events/On-resize/"><code>view</code></a></li>
-<li><code>secret_key</code> : Used with <code>SecretKey</code> class of FletEasy, to configure JWT or client storage. <a href="/flet-easy/Basic-JWT/"><code>view</code></a></li>
+<li><code>on_Keyboard</code> : Enables the on_Keyboard event, by default it is disabled (False). <a href="/flet-easy/0.2/Events/keyboard-event/"><code>view</code></a></li>
+<li><code>on_resize</code> : Triggers the on_resize event, by default it is disabled (False). <a href="/flet-easy/0.2/Events/On-resize/"><code>view</code></a></li>
+<li><code>secret_key</code> : Used with <code>SecretKey</code> class of FletEasy, to configure JWT or client storage. <a href="/flet-easy/0.2/Basic-JWT/"><code>view</code></a></li>
 <li><code>auto_logout</code> : If you use JWT, you can configure it.</li>
-<li><code>path_views</code> : Configuration of the folder where are the .py files of the pages, you use the <code>Path</code> class to configure it. <a href="/flet-easy/Add-pages/In-automatic/"><code>view</code></a></li>
+<li><code>path_views</code> : Configuration of the folder where are the .py files of the pages, you use the <code>Path</code> class to configure it. <a href="/flet-easy/0.2/Add-pages/In-automatic/"><code>view</code></a></li>
 </ul>
 <h3 id="mode">📷 <strong>Mode</strong></h3>
 <p><img alt="FletEasy" src="../assets/images/FletEasy.png" title="FletEasy" /></p>
@@ -1224,10 +1224,10 @@
 <li><code>route</code>: text string of the url, for example(<code>'/FletEasy'</code>).</li>
 <li><code>title</code>: Defines the title of the page.</li>
 <li><code>clear</code>: Removes the pages from the <code>page.views</code> list of flet (optional).</li>
-<li><code>share_data</code> : Is a boolean value, useful if you want to share data between pages, in a morerestricted way (optional). <a href="/flet-easy/Data-sharing-between-pages/"><code>view</code></a></li>
-<li><code>protected_route</code>: Protects the page path, according to the <code>login</code> decorator configurationof the <code>FletEasy</code> class (optional). <a href="/flet-easy/Customized-app/Route-protection/"><code>view</code></a></li>
-<li><code>custom_params</code>: To add parameter validation in the custom url using a dictionary, where thekey is the parameter validation name and the value is the custom function that should report aboolean value. <a href="/flet-easy/dynamic-routes/#custom-validation"><code>view</code></a></li>
-<li><code>middleware</code> : Acts as an intermediary between different software components, intercepting andprocessing requests and responses. They allow adding functionalities to an application in aflexible and modular way.  It can be used in the app in general, as well as in each of thepages (optional). <a href="/flet-easy/Midleware/"><code>view</code></a></li>
+<li><code>share_data</code> : Is a boolean value, useful if you want to share data between pages, in a morerestricted way (optional). <a href="/flet-easy/0.2/Data-sharing-between-pages/"><code>view</code></a></li>
+<li><code>protected_route</code>: Protects the page path, according to the <code>login</code> decorator configurationof the <code>FletEasy</code> class (optional). <a href="/flet-easy/0.2/Customized-app/Route-protection/"><code>view</code></a></li>
+<li><code>custom_params</code>: To add parameter validation in the custom url using a dictionary, where thekey is the parameter validation name and the value is the custom function that should report aboolean value. <a href="/flet-easy/0.2/dynamic-routes/#custom-validation"><code>view</code></a></li>
+<li><code>middleware</code> : Acts as an intermediary between different software components, intercepting andprocessing requests and responses. They allow adding functionalities to an application in aflexible and modular way.  It can be used in the app in general, as well as in each of thepages (optional). <a href="/flet-easy/0.2/Midleware/"><code>view</code></a></li>
 </ul>
 <h3 id="example_1"><strong>Example</strong></h3>
 <div class="language-Python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="hll"><span class="nd">@app</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="n">route</span><span class="o">=</span><span class="s2">&quot;/home&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Flet-Easy&quot;</span><span class="p">)</span>
@@ -1274,7 +1274,7 @@
 </ul>
 <hr />
 <ul>
-<li><code>share</code> : It is used to be able to store and to obtain values in the client session, theutility is to be able to have greater control in the pages in which it is wanted to share, forit the parameter <code>share_data</code> of the <code>page</code> decorator must be used. The methods to use aresimilar <a href="https://flet.dev/docs/guides/python/session-storage"><code>page.session</code></a>. <a href="/flet-easy/Data-sharing-between-pages/"><code>view</code></a>
+<li><code>share</code> : It is used to be able to store and to obtain values in the client session, theutility is to be able to have greater control in the pages in which it is wanted to share, forit the parameter <code>share_data</code> of the <code>page</code> decorator must be used. The methods to use aresimilar <a href="https://flet.dev/docs/guides/python/session-storage"><code>page.session</code></a>. <a href="/flet-easy/0.2/Data-sharing-between-pages/"><code>view</code></a>
 Besides that you get some extra methods:<ul>
 <li><code>contains</code> : Returns a boolean, it is useful to know if there is shared data.</li>
 <li><code>get_values</code> : Get a list of all shared values.</li>
@@ -1284,8 +1284,8 @@ Besides that you get some extra methods:<ul>
 </ul>
 <hr />
 <ul>
-<li><code>on_keyboard_event</code> : get event values to use in the page. <a href="/flet-easy/Events/keyboard-event/"><code>view</code></a></li>
-<li><code>on_resize</code> : get event values to use in the page. <a href="/flet-easy/Events/On-resize/"><code>view</code></a></li>
+<li><code>on_keyboard_event</code> : get event values to use in the page. <a href="/flet-easy/0.2/Events/keyboard-event/"><code>view</code></a></li>
+<li><code>on_resize</code> : get event values to use in the page. <a href="/flet-easy/0.2/Events/On-resize/"><code>view</code></a></li>
 <li><code>route</code> : route provided by the route event, it is useful when using middlewares to check if the route is assecible.</li>
 </ul>
 <h3 id="methods"><strong>Methods</strong></h3>

@@ -1202,8 +1202,8 @@
 <h2 id="how-to-use-it">How to use it</h2>
 <p>After having configured the <code>secret_key</code>, we can start configuring the use of JWT. For this we are going to require the use of the <code>login</code> method of <code>Datasy</code> (data), it will be used as normally we would use it without using JWT, but we will use the <code>time_expiry</code> and <code>value</code> parameter that will have to be a dictionary obligatorily.</p>
 <ul>
-<li><a href="/flet-easy/Customized-app/Route-protection/#login">More details of the <code>login</code> method</a></li>
-<li><a href="/flet-easy/Customized-app/Route-protection/#logout">More details of the <code>logout</code> method</a></li>
+<li><a href="/flet-easy/0.2/Customized-app/Route-protection/#login">More details of the <code>login</code> method</a></li>
+<li><a href="/flet-easy/0.2/Customized-app/Route-protection/#logout">More details of the <code>logout</code> method</a></li>
 </ul>
 <h3 id="example">Example</h3>
 <div class="language-python highlight"><span class="filename">sensitive.py</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">SECRET_KEY</span> <span class="o">=</span> <span class="s2">&quot;7dbd00fd8ba528257c641b7c5c411cb5abdca774d348d36a3af86f644b132382a3f3f71361fd4e19d2d2dcbcee6f2769af84cbe372a3a5b9db35d3d2707e1d0a&quot;</span>
@@ -1245,7 +1245,7 @@
 </span><span id="__span-3-37"><a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a><span class="s2">Kzuz8LYM/PJmIWIBTo2mqDwp/Iv2EbMKw0Jjn0cgnZINs9UciQqhxX4R49I3</span>
 </span><span id="__span-3-38"><a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a><span class="s2">-----END RSA PRIVATE KEY-----&quot;&quot;&quot;</span>
 </span></code></pre></div>
-<p>In this example we are going to do very similar with the <a href="/flet-easy/Customized-app/Route-protection/#example"><code>Route-protection</code></a> example, we have only configured the secret_key, used the <code>login</code> method <code>time_expiry</code> parameter and used the <code>decode</code> function of <code>FletEasy</code> to get the payload stored in the decoded client storage.</p>
+<p>In this example we are going to do very similar with the <a href="/flet-easy/0.2/Customized-app/Route-protection/#example"><code>Route-protection</code></a> example, we have only configured the secret_key, used the <code>login</code> method <code>time_expiry</code> parameter and used the <code>decode</code> function of <code>FletEasy</code> to get the payload stored in the decoded client storage.</p>
 <div class="language-python highlight"><span class="filename">main.py</span><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="kn">import</span> <span class="nn">flet</span> <span class="k">as</span> <span class="nn">ft</span>
@@ -1354,7 +1354,7 @@
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The <code>decode</code> and <code>decode_async</code> functions can be used in other parts of the code, for example: <a href="/flet-easy/Midleware/">Midleware</a></p>
+<p>The <code>decode</code> and <code>decode_async</code> functions can be used in other parts of the code, for example: <a href="/flet-easy/0.2/Midleware/">Midleware</a></p>
 </div>
 
 
