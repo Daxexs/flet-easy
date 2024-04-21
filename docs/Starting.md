@@ -4,29 +4,29 @@
 ## Features
 * Easy to use (**hence the name**).
 * Facilitates `flet` event handling.
-* Simple page routing (There are three ways) for whichever one suits you best. [`view`](/flet-easy/dynamic-routes/)
+* Simple page routing (There are three ways) for whichever one suits you best. [`view`](/flet-easy/0.2/dynamic-routes/)
 * App construction with numerous pages and custom flet configurations for desktop, mobile and web sites.
 * Provides a better construction of your code, which can be scalable and easy to read (it adapts to your preferences, there are no limitations).
-* Dynamic routing, customization in the routes for greater accuracy in sending data. [`view`](/flet-easy/dynamic-routes/#custom-validation)
-* Routing protection [`view`](/flet-easy/Customized-app/Route-protection/)
-* Custom Page 404 [`view`](/flet-easy/Customized-app/Page-404/)
-* Controlled data sharing between pages. [`view`](/flet-easy/Data-sharing-between-pages/)
+* Dynamic routing, customization in the routes for greater accuracy in sending data. [`view`](/flet-easy/0.2/dynamic-routes/#custom-validation)
+* Routing protection [`view`](/flet-easy/0.2/Customized-app/Route-protection/)
+* Custom Page 404 [`view`](/flet-easy/0.2/Customized-app/Page-404/)
+* Controlled data sharing between pages. [`view`](/flet-easy/0.2/Data-sharing-between-pages/)
 * Asynchronous support.
-* Middleware Support (in the app in general and in each of the pages). [`view`](/flet-easy/Midleware/)
-* JWT support for authentication sessions in the data parameter. (useful to control the time of sessions) [`view`](/flet-easy/Basic-JWT/)
-* Working with other applications. [`view`](/flet-easy/Data-sharing-between-pages/)
-* CLI to create app structure `FletEasy` (`fs init`) [`view`](/flet-easy/CLI-to-create-app/)
-* Easy integration of `on_keyboard_event` in each of the pages. [`view`](/flet-easy/Events/keyboard-event/)
-* Use the percentage of the page width and height of the page with `on_resize`. [`view`](/flet-easy/Events/On-resize/)
-* `ResponsiveControlsy` control to make the app responsive, useful for desktop applications. [`view`](/flet-easy/ResponsiveControlsy/)
+* Middleware Support (in the app in general and in each of the pages). [`view`](/flet-easy/0.2/Midleware/)
+* JWT support for authentication sessions in the data parameter. (useful to control the time of sessions) [`view`](/flet-easy/0.2/Basic-JWT/)
+* Working with other applications. [`view`](/flet-easy/0.2/Data-sharing-between-pages/)
+* CLI to create app structure `FletEasy` (`fs init`) [`view`](/flet-easy/0.2/CLI-to-create-app/)
+* Easy integration of `on_keyboard_event` in each of the pages. [`view`](/flet-easy/0.2/Events/keyboard-event/)
+* Use the percentage of the page width and height of the page with `on_resize`. [`view`](/flet-easy/0.2/Events/On-resize/)
+* `ResponsiveControlsy` control to make the app responsive, useful for desktop applications. [`view`](/flet-easy/0.2/ResponsiveControlsy/)
 * Soporta Application Packaging para su distribución. [view](https://flet.dev/docs/publish)
 
 ## Flet events it handles
 
 - `on_route_change` :  Dynamic routing
 - `on_view_pop`
-- [`on_keyboard_event`](/flet-easy/Events/keyboard-event/)
-- [`on_resize`](/flet-easy/Events/On-resize/)
+- [`on_keyboard_event`](/flet-easy/0.2/Events/keyboard-event/)
+- [`on_resize`](/flet-easy/0.2/Events/On-resize/)
 - `on_error`
 
 

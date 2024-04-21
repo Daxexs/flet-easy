@@ -60,8 +60,8 @@ PUBLIC_KEY = key.public_key()
 ## How to use it
 After having configured the `secret_key`, we can start configuring the use of JWT. For this we are going to require the use of the `login` method of `Datasy` (data), it will be used as normally we would use it without using JWT, but we will use the `time_expiry` and `value` parameter that will have to be a dictionary obligatorily.
 
-* [More details of the `login` method](/flet-easy/Customized-app/Route-protection/#login)
-* [More details of the `logout` method](/flet-easy/Customized-app/Route-protection/#logout)
+* [More details of the `login` method](/flet-easy/0.2/Customized-app/Route-protection/#login)
+* [More details of the `logout` method](/flet-easy/0.2/Customized-app/Route-protection/#logout)
 
 ### Example
 ```python title="sensitive.py"
@@ -105,7 +105,7 @@ Kzuz8LYM/PJmIWIBTo2mqDwp/Iv2EbMKw0Jjn0cgnZINs9UciQqhxX4R49I3
 -----END RSA PRIVATE KEY-----"""
 ```
 
-In this example we are going to do very similar with the [`Route-protection`](/flet-easy/Customized-app/Route-protection/#example) example, we have only configured the secret_key, used the `login` method `time_expiry` parameter and used the `decode` function of `FletEasy` to get the payload stored in the decoded client storage.
+In this example we are going to do very similar with the [`Route-protection`](/flet-easy/0.2/Customized-app/Route-protection/#example) example, we have only configured the secret_key, used the `login` method `time_expiry` parameter and used the `decode` function of `FletEasy` to get the payload stored in the decoded client storage.
 
 ```python title="main.py"  hl_lines="12-15 22 41 62-67 75"
 from datetime import timedelta
@@ -214,4 +214,4 @@ Decode the jwt and update the browser sessions.
     * If the function to use is async it is recommended to use `decode_async` to avoid errors.
 
 !!! note
-    The `decode` and `decode_async` functions can be used in other parts of the code, for example: [Midleware](/flet-easy/Midleware/)
+    The `decode` and `decode_async` functions can be used in other parts of the code, for example: [Midleware](/flet-easy/0.2/Midleware/)

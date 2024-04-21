@@ -8,11 +8,11 @@ We create the app object, in which you can configure:
 * `route_prefix` : The route that is different from ` /`.
 * `route_init` : The initial route to initialize the app, by default is `/`.
 * `route_login` : The route that will be redirected when the app has route protectionconfigured.
-* `on_Keyboard` : Enables the on_Keyboard event, by default it is disabled (False). [`view`](/flet-easy/Events/keyboard-event/)
-* `on_resize` : Triggers the on_resize event, by default it is disabled (False). [`view`](/flet-easy/Events/On-resize/)
-* `secret_key` : Used with `SecretKey` class of FletEasy, to configure JWT or client storage. [`view`](/flet-easy/Basic-JWT/)
+* `on_Keyboard` : Enables the on_Keyboard event, by default it is disabled (False). [`view`](/flet-easy/0.2/Events/keyboard-event/)
+* `on_resize` : Triggers the on_resize event, by default it is disabled (False). [`view`](/flet-easy/0.2/Events/On-resize/)
+* `secret_key` : Used with `SecretKey` class of FletEasy, to configure JWT or client storage. [`view`](/flet-easy/0.2/Basic-JWT/)
 * `auto_logout` : If you use JWT, you can configure it.
-* `path_views` : Configuration of the folder where are the .py files of the pages, you use the `Path` class to configure it. [`view`](/flet-easy/Add-pages/In-automatic/)
+* `path_views` : Configuration of the folder where are the .py files of the pages, you use the `Path` class to configure it. [`view`](/flet-easy/0.2/Add-pages/In-automatic/)
 
 ### 📷 **Mode**
 ![FletEasy](assets/images/FletEasy.png "FletEasy")
@@ -35,10 +35,10 @@ To add pages, the following parameters are required:
 * `route`: text string of the url, for example(`'/FletEasy'`).
 * `title`: Defines the title of the page.
 * `clear`: Removes the pages from the `page.views` list of flet (optional).
-* `share_data` : Is a boolean value, useful if you want to share data between pages, in a morerestricted way (optional). [`view`](/flet-easy/Data-sharing-between-pages/)
-* `protected_route`: Protects the page path, according to the `login` decorator configurationof the `FletEasy` class (optional). [`view`](/flet-easy/Customized-app/Route-protection/)
-* `custom_params`: To add parameter validation in the custom url using a dictionary, where thekey is the parameter validation name and the value is the custom function that should report aboolean value. [`view`](/flet-easy/dynamic-routes/#custom-validation)
-* `middleware` : Acts as an intermediary between different software components, intercepting andprocessing requests and responses. They allow adding functionalities to an application in aflexible and modular way.  It can be used in the app in general, as well as in each of thepages (optional). [`view`](/flet-easy/Midleware/)
+* `share_data` : Is a boolean value, useful if you want to share data between pages, in a morerestricted way (optional). [`view`](/flet-easy/0.2/Data-sharing-between-pages/)
+* `protected_route`: Protects the page path, according to the `login` decorator configurationof the `FletEasy` class (optional). [`view`](/flet-easy/0.2/Customized-app/Route-protection/)
+* `custom_params`: To add parameter validation in the custom url using a dictionary, where thekey is the parameter validation name and the value is the custom function that should report aboolean value. [`view`](/flet-easy/0.2/dynamic-routes/#custom-validation)
+* `middleware` : Acts as an intermediary between different software components, intercepting andprocessing requests and responses. They allow adding functionalities to an application in aflexible and modular way.  It can be used in the app in general, as well as in each of thepages (optional). [`view`](/flet-easy/0.2/Midleware/)
 
 
 ### **Example**
@@ -87,15 +87,15 @@ This class has the following attributes, in order to access its data:
 * `route_init` : Value entered in the `FletEasy` class parameters to create the app object.
 * `route_login` : Value entered in the `FletEasy` class parameters to create the app object.
 ---
-* `share` : It is used to be able to store and to obtain values in the client session, theutility is to be able to have greater control in the pages in which it is wanted to share, forit the parameter `share_data` of the `page` decorator must be used. The methods to use aresimilar [`page.session`](https://flet.dev/docs/guides/python/session-storage). [`view`](/flet-easy/Data-sharing-between-pages/)
+* `share` : It is used to be able to store and to obtain values in the client session, theutility is to be able to have greater control in the pages in which it is wanted to share, forit the parameter `share_data` of the `page` decorator must be used. The methods to use aresimilar [`page.session`](https://flet.dev/docs/guides/python/session-storage). [`view`](/flet-easy/0.2/Data-sharing-between-pages/)
 Besides that you get some extra methods:
     * `contains` : Returns a boolean, it is useful to know if there is shared data.
     * `get_values` : Get a list of all shared values.
     * `get_all` : Get the dictionary of all shared values.
 ---
 
-* `on_keyboard_event` : get event values to use in the page. [`view`](/flet-easy/Events/keyboard-event/)
-* `on_resize` : get event values to use in the page. [`view`](/flet-easy/Events/On-resize/)
+* `on_keyboard_event` : get event values to use in the page. [`view`](/flet-easy/0.2/Events/keyboard-event/)
+* `on_resize` : get event values to use in the page. [`view`](/flet-easy/0.2/Events/On-resize/)
 * `route` : route provided by the route event, it is useful when using middlewares to check if the route is assecible.
 
 ### **Methods**
