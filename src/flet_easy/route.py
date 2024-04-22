@@ -151,15 +151,14 @@ class FletEasyX:
 
     async def _view_append(self, route: str):
         """Add a new page and update it."""
-        if iscoroutinefunction(self.__pagesy.view):
-            view = await self.__pagesy.view(self.__data, **self.__data.url_params)
-            view.route = route
-            self.__page.views.append(view)
-        else:
-            view = self.__pagesy.view(self.__data, **self.__data.url_params)
-            view.route = route
-            self.__page.views.append(self.__pagesy.view(self.__data, **self.__data.url_params))
+        view = (
+            await self.__pagesy.view(self.__data, **self.__data.url_params)
+            if iscoroutinefunction(self.__pagesy.view)
+            else self.__pagesy.view(self.__data, **self.__data.url_params)
+        )
 
+        view.route = route
+        self.__page.views.append(view)
         self.__page.route = route
         self.__page.query()
         self.__page.update()
