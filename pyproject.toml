@@ -1,7 +1,7 @@
 [project]
 name = "flet-easy"
-version = "0.2.0"
-description = "Flet-Easy is a package created as a Flet add-on, designed to be easy to use with a cleaner order in the code, having many customizable features."
+version = "0.2.1"
+description = "⚡Flet-Easy is a package created as a Flet add-on, designed to be easy to use with a cleaner order in the code, having many customizable features."
 authors = [
     {name = "Daxexs", email = "Daxexsdev@gmail.com"},
 ]
@@ -16,7 +16,20 @@ dependencies = [
 requires-python = ">=3.8"
 readme = "README.md"
 license = {text = "apache-2.0"}
-keywords = ["flet easy", "flet", "python", "flet router"]
+keywords = [
+    "flet easy",
+    "flet",
+    "python",
+    "flet easy route",
+    "python web template",
+    "app python",
+    "flet mvc",
+    "flet easy mvc",
+    "flet easy fastapi",
+    "flutter python",
+    "web application",
+    "fast flet"
+]
 classifiers = [
     "Topic :: Software Development :: Build Tools",
     "Programming Language :: Python :: 3",

@@ -1,5 +1,8 @@
 # Flet-Easy changelog
 
+### 0.2.1 (25/04/24)
+* Fix page loading twice ([#14](https://github.com/Daxexs/flet-easy/issues/14))
+
 ### 0.2.0 (17/04/24)
 * Optimize code for flet >0.21 ([#4](https://github.com/Daxexs/flet-easy/issues/4))
 
