@@ -210,12 +210,12 @@ class FletEasyX:
 
     def __process_route(self, custom_params: Dict[str, Callable[[], bool]], path: str, route: str):
         if custom_params is None:
-            route_math = parse(route, path, case_sensitive=True)
+            route_math = parse(route, path)
             return [route_math, route_math]
 
         else:
             try:
-                route_math = parse(route, path, custom_params, case_sensitive=True)
+                route_math = parse(route, path, custom_params)
                 route_check = (
                     all(
                         valor is not False and valor is not None
