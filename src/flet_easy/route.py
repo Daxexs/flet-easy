@@ -81,10 +81,10 @@ class FletEasyX:
         self.__data._check_event_router = False
 
     def __view_pop(self, e):
+        if self.__page.views[-1].route == self.__page.views[-2].route:
+            self.__page.views.pop()
         self.__page.views.pop()
-        top_view = self.__page.views[-1]
-        self._go(top_view.route)
-        self.__page.views.pop()
+        self._go(self.__page.views[-1].route)
 
     async def __on_keyboard(self, e: KeyboardEvent):
         self.__page_on_keyboard.call = e
