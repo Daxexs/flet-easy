@@ -247,7 +247,8 @@ class Datasy:
 
     def _create_login(self):
         """Create the connection between sessions."""
-        self.page.pubsub.subscribe_topic(self.page.client_ip, self.__logaut_init)
+        if self.page.web:
+            self.page.pubsub.subscribe_topic(self.page.client_ip, self.__logaut_init)
 
     def _create_tasks(self, time_expiry: timedelta, key: str, sleep: int) -> None:
         """Creates the logout task when logging in."""

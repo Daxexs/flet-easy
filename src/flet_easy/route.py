@@ -61,11 +61,7 @@ class FletEasyX:
             login_async=iscoroutinefunction(self.__config_login),
             go=self._go,
         )
-        self.__data.view = (
-            self.__page.run_task(self.__view_data_config).result()
-            if self.__view_data is not None
-            else None
-        )
+        self.__data.view = self.__view_data_config() if self.__view_data is not None else None
         if self.__route_login is not None:
             self.__data._create_login()
 
@@ -94,22 +90,22 @@ class FletEasyX:
     def __page_resize(self, e: ControlEvent):
         self.__page_on_resize.e = e
 
-    async def __add_configuration_start(self):
+    def __add_configuration_start(self):
         """Add general settings to the pages."""
         if self.__view_config:
             if iscoroutinefunction(self.__view_config):
-                await self.__view_config(self.__page)
+                self.__page.run_task(self.__view_config, self.__page).result()
             else:
                 self.__view_config(self.__page)
 
         if self.__config_event:
             if iscoroutinefunction(self.__config_event):
-                await self.__config_event(self.__data)
+                self.__page.run_task(self.__config_event, self.__data).result()
             else:
                 self.__config_event(self.__data)
 
     def __disconnect(self, e):
-        if self.__data._login_done:
+        if self.__data._login_done and self.__page.web:
             self.__page.pubsub.send_others_on_topic(
                 self.__page.client_ip,
                 Msg("updateLoginSessions", value=self.__data._login_done),
@@ -125,7 +121,7 @@ class FletEasyX:
             self.__page.views.clear()
 
         """ Add custom events """
-        self.__page.run_task(self.__add_configuration_start)
+        self.__add_configuration_start()
 
         """ Executing charter events """
         self.__page.on_route_change = self.__route_change
@@ -142,17 +138,17 @@ class FletEasyX:
         self._go(self.__page.route)
 
     # ---------------------------[Route controller]-------------------------------------
-    async def __view_data_config(self):
+    def __view_data_config(self):
         """Add the `View` configuration, to reuse on every page."""
         if iscoroutinefunction(self.__view_data):
-            return await self.__view_data(self.__data)
+            return self.__page.run_task(self.__view_data, self.__data).result()
         else:
             return self.__view_data(self.__data)
 
-    async def _view_append(self, route: str):
+    def _view_append(self, route: str):
         """Add a new page and update it."""
         view = (
-            await self.__pagesy.view(self.__data, **self.__data.url_params)
+            self.__page.run_task(self.__pagesy.view, self.__data, **self.__data.url_params).result()
             if iscoroutinefunction(self.__pagesy.view)
             else self.__pagesy.view(self.__data, **self.__data.url_params)
         )
@@ -202,7 +198,7 @@ class FletEasyX:
                         )
             if self.__pagesy.middleware is None or _middlewares_two:
                 self.__reload_datasy(url_params)
-                self.__page.run_task(self._view_append, route)
+                self._view_append(route)
                 return False
             else:
                 _middlewares = self.__pagesy.middleware
@@ -244,6 +240,10 @@ class FletEasyX:
                 self.__pagesy = page
                 try:
                     if page.protected_route:
+                        assert (
+                            self.__route_login is not None
+                        ), "Configure the route of the login page, in the Flet-Easy class in the parameter (route_login)"
+
                         if iscoroutinefunction(self.__config_login):
                             try:
                                 auth = self.__page.run_task(
@@ -258,16 +258,14 @@ class FletEasyX:
                             auth = self.__config_login(self.__data)
                         if auth:
                             self.__reload_datasy(route_math.named)
-                            self.__page.run_task(self._view_append, route).result()
-                            break
+                            self._view_append(route)
                         else:
                             self._go(self.__route_login)
                             break
                     else:
-                        response = self.__run_middlewares(
+                        if self.__run_middlewares(
                             route=route, middleware=self.__middlewares, url_params=route_math.named
-                        )
-                        if not response:
+                        ):
                             break
                 except Exception as e:
                     raise Exception(e)
