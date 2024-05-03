@@ -1,6 +1,6 @@
 [project]
 name = "flet-easy"
-version = "0.2.1"
+version = "0.2.2"
 description = "⚡Flet-Easy is a package created as a Flet add-on, designed to be easy to use with a cleaner order in the code, having many customizable features."
 authors = [
     {name = "Daxexs", email = "Daxexsdev@gmail.com"},

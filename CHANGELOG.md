@@ -1,5 +1,9 @@
 # Flet-Easy changelog
-
+### 0.2.2 (04/05/24)
+* Fix sensitivity in url with capital letters ([#15](https://github.com/Daxexs/flet-easy/issues/15))
+* Fix 'back' button in dashboard page app bar not working ([#18](https://github.com/Daxexs/flet-easy/issues/18))
+* Fix error caused by `Timeout waiting invokeMethod` ([#19](https://github.com/Daxexs/flet-easy/issues/19))
+  
 ### 0.2.1 (25/04/24)
 * Fix page loading twice ([#14](https://github.com/Daxexs/flet-easy/issues/14))
 

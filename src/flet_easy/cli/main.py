@@ -8,7 +8,7 @@ from tomlkit import dump
 
 from .copy import _copy_template
 
-VERSION = "0.2.1"
+VERSION = "0.2.2"
 
 RichHelpFormatter.styles["argparse.text"] = "italic"
 RichHelpFormatter.styles["argparse.help"] = "light_sky_blue3"
