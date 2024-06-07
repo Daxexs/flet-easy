@@ -1,9 +1,12 @@
+import contextlib
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any, Dict
 
 from flet import Page
-from jwt import decode, encode
+
+with contextlib.suppress(ImportError):
+    from jwt import decode, encode
 
 
 @dataclass

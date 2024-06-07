@@ -1,6 +1,6 @@
 [project]
 name = "flet-easy"
-version = "0.2.2"
+version = "0.2.3.dev3"
 description = "⚡Flet-Easy is a package created as a Flet add-on, designed to be easy to use with a cleaner order in the code, having many customizable features."
 authors = [
     {name = "Daxexs", email = "Daxexsdev@gmail.com"},
@@ -8,7 +8,6 @@ authors = [
 
 dependencies = [
     "parse>=1.20.1",
-    "pyJWT>=2.8.0",
     "rsa>=4.9",
     "rich-argparse>=1.4.0",
     "tomlkit>=0.12.4",
@@ -39,6 +38,10 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
 ]
+
+[project.optional-dependencies]
+all = ["pyJWT>=2.0.0", "flet>=0.21.0"]
+JWT = ["pyJWT>=2.0.0"]
 
 [project.urls]
 Homepage = "https://github.com/Daxexs"

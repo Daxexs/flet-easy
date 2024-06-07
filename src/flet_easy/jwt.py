@@ -1,7 +1,10 @@
+import contextlib
 from secrets import token_bytes
 from typing import Any, Dict, Union
 
-from jwt import DecodeError, ExpiredSignatureError, InvalidKeyError
+with contextlib.suppress(ImportError):
+    from jwt import DecodeError, ExpiredSignatureError, InvalidKeyError
+
 from rsa import newkeys
 
 from flet_easy.datasy import Datasy, evaluate_secret_key
