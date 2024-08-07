@@ -13,9 +13,7 @@ class ConfigApp:
         @self.app.login
         async def login_x(data: fs.Datasy):
             username = await data.page.client_storage.get_async("login")
-            if username is None:
-                return False
-            return True
+            return username is not None
 
         """" general configuration of the charter page """
 

@@ -12,4 +12,4 @@ class Drawer(ft.FilledButton):
 
     def show_drawer(self, e):
         self.drawer.open = True
-        self.drawer.update()
+        self.page.update()
