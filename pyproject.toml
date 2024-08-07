@@ -79,6 +79,8 @@ source-includes = ["LICENSE", "README.md"]
 doc = "mkdocs serve"
 format = "ruff format"
 check = "ruff check"
+web = "flet run ./tests/flet/main.py -r -w -d -p 7777"
+app = "flet run ./tests/flet/main.py -r -d"
 
 [project.scripts]
 fs = "flet_easy.cli.main:run"
