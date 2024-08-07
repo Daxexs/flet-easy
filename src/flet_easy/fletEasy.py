@@ -3,6 +3,7 @@ try:
 except ImportError:
     raise Exception('Install "flet" the latest version available -> pip install flet --upgrade.')
 
+from collections import deque
 from functools import wraps
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
@@ -11,6 +12,7 @@ from flet import View
 
 from flet_easy.auto_route import automatic_routing
 from flet_easy.datasy import Datasy
+from flet_easy.extra import Redirect
 from flet_easy.extrasJwt import SecretKey
 from flet_easy.inheritance import Viewsy
 from flet_easy.pagesy import AddPagesy, Middleware, Pagesy
@@ -124,7 +126,7 @@ class FletEasy:
         self.__auto_logout = auto_logout
         self.__config_login: Callable[[Datasy], View] = None
         # ----
-        self.__pages = set()
+        self.__pages = deque()
         self.__page_404: Pagesy = None
         self.__view_data: Viewsy = None
         self.__view_config: Callable[[Datasy], None] = None
@@ -217,7 +219,7 @@ class FletEasy:
             if value == "page_404":
                 self.__page_404 = Pagesy(route, func, data.get("title"), data.get("page_clear"))
             elif value == "page":
-                self.__pages.add(
+                self.__pages.append(
                     Pagesy(
                         route=route,
                         view=func,
@@ -245,9 +247,9 @@ class FletEasy:
         try:
             for page in group_pages:
                 if self.__route_prefix:
-                    self.__pages.update(page._add_pages(self.__route_prefix))
+                    self.__pages.extend(page._add_pages(self.__route_prefix))
                 else:
-                    self.__pages.update(page._add_pages())
+                    self.__pages.extend(page._add_pages())
         except Exception as e:
             raise e
 
@@ -494,8 +496,8 @@ class FletEasy:
             if self.__route_prefix:
                 page.route = self.__route_prefix + page.route
 
-            self.__pages.add(page)
+            self.__pages.append(page)
 
-    def add_middleware(self, middleware: Middleware):
+    def add_middleware(self, middleware: List[Callable[[Datasy], Optional[Redirect]]]):
         """The function that will act as middleware will receive as a single mandatory parameter `data : Datasy` and its structure or content may vary depending on the context and the specific requirements of the middleware."""
         self.__middlewares = middleware

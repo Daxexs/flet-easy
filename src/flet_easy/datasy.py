@@ -75,6 +75,7 @@ class Datasy:
         self._login_done: bool = False
         self._login_async: bool = login_async
         self._check_event_router: bool = False
+        self._check_use_go: bool = False
 
     @property
     def page(self):

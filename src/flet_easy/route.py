@@ -67,16 +67,22 @@ class FletEasyX:
 
     # ----------- Supports async
     def __route_change(self, e: RouteChangeEvent):
-        if not self.__data._check_event_router:
-            route = (
-                self.__data.route_init
-                if self.__data.route_init != "/" and e.route == "/"
-                else e.route
-            )
-            self._go(route)
-        self.__data._check_event_router = False
+        if not self.__data._check_event_router and not self.__data._check_use_go:
+            if e.route == "/":
+                self.__page.go(self.__route_init)
+                return
+            else:
+                self.__data._check_use_go = True
+
+            self._go(e.route)
+        else:
+            self._view_append(e.route)
+            self.__data._check_event_router = False
+
+        self.__data._check_use_go = False
 
     def __view_pop(self, e):
+        self.__data._check_use_go = True
         self.__page.views.pop()
         route = self.__page.views[-1].route
         self.__page.views.pop()
@@ -117,9 +123,6 @@ class FletEasyX:
         if self.__route_init != "/" and self.__page.route == "/":
             self.__page.route = self.__route_init
 
-        if len(self.__page.views) == 1:
-            self.__page.views.clear()
-
         """ Add custom events """
         self.__add_configuration_start()
 
@@ -147,6 +150,7 @@ class FletEasyX:
 
     def _view_append(self, route: str):
         """Add a new page and update it."""
+        self.__page.views.clear()
         view = (
             self.__page.run_task(self.__pagesy.view, self.__data, **self.__data.url_params).result()
             if iscoroutinefunction(self.__pagesy.view)
@@ -155,11 +159,9 @@ class FletEasyX:
 
         view.route = route
         self.__page.views.append(view)
-        self.__page.route = route
-        self.__page.query()
         self.__page.update()
 
-    def __reload_datasy(self, url_params: Dict[str, Any] = None):
+    def __reload_datasy(self, url_params: Dict[str, Any] = dict()):
         """Update `datasy` values when switching between pages."""
         self.__page.title = self.__pagesy.title
 
@@ -190,7 +192,7 @@ class FletEasyX:
 
                     if isinstance(res_middleware, Redirect):
                         self._go(res_middleware.route)
-                        return False
+                        return True
 
                     if not res_middleware:
                         raise Exception(
@@ -198,8 +200,11 @@ class FletEasyX:
                         )
             if self.__pagesy.middleware is None or _middlewares_two:
                 self.__reload_datasy(url_params)
-                self._view_append(route)
-                return False
+                if not self.__data._check_use_go:
+                    self.__page.go(route)
+                else:
+                    self._view_append(route)
+                return True
             else:
                 _middlewares = self.__pagesy.middleware
                 _middlewares_two = True
@@ -229,7 +234,10 @@ class FletEasyX:
 
     def _go(self, route: str):
         pg_404 = True
-        self.__data._check_event_router = True
+
+        if not self.__data._check_use_go:
+            self.__data._check_event_router = True
+
         self.__data.on_keyboard_event.clear()
         path = self.__route_init if route == "/" else route
 
@@ -256,28 +264,35 @@ class FletEasyX:
                                 )
                         else:
                             auth = self.__config_login(self.__data)
+
                         if auth:
                             self.__reload_datasy(route_math.named)
-                            self._view_append(route)
+
+                            if not self.__data._check_use_go:
+                                self.__page.go(route)
+                            else:
+                                self._view_append(route)
                         else:
                             self._go(self.__route_login)
-                            break
+
+                        self.__data._check_event_router = False
+                        break
                     else:
                         if self.__run_middlewares(
                             route=route, middleware=self.__middlewares, url_params=route_math.named
                         ):
+                            self.__data._check_event_router = False
                             break
                 except Exception as e:
                     raise Exception(e)
         if pg_404:
+            self.__data._check_use_go = True
+            self.__reload_datasy()
             if self.__page_404:
                 self.__pagesy = self.__page_404
-                self.__page.route = self.__page_404
-                self.__reload_datasy()
-                self.__page.views.append(self.__page_404.view(self.__page))
+                self._view_append(self.__page_404.route)
 
             else:
-                self.__page.route = self.__view_404.route
-                self.__page.views.append(self.__view_404.view(self.__page))
-            self.__page.query()
-            self.__page.update()
+                self.__pagesy = Pagesy(self.__view_404.route, self.__view_404.view)
+                self._view_append(self.__view_404.route)
+            self.__data._check_event_router = False

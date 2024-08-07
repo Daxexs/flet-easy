@@ -1,3 +1,4 @@
+from collections import deque
 from dataclasses import dataclass
 from functools import wraps
 from typing import Any, Callable, Dict, List, Optional
@@ -38,19 +39,6 @@ class Pagesy:
     protected_route: bool = False
     custom_params: Dict[str, Callable[[], bool]] = None
     middleware: Middleware = None
-
-    def __hash__(self):
-        return hash((self.route, self.view, self.title, self.clear, self.protected_route))
-
-    def __eq__(self, other):
-        return (
-            isinstance(other, Pagesy)
-            and self.route == other.route
-            and self.view == other.view
-            and self.tilte == other.title
-            and self.clear == other.clear
-            and self.protected_route == other.protected_route
-        )
 
 
 class AddPagesy:
@@ -103,7 +91,7 @@ class AddPagesy:
 
     def __init__(self, route_prefix: str = None):
         self.route_prefix = route_prefix
-        self.__pages = set()
+        self.__pages = deque()
 
     def __decorator(self, data: Dict = None):
         def decorator(func: Callable):
@@ -121,7 +109,7 @@ class AddPagesy:
                 else data.get("route")
             )
 
-            self.__pages.add(
+            self.__pages.append(
                 Pagesy(
                     route=route,
                     view=func,
@@ -194,7 +182,7 @@ class AddPagesy:
         }
         return self.__decorator(data)
 
-    def _add_pages(self, route: str = None) -> set:
+    def _add_pages(self, route: str = None) -> deque:
         if route:
             for page in self.__pages:
                 if page.route == "/":
