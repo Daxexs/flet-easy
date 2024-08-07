@@ -287,12 +287,14 @@ class FletEasyX:
                     raise Exception(e)
         if pg_404:
             self.__data._check_use_go = True
-            self.__reload_datasy()
+            
             if self.__page_404:
                 self.__pagesy = self.__page_404
+                self.__reload_datasy()
                 self._view_append(self.__page_404.route)
 
             else:
-                self.__pagesy = Pagesy(self.__view_404.route, self.__view_404.view)
+                self.__pagesy = Pagesy(self.__view_404.route, self.__view_404.view, "FletEasy-404")
+                self.__reload_datasy()
                 self._view_append(self.__view_404.route)
             self.__data._check_event_router = False
