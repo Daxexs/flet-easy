@@ -43,6 +43,7 @@ class ConfigApp:
                                     text="Dashboard",
                                     on_click=data.go("/dashboard"),
                                 ),
+                                ft.FilledButton("Go back", on_click=data.go_back()),
                                 ft.FilledButton(
                                     text="Logout",
                                     on_click=data.logout("login"),

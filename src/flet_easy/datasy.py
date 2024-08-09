@@ -1,3 +1,4 @@
+from collections import deque
 from datetime import datetime, timedelta, timezone
 from typing import Any, Callable, Dict
 
@@ -67,6 +68,7 @@ class Datasy:
         self.__on_resize = page_on_resize
         self.__route: str = None
         self.__go = go
+        self.__history_routes: deque[str] = deque()
 
         self.__secret_key: SecretKey = secret_key
         self.__auto_logout: bool = auto_logout
@@ -84,6 +86,14 @@ class Datasy:
     @page.setter
     def page(self, page: object):
         self.__page = page
+
+    @property
+    def history_routes(self):
+        return self.__history_routes
+
+    @history_routes.setter
+    def history_routes(self, history_routes: deque[str]):
+        self.__history_routes = history_routes
 
     @property
     def url_params(self):
@@ -316,6 +326,14 @@ class Datasy:
     def redirect(self, route: str):
         """Useful if you do not want to access a route that has already been sent."""
         return Redirect(route)
+
+    def go_back(self):
+        """Go back to the previous route."""
+        return lambda _=None: (
+            (self.history_routes.pop(), self.__go(self.history_routes.pop()))
+            if len(self.history_routes) > 1
+            else (print("-> I can't go back! There is no route history."), None)
+        )
 
 
 def evaluate_secret_key(data: Datasy):

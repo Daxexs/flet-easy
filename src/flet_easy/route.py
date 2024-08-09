@@ -159,6 +159,7 @@ class FletEasyX:
 
         view.route = route
         self.__page.views.append(view)
+        self.__data.history_routes.append(route)
         self.__page.update()
 
     def __reload_datasy(self, url_params: Dict[str, Any] = dict()):
@@ -287,7 +288,7 @@ class FletEasyX:
                     raise Exception(e)
         if pg_404:
             self.__data._check_use_go = True
-            
+
             if self.__page_404:
                 self.__pagesy = self.__page_404
                 self.__reload_datasy()
