@@ -150,13 +150,24 @@ class FletEasyX:
 
     def _view_append(self, route: str):
         """Add a new page and update it."""
-        self.__page.views.clear()
-        view = (
-            self.__page.run_task(self.__pagesy.view, self.__data, **self.__data.url_params).result()
-            if iscoroutinefunction(self.__pagesy.view)
-            else self.__pagesy.view(self.__data, **self.__data.url_params)
-        )
 
+        self.__page.views.clear()
+
+        if callable(self.__pagesy.view) and not isinstance(self.__pagesy.view, type):
+            view = (
+                self.__page.run_task(
+                    self.__pagesy.view, self.__data, **self.__data.url_params
+                ).result()
+                if iscoroutinefunction(self.__pagesy.view)
+                else self.__pagesy.view(self.__data, **self.__data.url_params)
+            )
+        elif isinstance(self.__pagesy.view, type):
+            view_class = self.__pagesy.view(self.__data, **self.__data.url_params)
+            view = (
+                self.__page.run_task(view_class.build).result()
+                if iscoroutinefunction(view_class.build)
+                else view_class.build()
+            )
         view.route = route
         self.__page.views.append(view)
         self.__data.history_routes.append(route)
