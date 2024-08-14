@@ -14,6 +14,7 @@ app = fs.FletEasy(
     secret_key=fs.SecretKey(algorithm=fs.Algorithm.HS256, secret=SECRET_KEY),
     auto_logout=True,
     path_views=Path(__file__).parent / "views",
+    on_Keyboard=True,
 )
 
 
@@ -32,6 +33,8 @@ async def starting_page_two(data: fs.Datasy):
         "/share/send-data",
         "/dashboard",
         "/counter/test/{id:d}",
+        "/counter/use-keyboard/{id}",
+        "/counter/ts",
     ]
     if data.route not in routes:
         print("-> Redirection to path (/login)")
