@@ -39,7 +39,9 @@ class Datasy:
     * `on_resize` : get event values to use in the page.
     * `logout` : method to close sessions of all sections in the browser (client storage), requires as parameter the key or the control (the parameter key of the control must have the value to delete), this is to avoid creating an extra function.
     * `login` : method to create sessions of all sections in the browser (client storage), requires as parameters the key and the value, the same used in the `page.client_storage.set` method.
-    * `go` : Method to change the path of the application, in order to reduce the code, you must assign the value of the `key` parameter of the `control` used, for example buttons.
+    * `go` : `go`: Method to change the application path, supports url redirections.
+    * `go_back` : Method to go back to the previous route.
+    * `history_routes` : Get the history of the routes.
     * `route` : route provided by the route event, it is useful when using middlewares to check if the route is assecible.
     * `redirect` : To redirect to a path before the page loads, it is used in middleware.
     """
@@ -76,8 +78,6 @@ class Datasy:
         self._key_login: str = None
         self._login_done: bool = False
         self._login_async: bool = login_async
-        self._check_event_router: bool = False
-        self._check_use_go: bool = False
 
     @property
     def page(self):
@@ -225,14 +225,12 @@ class Datasy:
 
     async def __logaut_init(self, topic, msg: Msg):
         if msg.method == "login":
-            self._check_event_router = False
             await self.page.client_storage.set_async(msg.key, msg.value.get("value"))
             if self.page.route == self.route_login:
                 self.page.go(msg.value.get("next_route"))
 
         elif msg.method == "logout":
             self._login_done = False
-            self._check_event_router = False
             await self.page.client_storage.remove_async(msg.key)
             self.page.go(self.route_login)
 
