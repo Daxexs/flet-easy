@@ -2,19 +2,12 @@
 name = "flet-easy"
 version = "0.2.3.dev3"
 description = "⚡Flet-Easy is a package created as a Flet add-on, designed to be easy to use with a cleaner order in the code, having many customizable features."
-authors = [
-    {name = "Daxexs", email = "Daxexsdev@gmail.com"},
-]
+authors = [{ name = "Daxexs", email = "Daxexsdev@gmail.com" }]
 
-dependencies = [
-    "parse>=1.20.1",
-    "rsa>=4.9",
-    "rich-argparse>=1.4.0",
-    "tomlkit>=0.12.4",
-]
+dependencies = ["parse>=1.20.1"]
 requires-python = ">=3.8"
 readme = "README.md"
-license = {text = "apache-2.0"}
+license = { text = "apache-2.0" }
 keywords = [
     "flet easy",
     "flet",
@@ -27,7 +20,7 @@ keywords = [
     "flet easy fastapi",
     "flutter python",
     "web application",
-    "fast flet"
+    "fast flet",
 ]
 classifiers = [
     "Topic :: Software Development :: Build Tools",
@@ -40,8 +33,15 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-all = ["pyJWT>=2.0.0", "flet>=0.21.0", "cookiecutter>=2.6.0"]
-JWT = ["pyJWT>=2.0.0"]
+all = [
+    "pyJWT>=2.0.0",
+    "rsa>=4.9",
+    "flet>=0.21.0",
+    "cookiecutter>=2.6.0",
+    "rich-argparse>=1.4.0",
+]
+JWT = ["pyJWT>=2.0.0", "rsa>=4.9"]
+cli = ["flet>=0.21.0", "cookiecutter>=2.6.0", "rich-argparse>=1.4.0"]
 
 [project.urls]
 Homepage = "https://github.com/Daxexs"
@@ -63,12 +63,11 @@ test = [
     "ruff>=0.3.4",
     "peewee>=3.17.2",
     "pyJWT>=2.9.0",
-    "cookiecutter>=2.6.0"
+    "cookiecutter>=2.6.0",
+    "rich-argparse>=1.4.0",
+    "rsa>=4.9",
 ]
-docs = [
-    "mkdocs-material>=9.5.17",
-    "mike>=2.0.0",
-]
+docs = ["mkdocs-material>=9.5.17", "mike>=2.0.0"]
 
 [tool.pdm.build]
 excludes = ["./**/.git"]

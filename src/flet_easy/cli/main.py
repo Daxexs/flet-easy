@@ -1,8 +1,11 @@
 import argparse
 import contextlib
 
-from cookiecutter.main import cookiecutter
-from rich_argparse import RichHelpFormatter
+try:
+    from cookiecutter.main import cookiecutter
+    from rich_argparse import RichHelpFormatter
+except ImportError:
+    raise Exception('To use the cli (fs) Install: "pip install flet-easy[all] --upgrade"')
 
 VERSION = "0.2.2"
 

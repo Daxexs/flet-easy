@@ -5,7 +5,8 @@ from typing import Any, Dict, Union
 with contextlib.suppress(ImportError):
     from jwt import DecodeError, ExpiredSignatureError, InvalidKeyError
 
-from rsa import newkeys
+with contextlib.suppress(ImportError):
+    from rsa import newkeys
 
 from flet_easy.datasy import Datasy, evaluate_secret_key
 from flet_easy.extra import Msg
