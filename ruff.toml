@@ -10,7 +10,6 @@ ignore = ["F631"]
 [format]
 docstring-code-format = true
 docstring-code-line-length = 80
-exclude = ["src/flet_easy/cli/templates/main.py"]
 
 [lint.pycodestyle]
 ignore-overlong-task-comments = true
