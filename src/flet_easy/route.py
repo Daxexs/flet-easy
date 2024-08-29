@@ -68,7 +68,7 @@ class FletEasyX:
     # ----------- Supports async
     def __route_change(self, e: RouteChangeEvent):
         if self.__pagesy is None:
-            if e.route == "/":
+            if e.route == "/" and self.__route_init != "/":
                 return self.__page.go(self.__route_init)
 
             self._go(e.route, True)
