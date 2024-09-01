@@ -1,9 +1,11 @@
+# Control view configuration
+
 ## Add settings of the `View` controller of [Flet](https://flet.dev/docs/controls/view)
-Which can be reused in each of the pages through the `data:fs.Datasy` parameter in the `page` decorator function of the app.
+Which can be reused in each of the pages through the [`data:fs.Datasy`](/flet-easy/0.2.4/how-to-use/#datasy-data) parameter in the `page` decorator function of the app.
 
-Decorator `view` to add custom controls to the app, the decorator function will return the Viewsy class from FletEasy. Which will be obtained in functions with parameter `data:fs.Datasy` and can be added to the page view decorated with `page` of the FletEasy class.
+Decorator `view` to add custom controls to the app, the decorator function will return the `Viewsy` class from FletEasy. Which will be obtained in functions with parameter `data:fs.Datasy` and can be added to the page view decorated with `page` of the FletEasy class.
 
-* The decorator function must receive a mandatory parameter, for example: `data:fs.Datasy`.
+* The decorator function must receive a mandatory parameter, for example: [`data:fs.Datasy`](/flet-easy/0.2.4/how-to-use/#datasy-data).
 * Add universal controls to use in more than one page in a simple way.
 
 ### Example
@@ -77,5 +79,5 @@ def dasboard_page(data: fs.Datasy):
 app.run()
 ```
 
-### 🎬 **Mode**
+### 🎬 **Demo**
 ![alt video](../assets/gifs/view-config.gif "view config")

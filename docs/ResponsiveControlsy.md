@@ -1,3 +1,4 @@
+# ResponsiveControlsy
 Allows the controls to adapt to the size of the app (responsive). It is suitable for use in applications, in web it is not recommended.
 
 !!! note
@@ -150,5 +151,5 @@ async def response_page(data: fs.Datasy):
 
 app.run()
 ```
-### 🎬 **Mode**
+### 🎬 **Demo**
 ![alt video](assets/gifs/ControlResponse.gif "ResponsiveControlsy")

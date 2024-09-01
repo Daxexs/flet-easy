@@ -1,13 +1,16 @@
+# Basic JWT
 JWT is a standard for securely transmitting data between parties in JSON format. It is composed of three parts: the header, the payload and the signature. It is commonly used for authentication and authorization in web applications and API services. JWTs are compact, self-contained and easy to use in distributed environments.
 
 Flet Easy contains a basic integration to use JWT in a simple and fast way, by integrating JWT in the app you can configure user session time, as well as an automatic session expiration. In order to add JWT we will need the following configurations.
 
-In the `FletEasy` class we must configure the following parameters:
+In the [`FletEasy`](/flet-easy/0.2.4/how-to-use/#fleteasy) class we must configure the following parameters:
 
 * The value of `auto_logout` is false by default (closes session automatically).
-* To configure the secret_key it is necessary to use the `SecretKey` class of `FletEasy`.
+* To configure the `secret_key` it is necessary to use the `SecretKey` class of `FletEasy`.
 
-## Algorithm HS256
+## Configuration
+
+### Algorithm HS256
 ```python title="main.py" hl_lines="6-9"
 import flet_easy  as fs
 
@@ -22,7 +25,7 @@ app = fs.FletEasy(
 )
 ```
 
-## Algorithm RS256
+### Algorithm RS256
 
 !!! info
     To use the `RS256` algorithm You must have the [`cryptographic`](https://github.com/pyca/cryptography){:target="_blank"} library installed.
@@ -41,7 +44,7 @@ app = fs.FletEasy(
 )
 ```
 
-## Get secret_key
+## Get `secret_key`
 FletEasy provides a class called `EasyKey` to easily get a secret_key to use, then we can copy it to a file or use it as environment variables.
 
 ```python
@@ -57,11 +60,13 @@ PRIVATE_KEY = key.private_key()
 PUBLIC_KEY = key.public_key()
 ```
 
-## How to use it
-After having configured the `secret_key`, we can start configuring the use of JWT. For this we are going to require the use of the `login` method of `Datasy` (data), it will be used as normally we would use it without using JWT, but we will use the `time_expiry` and `value` parameter that will have to be a dictionary obligatorily.
+---
 
-* [More details of the `login` method](/flet-easy/0.2/Customized-app/Route-protection/#login)
-* [More details of the `logout` method](/flet-easy/0.2/Customized-app/Route-protection/#logout)
+## How to use it
+After having configured the `secret_key`, we can start configuring the use of JWT. For this we are going to require the use of the [`login`](/flet-easy/0.2.4/customized-app/route-protection/) method of `Datasy` (data), it will be used as normally we would use it without using JWT, but we will use the `time_expiry` and `value` parameter that will have to be a dictionary obligatorily.
+
+* [More details of the `login` method](/flet-easy/0.2.4/customized-app/route-protection/#login)
+* [More details of the `logout` method](/flet-easy/0.2.4/customized-app/route-protection/#logout)
 
 ### Example
 ```python title="sensitive.py"
@@ -105,9 +110,9 @@ Kzuz8LYM/PJmIWIBTo2mqDwp/Iv2EbMKw0Jjn0cgnZINs9UciQqhxX4R49I3
 -----END RSA PRIVATE KEY-----"""
 ```
 
-In this example we are going to do very similar with the [`Route-protection`](/flet-easy/0.2/Customized-app/Route-protection/#example) example, we have only configured the secret_key, used the `login` method `time_expiry` parameter and used the `decode` function of `FletEasy` to get the payload stored in the decoded client storage.
+In this example we are going to do very similar with the [`Route-protection`](/flet-easy/0.2.4/customized-app/route-protection/#example) example, we have only configured the `secret_key`, used the [`login`](/flet-easy/0.2.4/customized-app/route-protection/#login) method `time_expiry` parameter and used the [`decode`](/flet-easy/0.2.4/basic-jwt/#decode) function of `FletEasy` to get the payload stored in the decoded client storage.
 
-```python title="main.py"  hl_lines="12-15 22 41 62-67 75"
+```python title="main.py"  hl_lines="12-15 22 42 65-70 78"
 from datetime import timedelta
 
 import flet as ft
@@ -133,7 +138,8 @@ def login_x(data: fs.Datasy):
 
     print("value:", value)
 
-    # We verify if the username that is stored in the browser is in the simulated database.
+    """ We verify if the username that is stored in the browser is in the
+    simulated database. """
     if not value:
         return False
     elif value.get("user") in db:
@@ -168,7 +174,9 @@ def login_page(data: fs.Datasy):
     def store_login(e):
         db.append(username.value)  # We add to the simulated database
 
-        """First the values must be stored in the browser, then in the login decorator the value must be retrieved through the key used and then validations must be used."""
+        """First the values must be stored in the browser, then in the
+        login decorator the value must be retrieved through the key used
+        and then validations must be used."""
         data.login(
             key="login",
             value={"user": username.value},
@@ -195,7 +203,7 @@ def login_page(data: fs.Datasy):
 
 app.run()
 ```
-### 🎬 **Mode**
+### 🎬 **Demo**
 **APP**
 ![alt video](assets/gifs/jwt-app.gif "jwt")
 
@@ -207,11 +215,12 @@ Decode the jwt and update the browser sessions.
 
 **Parameters to use:**
 
-* `key_login` : key used to store the data in the client, also used in the `login` method of `Datasy`.
-* `data` : Object instance of the `Datasy` class.
+* `key_login` : key used to store the data in the client, also used in the [`login`](/flet-easy/0.2.4/customized-app/route-protection/#login) method of [`Datasy`](/flet-easy/0.2.4/how-to-use/#datasy-data).
+* `data` : Object instance of the [`Datasy`](/flet-easy/0.2.4/how-to-use/#datasy-data) class.
+
 !!! info
     * Support async, example: `decode_async`.
     * If the function to use is async it is recommended to use `decode_async` to avoid errors.
 
 !!! note
-    The `decode` and `decode_async` functions can be used in other parts of the code, for example: [Midleware](/flet-easy/0.2/Midleware/)
+    The `decode` and `decode_async` functions can be used in other parts of the code, for example: [Middleware](/flet-easy/0.2.4/middleware/)

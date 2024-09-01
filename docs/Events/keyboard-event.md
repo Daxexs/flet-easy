@@ -1,6 +1,9 @@
-In order to use this method, the parameter of the function decorated by `page` is obtained through `data`.
+# Keyboard event
+In order to use this method, the parameter of the function decorated by [`page`](/flet-easy/0.2.4/how-to-use/#decorator-page) is obtained through [`data`](/flet-easy/0.2.4/how-to-use/#datasy-data).
 
-Manages keyboard input of values, contains the following methods:
+Manages keyboard input of values
+
+## Methods
 
 * `add_control(function: Callable)` : Add a controller configuration (method of a class or function), which is executed with the `on_keyboard_event` event.
 * `key()` : returns the value entered by keyboard.
@@ -10,7 +13,7 @@ Manages keyboard input of values, contains the following methods:
 * `meta()` : returns keyboard input.
 * `test()` : returns a message of all keyboard input values (key, Shift, Control, Alt, Meta).
 
-### **Example**
+## Example
 
 ```python hl_lines="6 12 16-18 21"
 import flet as ft
@@ -49,5 +52,5 @@ def keyboard_page(data: fs.Datasy):
 
 app.run()
 ```
-### 🎬 **Mode**
+### 🎬 **Demo**
 ![alt video](../assets/gifs/on_keyboard.gif "use keyboard")

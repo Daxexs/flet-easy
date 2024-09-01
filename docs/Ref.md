@@ -1,4 +1,5 @@
-Similar to [`Ref`](https://flet.dev/docs/cookbook/control-refs){:target="_blank"} of `Flet`, with the only difference being that to access the referenced control (de-reference control) use the property [`Ref.current`](https://flet.dev/docs/cookbook/control-refs){:target="_blank"} to `Ref.c`
+# Ref
+Similar to [`Ref`](https://flet.dev/docs/cookbook/control-refs){:target="_blank"} of `Flet`, with the only difference being that to access the referenced control, use the property [`Ref.current`](https://flet.dev/docs/cookbook/control-refs){:target="_blank"} to `Ref.c`
 
 !!! info
     It can be useful when we create components and we want to reference the controllers to be able to handle events in the component.

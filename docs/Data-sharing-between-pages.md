@@ -1,4 +1,4 @@
-
+# Data sharing between pages
 To be able to manipulate the data between client sessions, `data.share` is used, `data` is the parameter of the function decorated by `page`. Unlike `page.session` this allows a better protection of the data that you want to share in the pages, because through the `share_data` parameter of the `page` decorator you can limit to which pages you want to share the data, if the page does not have permission to share the data it will be automatically deleted. The methods to use are similar `page.session` [example](https://flet.dev/docs/guides/python/session-storage). 
 
 Besides that you get some extra methods:
@@ -111,5 +111,5 @@ async def info_page(data: fs.Datasy):
 
 app.run(view=ft.AppView.WEB_BROWSER)
 ```
-### 🎬 **Mode**
+### 🎬 **Demo**
 ![alt video](assets/gifs/share-data.gif "share data")

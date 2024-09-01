@@ -1,4 +1,5 @@
-In order to use this event, it is obtained from `data` of the function decorated by `page`.
+# On resize
+In order to use this event, it is obtained from [`data`](/flet-easy/0.2.4/how-to-use/#datasy-data) of the function decorated by [`page`](/flet-easy/0.2.4/how-to-use/#decorator-page).
 
 ### **1. Example**
 
@@ -59,5 +60,5 @@ def resize_page(data:fs.Datasy):
     )
 
 ```
-### 📷 **Mode**
+### 📷 **Demo**
 ![on-resize](../assets/images/on-resize.png "on-resize")

@@ -1,6 +1,7 @@
+# Run the app
 To run the application we use an object method already instantiated by Flet-Easy (you can customize the parameters of your method according to your needs):
 
-## 📷 **Mode**
+## 📷 **Demo**
 ![FletEasy run](assets/images/method_run.png "FletEasy run")
 
 ## customize as it is executed

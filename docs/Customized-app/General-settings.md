@@ -1,8 +1,9 @@
-This is achieved through the `page` value provided by `Flet`. For this you have to use the `config` decorator of the `Flet-Easy` object.
+# General settings
+This is achieved through the [`page`](https://flet.dev/docs/controls/page/) value provided by `Flet`. For this you have to use the `config` decorator of the `Flet-Easy` object.
 
 Decorator to add a custom configuration to the app:
 
-* The decorator function must receive a mandatory parameter, for example: `page:ft.Page`. Which can be used to make universal app configurations.
+* The decorator function must receive a mandatory parameter, for example: [`page:ft.Page`](https://flet.dev/docs/controls/page/). Which can be used to make universal app configurations.
 * The decorator function does not return anything.
 
 ### Example

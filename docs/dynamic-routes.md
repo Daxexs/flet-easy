@@ -1,3 +1,4 @@
+# Dynamic routes
 FletEasy provides a simple and powerful routing to manage the access to the pages created, it contains 3 ways of use (choose the one that suits you best).
 
 ## **Simple form**
@@ -17,13 +18,13 @@ def home_page(data: fs.Datasy, id, name):
         controls=[
             ft.Text(f"ID: {id} \nNAME: {name}", size=50),
         ],
-        vertical_alignment=ft.MainAxisAlignment.CENTER,
-        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        vertical_alignment="center",
+        horizontal_alignment="center",
     )
 
 app.run(view=ft.AppView.WEB_BROWSER)
 ```
-### 🎬 **Mode**
+### 🎬 **Demo**
 ![alt video](assets/gifs/route-simple.gif "route simple")
 
 ## **Advanced Form**
@@ -43,14 +44,14 @@ def home_page(data: fs.Datasy, id:int, name:str):
         controls=[
             ft.Text(f"ID: {id} \nNAME: {name}", size=50),
         ],
-        vertical_alignment=ft.MainAxisAlignment.CENTER,
-        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        vertical_alignment="center",
+        horizontal_alignment="center",
     )
 
 app.run(view=ft.AppView.WEB_BROWSER)
 
 ```
-### 🎬 **Mode**
+### 🎬 **Demo**
 ![alt video](assets/gifs/route-advanced.gif "route advanced")
 
 ## **Custom validation**
@@ -81,12 +82,12 @@ def home_page(data: fs.Datasy, id: int, name: str, uuid: UUID):
         controls=[
             ft.Text(f"ID: {id} \nNAME: {name}\nUUID: {uuid}", size=50),
         ],
-        vertical_alignment=ft.MainAxisAlignment.CENTER,
-        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        vertical_alignment="center",
+        horizontal_alignment="center",
     )
 
 app.run(view=ft.AppView.WEB_BROWSER)
 ```
-### 🎬 **Mode**
+### 🎬 **Demo**
 ![alt video](assets/gifs/route-custom.gif "route advanced")
   
