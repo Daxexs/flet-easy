@@ -1,12 +1,14 @@
 from dataclasses import dataclass
 from inspect import iscoroutinefunction
-from typing import Any, Callable, Dict, List, TypeVar
+from typing import Any, Callable, Dict, List, Sequence, TypeVar
 
 from flet import (
     AppBar,
     BottomAppBar,
+    BoxDecoration,
     ControlEvent,
     CrossAxisAlignment,
+    CupertinoAppBar,
     CupertinoNavigationBar,
     FloatingActionButton,
     FloatingActionButtonLocation,
@@ -14,6 +16,8 @@ from flet import (
     MainAxisAlignment,
     NavigationBar,
     NavigationDrawer,
+    OnScrollEvent,
+    OptionalEventCallable,
     OptionalNumber,
     PaddingValue,
     Page,
@@ -25,6 +29,7 @@ from flet import (
 from flet.canvas import Canvas
 from flet_core import Control
 from flet_core.session_storage import SessionStorage
+from flet_core.types import OffsetValue
 
 T = TypeVar("T")
 
@@ -199,25 +204,28 @@ class Resizesy:
 
 @dataclass
 class Viewsy:
-    route: str | None = None
-    controls: List[Control] | None = None
-    appbar: AppBar | None = None
-    bottom_appbar: BottomAppBar | None = None
-    floating_action_button: FloatingActionButton | None = None
-    floating_action_button_location: FloatingActionButtonLocation | None = None
-    navigation_bar: NavigationBar | CupertinoNavigationBar | None = None
-    drawer: NavigationDrawer | None = None
-    end_drawer: NavigationDrawer | None = None
-    vertical_alignment: MainAxisAlignment | None = None
-    horizontal_alignment: CrossAxisAlignment | None = None
-    spacing: OptionalNumber = None
-    padding: PaddingValue = None
-    bgcolor: str | None = None
-    scroll: ScrollMode | None = None
-    auto_scroll: bool | None = None
-    fullscreen_dialog: bool | None = None
-    on_scroll_interval: OptionalNumber = None
-    on_scroll: Any = None
+    route: str | None = (None,)
+    controls: Sequence[Control] | None = (None,)
+    appbar: AppBar | CupertinoAppBar | None = (None,)
+    bottom_appbar: BottomAppBar | None = (None,)
+    floating_action_button: FloatingActionButton | None = (None,)
+    floating_action_button_location: OffsetValue | FloatingActionButtonLocation = (None,)
+    navigation_bar: NavigationBar | CupertinoNavigationBar | None = (None,)
+    drawer: NavigationDrawer | None = (None,)
+    end_drawer: NavigationDrawer | None = (None,)
+    vertical_alignment: MainAxisAlignment | None = (None,)
+    horizontal_alignment: CrossAxisAlignment | None = (None,)
+    spacing: OptionalNumber = (None,)
+    padding: PaddingValue = (None,)
+    bgcolor: str | None = (None,)
+    decoration: BoxDecoration | None = (None,)
+    foreground_decoration: BoxDecoration | None = (None,)
+    scroll: ScrollMode | None = (None,)
+    auto_scroll: bool | None = (None,)
+    fullscreen_dialog: bool | None = (None,)
+    on_scroll_interval: OptionalNumber = (None,)
+    on_scroll: OptionalEventCallable[OnScrollEvent] = (None,)
+    adaptive: bool | None = None
 
 
 class ResponsiveControlsy(Canvas):
