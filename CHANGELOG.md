@@ -1,6 +1,6 @@
 # Flet-Easy changelog
 
-### 0.2.4 (09/02/24)
+### 0.2.4 (03/09/24)
 * ⚡The speed of the router is improved to more than twice as fast. ([#20](https://github.com/Daxexs/flet-easy/issues/20))
   
 * Ways to install Flet-Easy. ([#25](https://github.com/Daxexs/flet-easy/issues/25)) [[Doc](https://daxexs.github.io/flet-easy/0.2.4/installation/)]
