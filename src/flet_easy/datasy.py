@@ -216,7 +216,9 @@ class Datasy:
         def execute(key: str):
             assert self.route_login is not None, "Adds a login path in the FletEasy Class"
             if self.page.web:
-                self.page.pubsub.send_all_on_topic(self.page.client_ip, Msg("logout", key))
+                self.page.pubsub.send_all_on_topic(
+                    self.page.client_ip + self.page.client_user_agent, Msg("logout", key)
+                )
             else:
                 self.page.run_task(self.page.client_storage.remove_async, key)
                 self.page.go(self.route_login)
@@ -257,7 +259,9 @@ class Datasy:
     def _create_login(self):
         """Create the connection between sessions."""
         if self.page.web:
-            self.page.pubsub.subscribe_topic(self.page.client_ip, self.__logaut_init)
+            self.page.pubsub.subscribe_topic(
+                self.page.client_ip + self.page.client_user_agent, self.__logaut_init
+            )
 
     def _create_tasks(self, time_expiry: timedelta, key: str, sleep: int) -> None:
         """Creates the logout task when logging in."""
@@ -307,13 +311,14 @@ class Datasy:
             if self.__auto_logout:
                 self._create_tasks(time_expiry, key, sleep)
 
+        self.page.run_task(self.page.client_storage.set_async, key, value).result()
+
         if self.page.web:
-            self.page.pubsub.send_all_on_topic(
-                self.page.client_ip, Msg("login", key, {"value": value, "next_route": next_route})
+            self.page.pubsub.send_others_on_topic(
+                self.page.client_ip + self.page.client_user_agent,
+                Msg("login", key, {"value": value, "next_route": next_route}),
             )
-        else:
-            self.page.run_task(self.page.client_storage.set_async, key, value).result()
-            self.__go(next_route)
+        self.__go(next_route)
 
     """ Page go  """
 
