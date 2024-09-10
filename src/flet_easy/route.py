@@ -1,7 +1,7 @@
 from inspect import iscoroutinefunction
 from typing import Any, Callable, Dict, List
 
-from flet import ControlEvent, KeyboardEvent, Page, RouteChangeEvent
+from flet import ControlEvent, KeyboardEvent, Page, RouteChangeEvent, View
 from parse import parse
 
 from flet_easy.datasy import Datasy
@@ -145,6 +145,9 @@ class FletEasyX:
         """Add a new page and update it."""
 
         self.__page.views.clear()
+
+        if not pagesy.clear and len(self.__data.history_routes) > 0:
+            self.__page.views.append(View())
 
         if callable(pagesy.view) and not isinstance(pagesy.view, type):
             view = (
