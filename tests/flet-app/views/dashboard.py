@@ -1,6 +1,7 @@
 import flet as ft
-import flet_easy as fs
 from components import Drawer
+
+import flet_easy as fs
 
 dashboard = fs.AddPagesy(
     route_prefix="/dashboard",
@@ -18,4 +19,5 @@ async def dasboard_page(data: fs.Datasy):
         vertical_alignment="center",
         horizontal_alignment="center",
         drawer=data.view.drawer,
+        appbar=data.view.appbar,
     )

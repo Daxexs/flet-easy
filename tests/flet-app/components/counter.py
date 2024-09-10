@@ -1,6 +1,7 @@
 import flet as ft
-import flet_easy as fs
 from controllers import CounterC
+
+import flet_easy as fs
 
 
 class Counter(ft.Container):
@@ -10,7 +11,7 @@ class Counter(ft.Container):
         self.id = id
         self.resize = resize
         self.padding = 20
-        self.content = ft.Column(
+        self.content = ft.ResponsiveRow(
             [
                 ft.Row(
                     [
@@ -31,8 +32,9 @@ class Counter(ft.Container):
                             on_click=self.counter.plus_click,
                         ),
                     ],
+                    col={"xs": 12, "sm": 10, "md": 8, "lg": 5, "xl": 4, "xxl": 3},
                     alignment="center",
                 ),
-            ]
+            ],
+            alignment="center",
         )
-        self.width = self.resize.widthX(50)

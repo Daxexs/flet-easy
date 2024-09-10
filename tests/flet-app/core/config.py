@@ -1,4 +1,5 @@
 import flet as ft
+
 import flet_easy as fs
 
 
@@ -16,6 +17,7 @@ class ConfigApp:
         @self.app.view
         async def view_config(data: fs.Datasy):
             return fs.Viewsy(
+                appbar=ft.AppBar(title=ft.Text("Flet-Easy")),
                 drawer=ft.NavigationDrawer(
                     controls=[
                         ft.Container(height=12),
@@ -53,7 +55,7 @@ class ConfigApp:
                             alignment=ft.MainAxisAlignment.CENTER,
                         ),
                     ],
-                )
+                ),
             )
 
         @self.app.config

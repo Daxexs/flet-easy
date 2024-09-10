@@ -1,6 +1,7 @@
 import flet as ft
-import flet_easy as fs
 from components import Drawer
+
+import flet_easy as fs
 
 index = fs.AddPagesy()
 
@@ -20,4 +21,5 @@ async def index_page(data: fs.Datasy):
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
         drawer=view.drawer,
+        appbar=view.appbar,
     )

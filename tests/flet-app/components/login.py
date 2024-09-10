@@ -1,6 +1,7 @@
 import flet as ft
-import flet_easy as fs
 from controllers import LoginC
+
+import flet_easy as fs
 
 
 class Login(ft.Container):
@@ -17,6 +18,14 @@ class Login(ft.Container):
                 ft.TextField(
                     ref=self.login.password,
                     label="Password",
+                    password=True,
+                    can_reveal_password=True,
+                ),
+                ft.TextField(
+                    ref=self.login.time_logout,
+                    value="10",
+                    prefix_icon=ft.icons.TIMER,
+                    helper_text="Seconds to logout automatically",
                 ),
                 ft.FilledButton("Login", on_click=self.login.check),
                 ft.TextButton("Register", on_click=data.go("/register")),

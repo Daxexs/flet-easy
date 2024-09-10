@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 
 import flet as ft
-import flet_easy as fs
 from components import Drawer
+
+import flet_easy as fs
 
 share = fs.AddPagesy(route_prefix="/share")
 
@@ -30,6 +31,7 @@ async def send_data_page(data: fs.Datasy):
             Drawer(text="Show_drawer", drawer=data.view.drawer),
         ],
         drawer=data.view.drawer,
+        appbar=data.view.appbar,
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
     )
@@ -54,6 +56,7 @@ async def get_data_page(data: fs.Datasy):
             Drawer(text="Show_drawer", drawer=data.view.drawer),
         ],
         drawer=data.view.drawer,
+        appbar=data.view.appbar,
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
     )
@@ -76,6 +79,7 @@ def info_page(data: fs.Datasy):
             Drawer(text="Show_drawer", drawer=data.view.drawer),
         ],
         drawer=data.view.drawer,
+        appbar=data.view.appbar,
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
     )

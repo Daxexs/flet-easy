@@ -1,6 +1,7 @@
 import flet as ft
-import flet_easy as fs
 from components import Drawer, Login, Register
+
+import flet_easy as fs
 
 login = fs.AddPagesy()
 
@@ -36,6 +37,7 @@ async def login_request(data: fs.Datasy):
         vertical_alignment="center",
         horizontal_alignment="center",
         drawer=data.view.drawer,
+        appbar=data.view.appbar,
     )
 
 
@@ -66,4 +68,5 @@ def register_page(data: fs.Datasy):
         vertical_alignment="center",
         horizontal_alignment="center",
         drawer=data.view.drawer,
+        appbar=data.view.appbar,
     )

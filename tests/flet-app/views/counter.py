@@ -1,6 +1,7 @@
 import flet as ft
-import flet_easy as fs
 from components import Counter, Custom, Drawer
+
+import flet_easy as fs
 
 counter = fs.AddPagesy(
     route_prefix="/counter",
@@ -9,7 +10,7 @@ counter = fs.AddPagesy(
 
 async def check_params(data: fs.Datasy):
     print("+ Params Counter id:", data.url_params.get("id"))
-    if data.url_params.get("id") == 10:
+    if data.url_params.get("id") == 10 and not await fs.decode_async("login", data):
         return data.redirect("/share/send-data")
 
 
@@ -26,6 +27,7 @@ async def counter_page(data: fs.Datasy, id: str):
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
         drawer=view.drawer,
+        appbar=view.appbar,
     )
 
 

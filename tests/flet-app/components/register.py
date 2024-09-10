@@ -1,6 +1,7 @@
 import flet as ft
-import flet_easy as fs
 from controllers import RegisterC
+
+import flet_easy as fs
 
 
 class Register(ft.Container):

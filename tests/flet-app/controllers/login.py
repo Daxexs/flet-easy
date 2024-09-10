@@ -1,18 +1,20 @@
 from datetime import timedelta
 
 import flet as ft
+from models.methods import User, check_user
+
 import flet_easy as fs
-from models.methods import User, add_user
 
 
-class RegisterC:
+class LoginC:
     def __init__(self, data: fs.Datasy, redirect: str):
         self.data = data
         self.redirect = redirect
         self.username = fs.Ref[ft.TextField]()
         self.password = fs.Ref[ft.TextField]()
+        self.time_logout = fs.Ref[ft.TextField]()
 
-    def add(self, e):
+    def check(self, e):
         username = (
             self.username.c.value
             if self.username.c.value != "" and self.username.c.value
@@ -26,15 +28,15 @@ class RegisterC:
         )
 
         if username and password:
-            if not add_user(User(username=username, password=password)):
+            if not check_user(User(username=username, password=password)):
                 self.data.page.snack_bar = ft.SnackBar(
-                    content=ft.Text("The user already exists"), action="Alright!", open=True
+                    content=ft.Text("User does not exist"), action="Alright!", open=True
                 )
             else:
                 self.data.login(
                     key="login",
                     value={"user": username},
-                    time_expiry=timedelta(seconds=10),
+                    time_expiry=timedelta(seconds=int(self.time_logout.c.value)),
                     next_route="/dashboard",
                 )
         else:
