@@ -4,7 +4,7 @@ site_author: Daxexs
 site_description: >-
   Flet-Easy is a user-friendly add-on package for Flet, offering a cleaner code structure with numerous customizable features.
 edit_uri: edit/main/docs/
-copyright: Copyright &copy; 2024 Daxexs
+copyright: Copyright &copy; <span id="dynamic-year"></span> Daxexs
 repo_name: Daxexs/flet-easy
 repo_url: https://github.com/Daxexs/flet-easy
 
@@ -165,3 +165,6 @@ nav:
   - ref.md
   - responsiveControlsy.md
   - working-with-other-apps.md
+
+extra_javascript:
+  - assets/js/dynamic-year.js
