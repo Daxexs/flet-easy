@@ -83,8 +83,8 @@ Registering in the client's storage the key and value in all browser sessions.
 * `key` : It is the identifier to store the value in the client storage.
 * `value` : Recommend to use a dict if you use JWT.
 * `next_route` : Redirect to next route after creating login.
-* `time_expiry` : Time to expire the session, use the `timedelta` class  to configure. (Optional) ([JWT usage required](/flet-easy/0.2.4/basic-jwt/))
-* `sleep` : Time to do login checks, default is 1s. (Optional) ([JWT usage required](/flet-easy/0.2.4/basic-jwt/))
+* `time_expiry` : Time to expire the session, use the `timedelta` class  to configure. (Optional) ([JWT usage required](/flet-easy/0.2.4/basic-jwt))
+* `sleep` : Time to do login checks, default is 1s. (Optional) ([JWT usage required](/flet-easy/0.2.4/basic-jwt))
 
 ## logout
 Closes the sessions of all browser tabs or the device used, which has been previously configured with the `login` method.

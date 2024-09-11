@@ -3,8 +3,6 @@ Which will be activated when a page (path) is not found. `page_404` Decorator to
 
 ## parameters
 
-!!! info "The `clear_page` parameter since version 0.2.4 is deprecated, it will be removed in the next versions."
-
 * `route`: text string of the url, for example ('/FletEasy-404'). (optional).
 * `title` : Define the title of the page. (optional).
 * `clear_page`: remove the pages from the page.views list of flet. (optional)

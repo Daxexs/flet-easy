@@ -3,9 +3,8 @@
 
 ???+ info "New features"
     * ⚡The speed of the router is improved to more than twice as fast.
-    * Ways to install Flet-Easy. [[`See more`](/flet-easy/0.2.4/installation/)]
+    * Ways to install Flet-Easy. [[`See more`](/flet-easy/0.2.4/installation)]
     * Supporting the use of class to create a view. [[`See more`](/flet-easy/0.2.4/add-pages/through-classes)]
-    * The `clear` parameter of [`Pagesy`](/flet-easy/0.2.4/add-pages/by-means-of-functions/#pagesy) and the[`page`](/flet-easy/0.2.4/how-to-use/#how-to-create-a-new-page) decorator is deprecated, it will be removedin future versions. [[`See more`](/flet-easy/0.2.4/add-pages/by-means-of-functions/#pagesy)]
     * Now `page.go()` and `data.go()` work similarly to go to a page (`View`), the only difference isthat `data.go   ()` checks for url redirects when using `data.redirect()`. [[`See more`](/flet-easy/0.2.4/how-to-use/#datasy-data)]
     * Bug fixes found in previous changes.
     * New method added in Datasy (data) [[`See more`](/flet-easy/0.2.4/how-to-use/#datasy-data)]

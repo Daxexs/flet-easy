@@ -87,16 +87,14 @@ app.add_routes(add_views=[
 ])
 ```
 
-## Pagesy
+## `Pagesy`
 📑 The class `Pagesy`, it requires the following parameters:
-
-!!! info "The `clear` parameter since version 0.2.4 is deprecated, it will be removed in the next versions."
 
 * `route`: text string of the url, for example(`'/index'`).
 * `view`: Stores the page function.
 * `title` : Define the title of the page.
-* `clear`: Removes the pages from the `page.views` list of flet. (optional)
-* `share_data` : It is a boolean value, which is useful if you want to share data between pages, in a morerestricted way. (optional) [[`See more`](/flet-easy/0.2.4/data-sharing-between-pages/)]
-* `protected_route`: Protects the route of the page, according to the configuration of the `login` decoratorof the `FletEasy` class. (optional) [[`See more`](/flet-easy/0.2.4/customized-app/route-protection/)]
+* `clear`: Removes the pages from the `page.views` list of flet. remove the icon to return to the previous `View` in the `AppBar` control. (optional)
+* `share_data` : It is a boolean value, which is useful if you want to share data between pages, in a morerestricted way. (optional) [[`See more`](/flet-easy/0.2.4/data-sharing-between-pages)]
+* `protected_route`: Protects the route of the page, according to the configuration of the `login` decoratorof the `FletEasy` class. (optional) [[`See more`](/flet-easy/0.2.4/customized-app/route-protection)]
 * `custom_params`: To add validation of parameters in the custom url using a dictionary, where the key is the nameof the parameter validation and the value is the custom function that must report a boolean value. [[`See more`](/flet-easy/0.2.4/dynamic-routes/#custom-validation)]
 * `middleware` : It acts as an intermediary between different software components, intercepting andprocessing requests and responses. They allow adding functionalities to an application in a flexible andmodular way. (optional) [[`See more`](/flet-easy/0.2.4/middleware/#for-each-page)]

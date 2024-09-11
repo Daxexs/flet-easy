@@ -63,7 +63,7 @@ PUBLIC_KEY = key.public_key()
 ---
 
 ## How to use it
-After having configured the `secret_key`, we can start configuring the use of JWT. For this we are going to require the use of the [`login`](/flet-easy/0.2.4/customized-app/route-protection/) method of `Datasy` (data), it will be used as normally we would use it without using JWT, but we will use the `time_expiry` and `value` parameter that will have to be a dictionary obligatorily.
+After having configured the `secret_key`, we can start configuring the use of JWT. For this we are going to require the use of the [`login`](/flet-easy/0.2.4/customized-app/route-protection) method of `Datasy` (data), it will be used as normally we would use it without using JWT, but we will use the `time_expiry` and `value` parameter that will have to be a dictionary obligatorily.
 
 * [More details of the `login` method](/flet-easy/0.2.4/customized-app/route-protection/#login)
 * [More details of the `logout` method](/flet-easy/0.2.4/customized-app/route-protection/#logout)
@@ -223,4 +223,4 @@ Decode the jwt and update the browser sessions.
     * If the function to use is async it is recommended to use `decode_async` to avoid errors.
 
 !!! note
-    The `decode` and `decode_async` functions can be used in other parts of the code, for example: [Middleware](/flet-easy/0.2.4/middleware/)
+    The `decode` and `decode_async` functions can be used in other parts of the code, for example: [Middleware](/flet-easy/0.2.4/middleware)

@@ -5,7 +5,7 @@ FletEasy provides several ways to install. This allows you to use dependencies t
 
 ### Install FletEasy Complete
 !!! note
-    If you use the [`fs`](/flet-easy/0.2.4/cli-to-create-app/) cli, it is important to have [`git`](https://git-scm.com/downloads) installed.
+    If you use the [`fs`](/flet-easy/0.2.4/cli-to-create-app) cli, it is important to have [`git`](https://git-scm.com/downloads) installed.
 
 Installs all the dependencies to use, you can use all the functionalities provided by FletEasy
 

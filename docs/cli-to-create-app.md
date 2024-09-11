@@ -20,7 +20,7 @@ Which can be scaled to an app with higher requirements such as a design pattern 
      ```
 
 !!! note
-    If you use the [`fs`](/flet-easy/0.2.4/cli-to-create-app/) cli, it is important to have [`git`](https://git-scm.com/downloads) installed.
+    If you use the [`fs`](/flet-easy/0.2.4/cli-to-create-app) cli, it is important to have [`git`](https://git-scm.com/downloads) installed.
 
 ```bash
 fs init

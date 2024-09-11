@@ -15,7 +15,12 @@ The function that will act as middleware will receive as a single mandatory para
     Several functions can be used at the same time in the Middleware, since a list of functions is entered.
 
 ## General Application
-Another alternative to protected-route 
+
+???+ info "If you have any problem in `build Windows`"
+    Remove `print()` from Python if used in `add_middleware` functions.
+    
+Another alternative to protected-route
+
 ```python hl_lines="4 12 15 20 24 34 56"
 import flet as ft
 import flet_easy as fs

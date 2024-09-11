@@ -12,3 +12,9 @@ To run the application we use an object method already instantiated by Flet-Easy
 
 ## Export asgi app
 ![Export asgi](assets/images/export_asgi.png "Export asgi")
+
+???+ info "If you have any problem in `build Web`"
+     Use:
+     ```python
+     ft.app(target=app.run(fastapi=true))
+     ```
