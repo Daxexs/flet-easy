@@ -268,35 +268,35 @@ files = [
 
 [[package]]
 name = "flet"
-version = "0.24.0"
+version = "0.24.1"
 requires_python = "<4.0,>=3.8"
 summary = "Flet for Python - easily build interactive multi-platform apps in Python"
 groups = ["test"]
 dependencies = [
     "cookiecutter<3.0.0,>=2.6.0",
     "fastapi<1,>=0",
-    "flet-runtime==0.24.0",
+    "flet-runtime==0.24.1",
     "packaging<24.0,>=23.1",
     "qrcode<8.0.0,>=7.4.2",
     "uvicorn[standard]<1,>=0",
     "watchdog<5.0.0,>=4.0.0",
 ]
 files = [
-    {file = "flet-0.24.0-py3-none-any.whl", hash = "sha256:4a2115cc93c628c92ffdbc71f2675f9cd36406c2681519cd3818e85cbb43cc50"},
-    {file = "flet-0.24.0-py3-none-macosx_10_14_x86_64.whl", hash = "sha256:1d1e6779dd30335e6c8151c06f1c77412e9aa8562bb51e74e0fc5accf6c393e3"},
-    {file = "flet-0.24.0-py3-none-macosx_12_0_arm64.whl", hash = "sha256:76f91a8f767257b291e5bfb6eebb5abc6572f50618d8f7ae072623b9a185c66a"},
-    {file = "flet-0.24.0-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:81adaf92753793f3d0e7a166b16a882b8bce7404a1e15e82a67c59e00a2c787c"},
-    {file = "flet-0.24.0-py3-none-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:668836f8a5dacbf90ae6e827fb948a4dfdf2b38c34082cc77466b178745e62c5"},
-    {file = "flet-0.24.0-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:8ca900932d3c651407601e335ae1ffadf8c4ed878b385b94b210b50aa170daf5"},
-    {file = "flet-0.24.0-py3-none-musllinux_1_2_x86_64.whl", hash = "sha256:e5a7f20318c671d81c5bef720bfbda78d932caa1036493e60422197e41f7d22d"},
-    {file = "flet-0.24.0-py3-none-win32.whl", hash = "sha256:80066e7dec96523944164c584b6ebaa01b49cce1e61dc4b2beb3b346c3a57aab"},
-    {file = "flet-0.24.0-py3-none-win_amd64.whl", hash = "sha256:d02505615a686c974b03a92ed601e974f321df13b655eb06831ed372f5199de8"},
-    {file = "flet-0.24.0.tar.gz", hash = "sha256:c95ee1ed76bd6b3c360a03babcc371f7ce17c24a192c2996f550d323d0bd3a24"},
+    {file = "flet-0.24.1-py3-none-any.whl", hash = "sha256:dfcfe8febedbc5eecb714edc11ee3e13c4a00c83000e55d4b664f695473f5141"},
+    {file = "flet-0.24.1-py3-none-macosx_10_14_x86_64.whl", hash = "sha256:15ab27d73e0b20f5157e911c121ea9f0da682a73f1dba007adc1f2077e00ccb3"},
+    {file = "flet-0.24.1-py3-none-macosx_12_0_arm64.whl", hash = "sha256:a65b67b257bdb63815d20a3d5ae523975cafbf493b6baa3611d3edb854c5fe1b"},
+    {file = "flet-0.24.1-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:d5495f65b0354d5f169c7859cb2dbc331fdd995de38779e5f85748891a793c1f"},
+    {file = "flet-0.24.1-py3-none-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:a7759fab4075519a81c65d3693216f43d34d3838cf4fd832325e3d043df4a1a3"},
+    {file = "flet-0.24.1-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:0fa5fd6cb049d4acd63758890553b7b43b2bbf6bcf0d37d2a0ffe91f12ca0279"},
+    {file = "flet-0.24.1-py3-none-musllinux_1_2_x86_64.whl", hash = "sha256:2ae142d9f37110944fc15a0283c9a3b1ea31d309f4e0942a387160f0688eae0f"},
+    {file = "flet-0.24.1-py3-none-win32.whl", hash = "sha256:054183a35c24cf69febabc17206097d38a39da90c0166899612f9f8ecd4a12aa"},
+    {file = "flet-0.24.1-py3-none-win_amd64.whl", hash = "sha256:8821b0655ef2d7e8763a9ed87cf8a68e4e4ce302edac84b425bbc465620fd1c3"},
+    {file = "flet-0.24.1.tar.gz", hash = "sha256:754989e8314c3ca9f02b4fff2e1aac4e1395fc712175547e2f84a7f1f0f560a1"},
 ]
 
 [[package]]
 name = "flet-core"
-version = "0.24.0"
+version = "0.24.1"
 requires_python = "<4.0,>=3.8"
 summary = "Flet core library"
 groups = ["test"]
@@ -304,24 +304,24 @@ dependencies = [
     "repath<0.10.0,>=0.9.0",
 ]
 files = [
-    {file = "flet_core-0.24.0-py3-none-any.whl", hash = "sha256:abb29917583dbe5730bade23505cc8d6114a4fdf8128d66d55121401296edd28"},
-    {file = "flet_core-0.24.0.tar.gz", hash = "sha256:983522053cbaf18264389e432676df5665f11841bdfb84f01f552f7536393397"},
+    {file = "flet_core-0.24.1-py3-none-any.whl", hash = "sha256:0c729a6a5f914b54ce90d727594d896b975ad1ef749c7076b6775ad4684ea4ed"},
+    {file = "flet_core-0.24.1.tar.gz", hash = "sha256:1137109aec43b78a911f460a56e0e4581b4c411ba53e5c68fe785502e7e89498"},
 ]
 
 [[package]]
 name = "flet-runtime"
-version = "0.24.0"
+version = "0.24.1"
 requires_python = "<4.0,>=3.8"
 summary = "Flet Runtime - a base package for Flet desktop and Flet mobile."
 groups = ["test"]
 dependencies = [
-    "flet-core==0.24.0",
+    "flet-core==0.24.1",
     "httpx<1,>=0",
     "oauthlib<4.0.0,>=3.2.2",
 ]
 files = [
-    {file = "flet_runtime-0.24.0-py3-none-any.whl", hash = "sha256:036322c73921025bb7e2995065092ad11798c20ce3d2b9b553639f9f7fdfe74b"},
-    {file = "flet_runtime-0.24.0.tar.gz", hash = "sha256:5439a2c7e747495fae2ce2f78cf3dddb378f4545c1f453b8c6a27dc3f6b19d39"},
+    {file = "flet_runtime-0.24.1-py3-none-any.whl", hash = "sha256:57087b5c23c3ce3192354e215cdb68326f4a0685e5515ce020fae80ef83a9cb2"},
+    {file = "flet_runtime-0.24.1.tar.gz", hash = "sha256:88fbf916b66a84ca04e5e2e300b9d5d1701642ef3d0fd86aae3eaa6b91e9daeb"},
 ]
 
 [[package]]
@@ -1232,29 +1232,29 @@ files = [
 
 [[package]]
 name = "ruff"
-version = "0.6.3"
+version = "0.6.4"
 requires_python = ">=3.7"
 summary = "An extremely fast Python linter and code formatter, written in Rust."
 groups = ["test"]
 files = [
-    {file = "ruff-0.6.3-py3-none-linux_armv6l.whl", hash = "sha256:97f58fda4e309382ad30ede7f30e2791d70dd29ea17f41970119f55bdb7a45c3"},
-    {file = "ruff-0.6.3-py3-none-macosx_10_12_x86_64.whl", hash = "sha256:3b061e49b5cf3a297b4d1c27ac5587954ccb4ff601160d3d6b2f70b1622194dc"},
-    {file = "ruff-0.6.3-py3-none-macosx_11_0_arm64.whl", hash = "sha256:34e2824a13bb8c668c71c1760a6ac7d795ccbd8d38ff4a0d8471fdb15de910b1"},
-    {file = "ruff-0.6.3-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:bddfbb8d63c460f4b4128b6a506e7052bad4d6f3ff607ebbb41b0aa19c2770d1"},
-    {file = "ruff-0.6.3-py3-none-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:ced3eeb44df75353e08ab3b6a9e113b5f3f996bea48d4f7c027bc528ba87b672"},
-    {file = "ruff-0.6.3-py3-none-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:47021dff5445d549be954eb275156dfd7c37222acc1e8014311badcb9b4ec8c1"},
-    {file = "ruff-0.6.3-py3-none-manylinux_2_17_ppc64.manylinux2014_ppc64.whl", hash = "sha256:7d7bd20dc07cebd68cc8bc7b3f5ada6d637f42d947c85264f94b0d1cd9d87384"},
-    {file = "ruff-0.6.3-py3-none-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:500f166d03fc6d0e61c8e40a3ff853fa8a43d938f5d14c183c612df1b0d6c58a"},
-    {file = "ruff-0.6.3-py3-none-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:42844ff678f9b976366b262fa2d1d1a3fe76f6e145bd92c84e27d172e3c34500"},
-    {file = "ruff-0.6.3-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:70452a10eb2d66549de8e75f89ae82462159855e983ddff91bc0bce6511d0470"},
-    {file = "ruff-0.6.3-py3-none-musllinux_1_2_aarch64.whl", hash = "sha256:65a533235ed55f767d1fc62193a21cbf9e3329cf26d427b800fdeacfb77d296f"},
-    {file = "ruff-0.6.3-py3-none-musllinux_1_2_armv7l.whl", hash = "sha256:d2e2c23cef30dc3cbe9cc5d04f2899e7f5e478c40d2e0a633513ad081f7361b5"},
-    {file = "ruff-0.6.3-py3-none-musllinux_1_2_i686.whl", hash = "sha256:d8a136aa7d228975a6aee3dd8bea9b28e2b43e9444aa678fb62aeb1956ff2351"},
-    {file = "ruff-0.6.3-py3-none-musllinux_1_2_x86_64.whl", hash = "sha256:f92fe93bc72e262b7b3f2bba9879897e2d58a989b4714ba6a5a7273e842ad2f8"},
-    {file = "ruff-0.6.3-py3-none-win32.whl", hash = "sha256:7a62d3b5b0d7f9143d94893f8ba43aa5a5c51a0ffc4a401aa97a81ed76930521"},
-    {file = "ruff-0.6.3-py3-none-win_amd64.whl", hash = "sha256:746af39356fee2b89aada06c7376e1aa274a23493d7016059c3a72e3b296befb"},
-    {file = "ruff-0.6.3-py3-none-win_arm64.whl", hash = "sha256:14a9528a8b70ccc7a847637c29e56fd1f9183a9db743bbc5b8e0c4ad60592a82"},
-    {file = "ruff-0.6.3.tar.gz", hash = "sha256:183b99e9edd1ef63be34a3b51fee0a9f4ab95add123dbf89a71f7b1f0c991983"},
+    {file = "ruff-0.6.4-py3-none-linux_armv6l.whl", hash = "sha256:c4b153fc152af51855458e79e835fb6b933032921756cec9af7d0ba2aa01a258"},
+    {file = "ruff-0.6.4-py3-none-macosx_10_12_x86_64.whl", hash = "sha256:bedff9e4f004dad5f7f76a9d39c4ca98af526c9b1695068198b3bda8c085ef60"},
+    {file = "ruff-0.6.4-py3-none-macosx_11_0_arm64.whl", hash = "sha256:d02a4127a86de23002e694d7ff19f905c51e338c72d8e09b56bfb60e1681724f"},
+    {file = "ruff-0.6.4-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:7862f42fc1a4aca1ea3ffe8a11f67819d183a5693b228f0bb3a531f5e40336fc"},
+    {file = "ruff-0.6.4-py3-none-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:eebe4ff1967c838a1a9618a5a59a3b0a00406f8d7eefee97c70411fefc353617"},
+    {file = "ruff-0.6.4-py3-none-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:932063a03bac394866683e15710c25b8690ccdca1cf192b9a98260332ca93408"},
+    {file = "ruff-0.6.4-py3-none-manylinux_2_17_ppc64.manylinux2014_ppc64.whl", hash = "sha256:50e30b437cebef547bd5c3edf9ce81343e5dd7c737cb36ccb4fe83573f3d392e"},
+    {file = "ruff-0.6.4-py3-none-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:c44536df7b93a587de690e124b89bd47306fddd59398a0fb12afd6133c7b3818"},
+    {file = "ruff-0.6.4-py3-none-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:0ea086601b22dc5e7693a78f3fcfc460cceabfdf3bdc36dc898792aba48fbad6"},
+    {file = "ruff-0.6.4-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:0b52387d3289ccd227b62102c24714ed75fbba0b16ecc69a923a37e3b5e0aaaa"},
+    {file = "ruff-0.6.4-py3-none-musllinux_1_2_aarch64.whl", hash = "sha256:0308610470fcc82969082fc83c76c0d362f562e2f0cdab0586516f03a4e06ec6"},
+    {file = "ruff-0.6.4-py3-none-musllinux_1_2_armv7l.whl", hash = "sha256:803b96dea21795a6c9d5bfa9e96127cc9c31a1987802ca68f35e5c95aed3fc0d"},
+    {file = "ruff-0.6.4-py3-none-musllinux_1_2_i686.whl", hash = "sha256:66dbfea86b663baab8fcae56c59f190caba9398df1488164e2df53e216248baa"},
+    {file = "ruff-0.6.4-py3-none-musllinux_1_2_x86_64.whl", hash = "sha256:34d5efad480193c046c86608dbba2bccdc1c5fd11950fb271f8086e0c763a5d1"},
+    {file = "ruff-0.6.4-py3-none-win32.whl", hash = "sha256:f0f8968feea5ce3777c0d8365653d5e91c40c31a81d95824ba61d871a11b8523"},
+    {file = "ruff-0.6.4-py3-none-win_amd64.whl", hash = "sha256:549daccee5227282289390b0222d0fbee0275d1db6d514550d65420053021a58"},
+    {file = "ruff-0.6.4-py3-none-win_arm64.whl", hash = "sha256:ac4b75e898ed189b3708c9ab3fc70b79a433219e1e87193b4f2b77251d058d14"},
+    {file = "ruff-0.6.4.tar.gz", hash = "sha256:ac3b5bfbee99973f80aa1b7cbd1c9cbce200883bdd067300c22a6cc1c7fba212"},
 ]
 
 [[package]]
