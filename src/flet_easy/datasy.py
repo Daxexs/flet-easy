@@ -1,3 +1,4 @@
+from collections import deque
 from datetime import datetime, timedelta, timezone
 from typing import Any, Callable, Dict
 
@@ -38,7 +39,9 @@ class Datasy:
     * `on_resize` : get event values to use in the page.
     * `logout` : method to close sessions of all sections in the browser (client storage), requires as parameter the key or the control (the parameter key of the control must have the value to delete), this is to avoid creating an extra function.
     * `login` : method to create sessions of all sections in the browser (client storage), requires as parameters the key and the value, the same used in the `page.client_storage.set` method.
-    * `go` : Method to change the path of the application, in order to reduce the code, you must assign the value of the `key` parameter of the `control` used, for example buttons.
+    * `go` : `go`: Method to change the application path, supports url redirections.
+    * `go_back` : Method to go back to the previous route.
+    * `history_routes` : Get the history of the routes.
     * `route` : route provided by the route event, it is useful when using middlewares to check if the route is assecible.
     * `redirect` : To redirect to a path before the page loads, it is used in middleware.
     """
@@ -67,6 +70,7 @@ class Datasy:
         self.__on_resize = page_on_resize
         self.__route: str = None
         self.__go = go
+        self.__history_routes: deque[str] = deque()
 
         self.__secret_key: SecretKey = secret_key
         self.__auto_logout: bool = auto_logout
@@ -74,7 +78,6 @@ class Datasy:
         self._key_login: str = None
         self._login_done: bool = False
         self._login_async: bool = login_async
-        self._check_event_router: bool = False
 
     @property
     def page(self):
@@ -83,6 +86,14 @@ class Datasy:
     @page.setter
     def page(self, page: object):
         self.__page = page
+
+    @property
+    def history_routes(self):
+        return self.__history_routes
+
+    @history_routes.setter
+    def history_routes(self, history_routes: deque[str]):
+        self.__history_routes = history_routes
 
     @property
     def url_params(self):
@@ -205,7 +216,9 @@ class Datasy:
         def execute(key: str):
             assert self.route_login is not None, "Adds a login path in the FletEasy Class"
             if self.page.web:
-                self.page.pubsub.send_all_on_topic(self.page.client_ip, Msg("logout", key))
+                self.page.pubsub.send_all_on_topic(
+                    self.page.client_ip + self.page.client_user_agent, Msg("logout", key)
+                )
             else:
                 self.page.run_task(self.page.client_storage.remove_async, key)
                 self.page.go(self.route_login)
@@ -214,14 +227,12 @@ class Datasy:
 
     async def __logaut_init(self, topic, msg: Msg):
         if msg.method == "login":
-            self._check_event_router = False
             await self.page.client_storage.set_async(msg.key, msg.value.get("value"))
             if self.page.route == self.route_login:
                 self.page.go(msg.value.get("next_route"))
 
         elif msg.method == "logout":
             self._login_done = False
-            self._check_event_router = False
             await self.page.client_storage.remove_async(msg.key)
             self.page.go(self.route_login)
 
@@ -248,7 +259,9 @@ class Datasy:
     def _create_login(self):
         """Create the connection between sessions."""
         if self.page.web:
-            self.page.pubsub.subscribe_topic(self.page.client_ip, self.__logaut_init)
+            self.page.pubsub.subscribe_topic(
+                self.page.client_ip + self.page.client_user_agent, self.__logaut_init
+            )
 
     def _create_tasks(self, time_expiry: timedelta, key: str, sleep: int) -> None:
         """Creates the logout task when logging in."""
@@ -298,13 +311,14 @@ class Datasy:
             if self.__auto_logout:
                 self._create_tasks(time_expiry, key, sleep)
 
+        self.page.run_task(self.page.client_storage.set_async, key, value).result()
+
         if self.page.web:
-            self.page.pubsub.send_all_on_topic(
-                self.page.client_ip, Msg("login", key, {"value": value, "next_route": next_route})
+            self.page.pubsub.send_others_on_topic(
+                self.page.client_ip + self.page.client_user_agent,
+                Msg("login", key, {"value": value, "next_route": next_route}),
             )
-        else:
-            self.page.run_task(self.page.client_storage.set_async, key, value).result()
-            self.__go(next_route)
+        self.__go(next_route)
 
     """ Page go  """
 
@@ -315,6 +329,14 @@ class Datasy:
     def redirect(self, route: str):
         """Useful if you do not want to access a route that has already been sent."""
         return Redirect(route)
+
+    def go_back(self):
+        """Go back to the previous route."""
+        return lambda _=None: (
+            (self.history_routes.pop(), self.__go(self.history_routes.pop()))
+            if len(self.history_routes) > 1
+            else (print("-> I can't go back! There is no route history."), None)
+        )
 
 
 def evaluate_secret_key(data: Datasy):

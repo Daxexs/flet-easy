@@ -1,12 +1,11 @@
 import argparse
 import contextlib
-from pathlib import Path
 
-from rich.prompt import Prompt
-from rich_argparse import RichHelpFormatter
-from tomlkit import dump
-
-from .copy import _copy_template
+try:
+    from cookiecutter.main import cookiecutter
+    from rich_argparse import RichHelpFormatter
+except ImportError:
+    raise Exception('To use the cli (fs) Install: "pip install flet-easy[all] --upgrade"')
 
 VERSION = "0.2.2"
 
@@ -16,31 +15,12 @@ RichHelpFormatter.styles["argparse.prog"] = "blue"
 
 
 def init_app():
-    toml_dict = {"project": {}}
-    pwd = Path.cwd()
-
-    name = Prompt.ask("Projet Name", default=pwd.name)
-    version = Prompt.ask("Project Version", default="0.1.0")
-    license = Prompt.ask(
-        "Project License",
-        default="MIT",
+    cookiecutter(
+        template="gh:Daxexs/fs-template-dxs",
+        overwrite_if_exists=True,
+        checkout="main",
+        accept_hooks=True,
     )
-    author = Prompt.ask("Project Author")
-    email = Prompt.ask("Email Author")
-    manifest = Prompt.ask(
-        "Requires creation of manifest.json (Web-PWA)", choices=["n", "y"], default="n"
-    )
-
-    toml_dict["project"]["name"] = name
-    toml_dict["project"]["version"] = version
-    toml_dict["project"]["license"] = license
-    toml_dict["project"]["authors"] = [{"name": author, "email": email}]
-    toml_dict["project"]["dependencies"] = ["flet", "flet-easy"]
-
-    _copy_template("templates", pwd / name, manifest)
-
-    with open(f"{pwd}/{name}/pyproject.toml", "w") as file:
-        dump(toml_dict, file)
 
 
 def run():

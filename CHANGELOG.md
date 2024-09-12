@@ -1,4 +1,31 @@
 # Flet-Easy changelog
+
+### 0.2.4 (03/09/24)
+* ⚡The speed of the router is improved to more than twice as fast. ([#20](https://github.com/Daxexs/flet-easy/issues/20))
+  
+* Ways to install Flet-Easy. ([#25](https://github.com/Daxexs/flet-easy/issues/25)) [[Doc](https://daxexs.github.io/flet-easy/0.2.4/installation/)]
+  
+* Add `go_back` method. ([#21](https://github.com/Daxexs/flet-easy/issues/21)) [[Doc](https://daxexs.github.io/flet-easy/0.2.4/how-to-use/#methods/)]
+  
+* Ruff configuration update (>=0.4.4) ([#22](https://github.com/Daxexs/flet-easy/issues/22))
+  
+* Supporting the use of class to create a view ([#24](https://github.com/Daxexs/flet-easy/issues/24)) [[Doc](https://daxexs.github.io/flet-easy/0.2.4/add-pages/through-classes/)]
+  
+* Bug fixes found in previous changes.
+  
+* Documentation improvements and updates. ([#26](https://github.com/Daxexs/flet-easy/issues/22)) [[view](https://daxexs.github.io/flet-easy/)]
+
+
+**Changes in the api:**
+New method added in Datasy (data) [[Doc](https://daxexs.github.io/flet-easy/0.2.4/how-to-use/#datasy-data/)]
+
+* `history_routes` : Get the history of the routes.
+* `go_back` : Method to go back to the previous route.
+
+**🔎Note**
+* Now `page.go()` and `data.go()` work similarly to go to a page (View), the only difference is that `data.go()` checks for url redirects when using `data.redirect()`.
+* The 'clear' parameter of `Pagesy` and the `page` decorator is deprecated, it will be removed in future versions.
+
 ### 0.2.2 (04/05/24)
 * Fix sensitivity in url with capital letters ([#15](https://github.com/Daxexs/flet-easy/issues/15))
 * Fix 'back' button in dashboard page app bar not working ([#18](https://github.com/Daxexs/flet-easy/issues/18))
@@ -20,7 +47,7 @@
 
 * Add a `Cli` to create a project structure based on the MVC design pattern ([#7](https://github.com/Daxexs/flet-easy/issues/7)) [Docs](https://daxexs.github.io/flet-easy/0.2/CLI-to-create-app/)
 
-* Middleware Support ([#9](https://github.com/Daxexs/flet-easy/issues/9)) [Docs](https://daxexs.github.io/flet-easy/0.2/Midleware/)
+* Middleware Support ([#9](https://github.com/Daxexs/flet-easy/issues/9)) [Docs](https://daxexs.github.io/flet-easy/0.2/Middleware/)
 
 * Add more simplified Ref control ([commit](https://github.com/Daxexs/flet-easy/commit/907380ed56e646ffe3ec48b81d7b35a9385e5f5d))
 

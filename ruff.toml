@@ -1,14 +1,11 @@
 line-length = 100
 target-version = "py38"
+extend-exclude = ["__init__.py"]
 
 [lint]
 extend-select = ["E", "F", "UP", "SIM", "I", "Q", "RUF100"]
-ignore-init-module-imports = false
 typing-modules = ["airflow.typing_compat"]
 ignore = ["F631"]
-
-[per-file-ignores]
-"__init__.py" = ["F401"]
 
 [format]
 docstring-code-format = true

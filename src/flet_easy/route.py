@@ -1,7 +1,7 @@
 from inspect import iscoroutinefunction
 from typing import Any, Callable, Dict, List
 
-from flet import ControlEvent, KeyboardEvent, Page, RouteChangeEvent
+from flet import ControlEvent, KeyboardEvent, Page, RouteChangeEvent, View
 from parse import parse
 
 from flet_easy.datasy import Datasy
@@ -67,20 +67,19 @@ class FletEasyX:
 
     # ----------- Supports async
     def __route_change(self, e: RouteChangeEvent):
-        if not self.__data._check_event_router:
-            route = (
-                self.__data.route_init
-                if self.__data.route_init != "/" and e.route == "/"
-                else e.route
-            )
-            self._go(route)
-        self.__data._check_event_router = False
+        if self.__pagesy is None:
+            if e.route == "/" and self.__route_init != "/":
+                return self.__page.go(self.__route_init)
+
+            self._go(e.route, True)
+        else:
+            self._view_append(e.route, self.__pagesy)
+            self.__pagesy = None
 
     def __view_pop(self, e):
-        self.__page.views.pop()
-        route = self.__page.views[-1].route
-        self.__page.views.pop()
-        self._go(route)
+        if len(self.__data.history_routes) > 1:
+            self.__data.history_routes.pop()
+            self._go(self.__data.history_routes.pop())
 
     async def __on_keyboard(self, e: KeyboardEvent):
         self.__page_on_keyboard.call = e
@@ -117,9 +116,6 @@ class FletEasyX:
         if self.__route_init != "/" and self.__page.route == "/":
             self.__page.route = self.__route_init
 
-        if len(self.__page.views) == 1:
-            self.__page.views.clear()
-
         """ Add custom events """
         self.__add_configuration_start()
 
@@ -135,7 +131,7 @@ class FletEasyX:
         if self.__on_Keyboard:
             self.__page.on_keyboard_event = self.__on_keyboard
 
-        self._go(self.__page.route)
+        self._go(self.__page.route, use_reload=True)
 
     # ---------------------------[Route controller]-------------------------------------
     def __view_data_config(self):
@@ -145,64 +141,99 @@ class FletEasyX:
         else:
             return self.__view_data(self.__data)
 
-    def _view_append(self, route: str):
+    def _view_append(self, route: str, pagesy: Pagesy):
         """Add a new page and update it."""
-        view = (
-            self.__page.run_task(self.__pagesy.view, self.__data, **self.__data.url_params).result()
-            if iscoroutinefunction(self.__pagesy.view)
-            else self.__pagesy.view(self.__data, **self.__data.url_params)
-        )
 
+        self.__page.views.clear()
+
+        if not pagesy.clear and len(self.__data.history_routes) > 0:
+            self.__page.views.append(View())
+
+        if callable(pagesy.view) and not isinstance(pagesy.view, type):
+            view = (
+                self.__page.run_task(pagesy.view, self.__data, **self.__data.url_params).result()
+                if iscoroutinefunction(pagesy.view)
+                else pagesy.view(self.__data, **self.__data.url_params)
+            )
+        elif isinstance(pagesy.view, type):
+            view_class = pagesy.view(self.__data, **self.__data.url_params)
+            view = (
+                self.__page.run_task(view_class.build).result()
+                if iscoroutinefunction(view_class.build)
+                else view_class.build()
+            )
         view.route = route
         self.__page.views.append(view)
-        self.__page.route = route
-        self.__page.query()
+        self.__data.history_routes.append(route)
         self.__page.update()
 
-    def __reload_datasy(self, url_params: Dict[str, Any] = None):
+    def __reload_datasy(
+        self,
+        pagesy: Pagesy,
+        url_params: Dict[str, Any] = dict(),
+    ):
         """Update `datasy` values when switching between pages."""
-        self.__page.title = self.__pagesy.title
+        self.__page.title = pagesy.title
 
-        if self.__pagesy.clear:
-            self.__page.views.clear()
-        if not self.__pagesy.share_data:
+        if not pagesy.share_data:
             self.__data.share.clear()
+        if self.__on_Keyboard:
+            self.__data.on_keyboard_event.clear()
 
         self.__data.url_params = url_params
-        self.__data.route = self.__pagesy.route
+        self.__data.route = pagesy.route
 
-    def __run_middlewares(self, route: str, middleware: Middleware, url_params: Dict[str, Any]):
-        """It controls the middleware of the app in general and in each of the pages (both can be used)."""
-        _middlewares = middleware
-        _middlewares_two = False
+    def __execute_middleware(
+        self, pagesy: Pagesy, url_params: Dict[str, Any], middleware_list: Middleware
+    ):
+        if middleware_list is None:
+            return False
 
-        while True:
-            if _middlewares is not None:
-                for middleware in _middlewares:
-                    self.__reload_datasy(url_params)
-                    res_middleware = (
-                        self.__page.run_task(middleware, self.__data).result()
-                        if iscoroutinefunction(middleware)
-                        else middleware(self.__data)
-                    )
-                    if res_middleware is None:
-                        continue
+        for middleware in middleware_list:
+            self.__reload_datasy(pagesy, url_params)
+            res_middleware = (
+                self.__page.run_task(middleware, self.__data).result()
+                if iscoroutinefunction(middleware)
+                else middleware(self.__data)
+            )
+            if res_middleware is None:
+                continue
 
-                    if isinstance(res_middleware, Redirect):
-                        self._go(res_middleware.route)
-                        return False
+            if isinstance(res_middleware, Redirect):
+                self._go(res_middleware.route)
+                return True
 
-                    if not res_middleware:
-                        raise Exception(
-                            "A middleware function has occurred, use the methods to return (data.redirect) or not return False."
-                        )
-            if self.__pagesy.middleware is None or _middlewares_two:
-                self.__reload_datasy(url_params)
-                self._view_append(route)
-                return False
-            else:
-                _middlewares = self.__pagesy.middleware
-                _middlewares_two = True
+            if not res_middleware:
+                raise Exception(
+                    "Ocurrió un error en una función middleware. Usa los métodos para redirigir (data.redirect) o devolver False."
+                )
+
+    def __run_middlewares(
+        self,
+        route: str,
+        middleware: Middleware,
+        url_params: Dict[str, Any],
+        pagesy: Pagesy,
+        use_route_change: bool,
+        use_reload: bool,
+    ):
+        """Controla los middleware de la aplicación en general y en cada una de las páginas."""
+
+        if self.__execute_middleware(pagesy, url_params, middleware):
+            return True
+
+        if self.__execute_middleware(pagesy, url_params, pagesy.middleware):
+            return True
+
+        self.__reload_datasy(pagesy, url_params)
+        if use_route_change:
+            self._view_append(route, pagesy)
+        else:
+            if self.__page.route != route or use_reload:
+                self.__pagesy = pagesy
+            self.__page.go(route)
+
+        return True
 
     def __process_route(self, custom_params: Dict[str, Callable[[], bool]], path: str, route: str):
         if custom_params is None:
@@ -227,17 +258,13 @@ class FletEasyX:
                     f"The url parse has failed, check the url -> ({route}) parameters for correctness. Error-> {e}"
                 )
 
-    def _go(self, route: str):
+    def _go(self, route: str, use_route_change: bool = False, use_reload: bool = False):
         pg_404 = True
-        self.__data._check_event_router = True
-        self.__data.on_keyboard_event.clear()
-        path = self.__route_init if route == "/" else route
 
         for page in self.__pages:
-            route_math, route_check = self.__process_route(page.custom_params, path, page.route)
+            route_math, route_check = self.__process_route(page.custom_params, route, page.route)
             if route_check:
                 pg_404 = False
-                self.__pagesy = page
                 try:
                     if page.protected_route:
                         assert (
@@ -256,28 +283,43 @@ class FletEasyX:
                                 )
                         else:
                             auth = self.__config_login(self.__data)
+
                         if auth:
-                            self.__reload_datasy(route_math.named)
-                            self._view_append(route)
+                            self.__reload_datasy(page, route_math.named)
+
+                            if use_route_change:
+                                self._view_append(route, page)
+
+                            else:
+                                if self.__page.route != route or use_reload:
+                                    self.__pagesy = page
+                                self.__page.go(route)
+
                         else:
                             self._go(self.__route_login)
-                            break
+
+                        break
                     else:
                         if self.__run_middlewares(
-                            route=route, middleware=self.__middlewares, url_params=route_math.named
+                            route=route,
+                            middleware=self.__middlewares,
+                            url_params=route_math.named,
+                            pagesy=page,
+                            use_route_change=use_route_change,
+                            use_reload=use_reload,
                         ):
                             break
                 except Exception as e:
                     raise Exception(e)
         if pg_404:
-            if self.__page_404:
-                self.__pagesy = self.__page_404
-                self.__page.route = self.__page_404
-                self.__reload_datasy()
-                self.__page.views.append(self.__page_404.view(self.__page))
+            if self.__page_404 is not None:
+                self.__reload_datasy(self.__page_404)
+                self._view_append(self.__page_404.route, self.__page_404)
 
             else:
-                self.__page.route = self.__view_404.route
-                self.__page.views.append(self.__view_404.view(self.__page))
-            self.__page.query()
-            self.__page.update()
+                page = Pagesy(self.__view_404.route, self.__view_404.view, "FletEasy-404")
+                self.__reload_datasy(page)
+                self._view_append(
+                    self.__view_404.route,
+                    page,
+                )

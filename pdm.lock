@@ -2,10 +2,13 @@
 # It is not intended for manual editing.
 
 [metadata]
-groups = ["default", "test", "docs"]
-strategy = ["cross_platform", "inherit_metadata"]
-lock_version = "4.4.1"
-content_hash = "sha256:4248bf0ea85c78e00b8ebd8784e82334059773ee3507b486b3f980edb4d0da3f"
+groups = ["default", "docs", "test"]
+strategy = ["inherit_metadata"]
+lock_version = "4.5.0"
+content_hash = "sha256:383c2ab974e4aa8249e2cec691e4870516262f42f6871e8f4b7fd22cb120e9a5"
+
+[[metadata.targets]]
+requires_python = ">=3.8"
 
 [[package]]
 name = "annotated-types"
@@ -196,6 +199,7 @@ summary = "Composable command line interface toolkit"
 groups = ["docs", "test"]
 dependencies = [
     "colorama; platform_system == \"Windows\"",
+    "importlib-metadata; python_version < \"3.8\"",
 ]
 files = [
     {file = "click-8.1.7-py3-none-any.whl", hash = "sha256:ae74fb96c20a0277a1d615f1e4d73c8414f5a98db8b799a7931d1582f3390c28"},
@@ -264,35 +268,35 @@ files = [
 
 [[package]]
 name = "flet"
-version = "0.22.0"
+version = "0.24.1"
 requires_python = "<4.0,>=3.8"
 summary = "Flet for Python - easily build interactive multi-platform apps in Python"
 groups = ["test"]
 dependencies = [
     "cookiecutter<3.0.0,>=2.6.0",
     "fastapi<1,>=0",
-    "flet-runtime==0.22.0",
+    "flet-runtime==0.24.1",
     "packaging<24.0,>=23.1",
     "qrcode<8.0.0,>=7.4.2",
     "uvicorn[standard]<1,>=0",
     "watchdog<5.0.0,>=4.0.0",
 ]
 files = [
-    {file = "flet-0.22.0-py3-none-any.whl", hash = "sha256:1eff7749827ee6461bf2045dc3f672690afb84165f1922165f8593d62daa32de"},
-    {file = "flet-0.22.0-py3-none-macosx_10_14_x86_64.whl", hash = "sha256:23825befbef24949470d3944a5e713de0cdfeb721d906d5866dcd7f6293e6c62"},
-    {file = "flet-0.22.0-py3-none-macosx_12_0_arm64.whl", hash = "sha256:c0e635fd0a96353ddf45bd61ac3340b821774127478311212d3c693565b39af9"},
-    {file = "flet-0.22.0-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:4c739aa34b30ba92dec7daf1b1d86ff7193447ad31ae12fa5bfee19ec72e34ce"},
-    {file = "flet-0.22.0-py3-none-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:4aaaebb7931c30525147e1af9cb84445ac189ee33dafe0dd781b83ca980523fb"},
-    {file = "flet-0.22.0-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:fe921d4d49945a8244fa42bbd62f57227601d83e5a83f00b996346f964bf7f8e"},
-    {file = "flet-0.22.0-py3-none-musllinux_1_2_x86_64.whl", hash = "sha256:206662a9b445cc0858f8bf5a5328f90fb68b13a97cdfb4ff3609866f89f6ed16"},
-    {file = "flet-0.22.0-py3-none-win32.whl", hash = "sha256:cde47b6c71fea0cfb508a4c2abbf1a441073c3fad3b58be62c9610a8bf342cb1"},
-    {file = "flet-0.22.0-py3-none-win_amd64.whl", hash = "sha256:4aa1c88f36cbf072df7ee22cdc111a9ad0e0813336b9fb0fe8b7f6166020a6a4"},
-    {file = "flet-0.22.0.tar.gz", hash = "sha256:168787259a4040d4cf8923f35c959f2d80cdb17325aeb1c32f5579c48335ed68"},
+    {file = "flet-0.24.1-py3-none-any.whl", hash = "sha256:dfcfe8febedbc5eecb714edc11ee3e13c4a00c83000e55d4b664f695473f5141"},
+    {file = "flet-0.24.1-py3-none-macosx_10_14_x86_64.whl", hash = "sha256:15ab27d73e0b20f5157e911c121ea9f0da682a73f1dba007adc1f2077e00ccb3"},
+    {file = "flet-0.24.1-py3-none-macosx_12_0_arm64.whl", hash = "sha256:a65b67b257bdb63815d20a3d5ae523975cafbf493b6baa3611d3edb854c5fe1b"},
+    {file = "flet-0.24.1-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:d5495f65b0354d5f169c7859cb2dbc331fdd995de38779e5f85748891a793c1f"},
+    {file = "flet-0.24.1-py3-none-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:a7759fab4075519a81c65d3693216f43d34d3838cf4fd832325e3d043df4a1a3"},
+    {file = "flet-0.24.1-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:0fa5fd6cb049d4acd63758890553b7b43b2bbf6bcf0d37d2a0ffe91f12ca0279"},
+    {file = "flet-0.24.1-py3-none-musllinux_1_2_x86_64.whl", hash = "sha256:2ae142d9f37110944fc15a0283c9a3b1ea31d309f4e0942a387160f0688eae0f"},
+    {file = "flet-0.24.1-py3-none-win32.whl", hash = "sha256:054183a35c24cf69febabc17206097d38a39da90c0166899612f9f8ecd4a12aa"},
+    {file = "flet-0.24.1-py3-none-win_amd64.whl", hash = "sha256:8821b0655ef2d7e8763a9ed87cf8a68e4e4ce302edac84b425bbc465620fd1c3"},
+    {file = "flet-0.24.1.tar.gz", hash = "sha256:754989e8314c3ca9f02b4fff2e1aac4e1395fc712175547e2f84a7f1f0f560a1"},
 ]
 
 [[package]]
 name = "flet-core"
-version = "0.22.0"
+version = "0.24.1"
 requires_python = "<4.0,>=3.8"
 summary = "Flet core library"
 groups = ["test"]
@@ -300,24 +304,24 @@ dependencies = [
     "repath<0.10.0,>=0.9.0",
 ]
 files = [
-    {file = "flet_core-0.22.0-py3-none-any.whl", hash = "sha256:aa8f858a8cccad91b23c45dbafdd70662643b490eca27ed2f2ea8d7b343599ed"},
-    {file = "flet_core-0.22.0.tar.gz", hash = "sha256:433b364111a58b61545b8fab8935e54bbc5b6cc2a2a3be0440cd595134e05716"},
+    {file = "flet_core-0.24.1-py3-none-any.whl", hash = "sha256:0c729a6a5f914b54ce90d727594d896b975ad1ef749c7076b6775ad4684ea4ed"},
+    {file = "flet_core-0.24.1.tar.gz", hash = "sha256:1137109aec43b78a911f460a56e0e4581b4c411ba53e5c68fe785502e7e89498"},
 ]
 
 [[package]]
 name = "flet-runtime"
-version = "0.22.0"
+version = "0.24.1"
 requires_python = "<4.0,>=3.8"
 summary = "Flet Runtime - a base package for Flet desktop and Flet mobile."
 groups = ["test"]
 dependencies = [
-    "flet-core==0.22.0",
+    "flet-core==0.24.1",
     "httpx<1,>=0",
     "oauthlib<4.0.0,>=3.2.2",
 ]
 files = [
-    {file = "flet_runtime-0.22.0-py3-none-any.whl", hash = "sha256:d9d39c97cb31f1ea25f7ed6b26bc0252b28b6cc4137230e004585eb123f01466"},
-    {file = "flet_runtime-0.22.0.tar.gz", hash = "sha256:a711b0286186a2729cb85d2a15d483548cbae74fcd5b56a96b69deeef8528e5c"},
+    {file = "flet_runtime-0.24.1-py3-none-any.whl", hash = "sha256:57087b5c23c3ce3192354e215cdb68326f4a0685e5515ce020fae80ef83a9cb2"},
+    {file = "flet_runtime-0.24.1.tar.gz", hash = "sha256:88fbf916b66a84ca04e5e2e300b9d5d1701642ef3d0fd86aae3eaa6b91e9daeb"},
 ]
 
 [[package]]
@@ -339,6 +343,9 @@ version = "0.14.0"
 requires_python = ">=3.7"
 summary = "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1"
 groups = ["test"]
+dependencies = [
+    "typing-extensions; python_version < \"3.8\"",
+]
 files = [
     {file = "h11-0.14.0-py3-none-any.whl", hash = "sha256:e3fe4ac4b851c468cc8363d500db52c2ead036020723024a109d37346efaa761"},
     {file = "h11-0.14.0.tar.gz", hash = "sha256:8f19fbbe99e72420ff35c00b27a34cb9937e902a8b810e2c88300c6f0a3b699d"},
@@ -440,6 +447,7 @@ requires_python = ">=3.8"
 summary = "Read metadata from Python packages"
 groups = ["docs"]
 dependencies = [
+    "typing-extensions>=3.6.4; python_version < \"3.8\"",
     "zipp>=0.5",
 ]
 files = [
@@ -494,7 +502,7 @@ name = "markdown-it-py"
 version = "3.0.0"
 requires_python = ">=3.8"
 summary = "Python port of markdown-it. Markdown parsing, done right!"
-groups = ["default", "test"]
+groups = ["test"]
 dependencies = [
     "mdurl~=0.1",
 ]
@@ -568,7 +576,7 @@ name = "mdurl"
 version = "0.1.2"
 requires_python = ">=3.7"
 summary = "Markdown URL utilities"
-groups = ["default", "test"]
+groups = ["test"]
 files = [
     {file = "mdurl-0.1.2-py3-none-any.whl", hash = "sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8"},
     {file = "mdurl-0.1.2.tar.gz", hash = "sha256:bb413d29f5eea38f31dd4754dd7377d4465116fb207585f97bf925588687c1ba"},
@@ -587,7 +595,7 @@ files = [
 
 [[package]]
 name = "mike"
-version = "2.0.0"
+version = "2.1.3"
 summary = "Manage multiple versions of your MkDocs-powered documentation"
 groups = ["docs"]
 dependencies = [
@@ -596,44 +604,62 @@ dependencies = [
     "jinja2>=2.7",
     "mkdocs>=1.0",
     "pyparsing>=3.0",
+    "pyyaml-env-tag",
     "pyyaml>=5.1",
     "verspec",
 ]
 files = [
-    {file = "mike-2.0.0-py3-none-any.whl", hash = "sha256:87f496a65900f93ba92d72940242b65c86f3f2f82871bc60ebdcffc91fad1d9e"},
-    {file = "mike-2.0.0.tar.gz", hash = "sha256:566f1cab1a58cc50b106fb79ea2f1f56e7bfc8b25a051e95e6eaee9fba0922de"},
+    {file = "mike-2.1.3-py3-none-any.whl", hash = "sha256:d90c64077e84f06272437b464735130d380703a76a5738b152932884c60c062a"},
+    {file = "mike-2.1.3.tar.gz", hash = "sha256:abd79b8ea483fb0275b7972825d3082e5ae67a41820f8d8a0dc7a3f49944e810"},
 ]
 
 [[package]]
 name = "mkdocs"
-version = "1.5.3"
-requires_python = ">=3.7"
+version = "1.6.0"
+requires_python = ">=3.8"
 summary = "Project documentation with Markdown."
 groups = ["docs"]
 dependencies = [
     "click>=7.0",
     "colorama>=0.4; platform_system == \"Windows\"",
     "ghp-import>=1.0",
-    "importlib-metadata>=4.3; python_version < \"3.10\"",
+    "importlib-metadata>=4.4; python_version < \"3.10\"",
     "jinja2>=2.11.1",
-    "markdown>=3.2.1",
+    "markdown>=3.3.6",
     "markupsafe>=2.0.1",
     "mergedeep>=1.3.4",
+    "mkdocs-get-deps>=0.2.0",
     "packaging>=20.5",
     "pathspec>=0.11.1",
-    "platformdirs>=2.2.0",
     "pyyaml-env-tag>=0.1",
     "pyyaml>=5.1",
     "watchdog>=2.0",
 ]
 files = [
-    {file = "mkdocs-1.5.3-py3-none-any.whl", hash = "sha256:3b3a78e736b31158d64dbb2f8ba29bd46a379d0c6e324c2246c3bc3d2189cfc1"},
-    {file = "mkdocs-1.5.3.tar.gz", hash = "sha256:eb7c99214dcb945313ba30426c2451b735992c73c2e10838f76d09e39ff4d0e2"},
+    {file = "mkdocs-1.6.0-py3-none-any.whl", hash = "sha256:1eb5cb7676b7d89323e62b56235010216319217d4af5ddc543a91beb8d125ea7"},
+    {file = "mkdocs-1.6.0.tar.gz", hash = "sha256:a73f735824ef83a4f3bcb7a231dcab23f5a838f88b7efc54a0eef5fbdbc3c512"},
+]
+
+[[package]]
+name = "mkdocs-get-deps"
+version = "0.2.0"
+requires_python = ">=3.8"
+summary = "MkDocs extension that lists all dependencies according to a mkdocs.yml file"
+groups = ["docs"]
+dependencies = [
+    "importlib-metadata>=4.3; python_version < \"3.10\"",
+    "mergedeep>=1.3.4",
+    "platformdirs>=2.2.0",
+    "pyyaml>=5.1",
+]
+files = [
+    {file = "mkdocs_get_deps-0.2.0-py3-none-any.whl", hash = "sha256:2bf11d0b133e77a0dd036abeeb06dec8775e46efa526dc70667d8863eefc6134"},
+    {file = "mkdocs_get_deps-0.2.0.tar.gz", hash = "sha256:162b3d129c7fad9b19abfdcb9c1458a651628e4b1dea628ac68790fb3061c60c"},
 ]
 
 [[package]]
 name = "mkdocs-material"
-version = "9.5.18"
+version = "9.5.34"
 requires_python = ">=3.8"
 summary = "Documentation that simply works"
 groups = ["docs"]
@@ -643,7 +669,7 @@ dependencies = [
     "jinja2~=3.0",
     "markdown~=3.2",
     "mkdocs-material-extensions~=1.3",
-    "mkdocs~=1.5.3",
+    "mkdocs~=1.6",
     "paginate~=0.5",
     "pygments~=2.16",
     "pymdown-extensions~=10.2",
@@ -651,8 +677,8 @@ dependencies = [
     "requests~=2.26",
 ]
 files = [
-    {file = "mkdocs_material-9.5.18-py3-none-any.whl", hash = "sha256:1e0e27fc9fe239f9064318acf548771a4629d5fd5dfd45444fd80a953fe21eb4"},
-    {file = "mkdocs_material-9.5.18.tar.gz", hash = "sha256:a43f470947053fa2405c33995f282d24992c752a50114f23f30da9d8d0c57e62"},
+    {file = "mkdocs_material-9.5.34-py3-none-any.whl", hash = "sha256:54caa8be708de2b75167fd4d3b9f3d949579294f49cb242515d4653dbee9227e"},
+    {file = "mkdocs_material-9.5.34.tar.gz", hash = "sha256:1e60ddf716cfb5679dfd65900b8a25d277064ed82d9a53cd5190e3f894df7840"},
 ]
 
 [[package]]
@@ -699,12 +725,12 @@ files = [
 
 [[package]]
 name = "parse"
-version = "1.20.1"
+version = "1.20.2"
 summary = "parse() is the opposite of format()"
 groups = ["default"]
 files = [
-    {file = "parse-1.20.1-py2.py3-none-any.whl", hash = "sha256:76ddd5214255ae711db4c512be636151fbabaa948c6f30115aecc440422ca82c"},
-    {file = "parse-1.20.1.tar.gz", hash = "sha256:09002ca350ad42e76629995f71f7b518670bcf93548bdde3684fd55d2be51975"},
+    {file = "parse-1.20.2-py2.py3-none-any.whl", hash = "sha256:967095588cb802add9177d0c0b6133b5ba33b1ea9007ca800e526f42a85af558"},
+    {file = "parse-1.20.2.tar.gz", hash = "sha256:b41d604d16503c79d81af5165155c0b20f6c8d6c559efa66b4b695c3e5a0a0ce"},
 ]
 
 [[package]]
@@ -720,11 +746,11 @@ files = [
 
 [[package]]
 name = "peewee"
-version = "3.17.3"
+version = "3.17.6"
 summary = "a little orm"
 groups = ["test"]
 files = [
-    {file = "peewee-3.17.3.tar.gz", hash = "sha256:ef15f90b628e41a584be8306cdc3243c51f73ce88b06154d9572f6d0284a0169"},
+    {file = "peewee-3.17.6.tar.gz", hash = "sha256:cea5592c6f4da1592b7cff8eaf655be6648a1f5857469e30037bf920c03fb8fb"},
 ]
 
 [[package]]
@@ -740,13 +766,13 @@ files = [
 
 [[package]]
 name = "pyasn1"
-version = "0.5.1"
-requires_python = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,>=2.7"
+version = "0.6.0"
+requires_python = ">=3.8"
 summary = "Pure-Python implementation of ASN.1 types and DER/BER/CER codecs (X.208)"
-groups = ["default"]
+groups = ["test"]
 files = [
-    {file = "pyasn1-0.5.1-py2.py3-none-any.whl", hash = "sha256:4439847c58d40b1d0a573d07e3856e95333f1976294494c325775aeca506eb58"},
-    {file = "pyasn1-0.5.1.tar.gz", hash = "sha256:6d391a96e59b23130a5cfa74d6fd7f388dbbe26cc8f1edf39fdddf08d9d6676c"},
+    {file = "pyasn1-0.6.0-py2.py3-none-any.whl", hash = "sha256:cca4bb0f2df5504f02f6f8a775b6e416ff9b0b3b16f7ee80b5a3153d9b804473"},
+    {file = "pyasn1-0.6.0.tar.gz", hash = "sha256:3a35ab2c4b5ef98e17dfdec8ab074046fbda76e281c5a706ccd82328cfc8f64c"},
 ]
 
 [[package]]
@@ -861,7 +887,7 @@ name = "pygments"
 version = "2.17.2"
 requires_python = ">=3.7"
 summary = "Pygments is a syntax highlighting package written in Python."
-groups = ["default", "docs", "test"]
+groups = ["docs", "test"]
 files = [
     {file = "pygments-2.17.2-py3-none-any.whl", hash = "sha256:b27c2826c47d0f3219f29554824c30c5e8945175d888647acd804ddd04af846c"},
     {file = "pygments-2.17.2.tar.gz", hash = "sha256:da46cec9fd2de5be3a8a784f434e4c4ab670b4ff54d605c4c2717e9d49c4c367"},
@@ -869,13 +895,13 @@ files = [
 
 [[package]]
 name = "pyjwt"
-version = "2.8.0"
-requires_python = ">=3.7"
+version = "2.9.0"
+requires_python = ">=3.8"
 summary = "JSON Web Token implementation in Python"
-groups = ["default"]
+groups = ["test"]
 files = [
-    {file = "PyJWT-2.8.0-py3-none-any.whl", hash = "sha256:59127c392cc44c2da5bb3192169a91f429924e17aff6534d70fdc02ab3e04320"},
-    {file = "PyJWT-2.8.0.tar.gz", hash = "sha256:57e28d156e3d5c10088e0c68abb90bfac3df82b40a71bd0daa20c65ccd5c23de"},
+    {file = "PyJWT-2.9.0-py3-none-any.whl", hash = "sha256:3b02fb0f44517787776cf48f2ae25d8e14f300e6d7545a4315cee571a415e850"},
+    {file = "pyjwt-2.9.0.tar.gz", hash = "sha256:7e1e5b56cc735432a7369cbfa0efe50fa113ebecdc04ae6922deba8b84582d0c"},
 ]
 
 [[package]]
@@ -1165,7 +1191,7 @@ name = "rich"
 version = "13.7.1"
 requires_python = ">=3.7.0"
 summary = "Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal"
-groups = ["default", "test"]
+groups = ["test"]
 dependencies = [
     "markdown-it-py>=2.2.0",
     "pygments<3.0.0,>=2.13.0",
@@ -1178,16 +1204,16 @@ files = [
 
 [[package]]
 name = "rich-argparse"
-version = "1.4.0"
-requires_python = ">=3.7"
+version = "1.5.2"
+requires_python = ">=3.8"
 summary = "Rich help formatters for argparse and optparse"
-groups = ["default"]
+groups = ["test"]
 dependencies = [
     "rich>=11.0.0",
 ]
 files = [
-    {file = "rich_argparse-1.4.0-py3-none-any.whl", hash = "sha256:68b263d3628d07b1d27cfe6ad896da2f5a5583ee2ba226aeeb24459840023b38"},
-    {file = "rich_argparse-1.4.0.tar.gz", hash = "sha256:c275f34ea3afe36aec6342c2a2298893104b5650528941fb53c21067276dba19"},
+    {file = "rich_argparse-1.5.2-py3-none-any.whl", hash = "sha256:7027503d5849e27fc7cc85fb58504363606f2ec1c8b3c27d9a8ad28788faf877"},
+    {file = "rich_argparse-1.5.2.tar.gz", hash = "sha256:84d348d5b6dafe99fffe2c7ea1ca0afe14096c921693445b9eee65ee4fcbfd2c"},
 ]
 
 [[package]]
@@ -1195,7 +1221,7 @@ name = "rsa"
 version = "4.9"
 requires_python = ">=3.6,<4"
 summary = "Pure-Python RSA implementation"
-groups = ["default"]
+groups = ["test"]
 dependencies = [
     "pyasn1>=0.1.3",
 ]
@@ -1206,28 +1232,29 @@ files = [
 
 [[package]]
 name = "ruff"
-version = "0.4.1"
+version = "0.6.4"
 requires_python = ">=3.7"
 summary = "An extremely fast Python linter and code formatter, written in Rust."
 groups = ["test"]
 files = [
-    {file = "ruff-0.4.1-py3-none-macosx_10_12_x86_64.macosx_11_0_arm64.macosx_10_12_universal2.whl", hash = "sha256:2d9ef6231e3fbdc0b8c72404a1a0c46fd0dcea84efca83beb4681c318ea6a953"},
-    {file = "ruff-0.4.1-py3-none-macosx_10_12_x86_64.whl", hash = "sha256:9485f54a7189e6f7433e0058cf8581bee45c31a25cd69009d2a040d1bd4bfaef"},
-    {file = "ruff-0.4.1-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:d2921ac03ce1383e360e8a95442ffb0d757a6a7ddd9a5be68561a671e0e5807e"},
-    {file = "ruff-0.4.1-py3-none-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:eec8d185fe193ad053eda3a6be23069e0c8ba8c5d20bc5ace6e3b9e37d246d3f"},
-    {file = "ruff-0.4.1-py3-none-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:baa27d9d72a94574d250f42b7640b3bd2edc4c58ac8ac2778a8c82374bb27984"},
-    {file = "ruff-0.4.1-py3-none-manylinux_2_17_ppc64.manylinux2014_ppc64.whl", hash = "sha256:f1ee41580bff1a651339eb3337c20c12f4037f6110a36ae4a2d864c52e5ef954"},
-    {file = "ruff-0.4.1-py3-none-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:0926cefb57fc5fced629603fbd1a23d458b25418681d96823992ba975f050c2b"},
-    {file = "ruff-0.4.1-py3-none-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:2c6e37f2e3cd74496a74af9a4fa67b547ab3ca137688c484749189bf3a686ceb"},
-    {file = "ruff-0.4.1-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:efd703a5975ac1998c2cc5e9494e13b28f31e66c616b0a76e206de2562e0843c"},
-    {file = "ruff-0.4.1-py3-none-musllinux_1_2_aarch64.whl", hash = "sha256:b92f03b4aa9fa23e1799b40f15f8b95cdc418782a567d6c43def65e1bbb7f1cf"},
-    {file = "ruff-0.4.1-py3-none-musllinux_1_2_armv7l.whl", hash = "sha256:1c859f294f8633889e7d77de228b203eb0e9a03071b72b5989d89a0cf98ee262"},
-    {file = "ruff-0.4.1-py3-none-musllinux_1_2_i686.whl", hash = "sha256:b34510141e393519a47f2d7b8216fec747ea1f2c81e85f076e9f2910588d4b64"},
-    {file = "ruff-0.4.1-py3-none-musllinux_1_2_x86_64.whl", hash = "sha256:6e68d248ed688b9d69fd4d18737edcbb79c98b251bba5a2b031ce2470224bdf9"},
-    {file = "ruff-0.4.1-py3-none-win32.whl", hash = "sha256:b90506f3d6d1f41f43f9b7b5ff845aeefabed6d2494307bc7b178360a8805252"},
-    {file = "ruff-0.4.1-py3-none-win_amd64.whl", hash = "sha256:c7d391e5936af5c9e252743d767c564670dc3889aff460d35c518ee76e4b26d7"},
-    {file = "ruff-0.4.1-py3-none-win_arm64.whl", hash = "sha256:a1eaf03d87e6a7cd5e661d36d8c6e874693cb9bc3049d110bc9a97b350680c43"},
-    {file = "ruff-0.4.1.tar.gz", hash = "sha256:d592116cdbb65f8b1b7e2a2b48297eb865f6bdc20641879aa9d7b9c11d86db79"},
+    {file = "ruff-0.6.4-py3-none-linux_armv6l.whl", hash = "sha256:c4b153fc152af51855458e79e835fb6b933032921756cec9af7d0ba2aa01a258"},
+    {file = "ruff-0.6.4-py3-none-macosx_10_12_x86_64.whl", hash = "sha256:bedff9e4f004dad5f7f76a9d39c4ca98af526c9b1695068198b3bda8c085ef60"},
+    {file = "ruff-0.6.4-py3-none-macosx_11_0_arm64.whl", hash = "sha256:d02a4127a86de23002e694d7ff19f905c51e338c72d8e09b56bfb60e1681724f"},
+    {file = "ruff-0.6.4-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:7862f42fc1a4aca1ea3ffe8a11f67819d183a5693b228f0bb3a531f5e40336fc"},
+    {file = "ruff-0.6.4-py3-none-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:eebe4ff1967c838a1a9618a5a59a3b0a00406f8d7eefee97c70411fefc353617"},
+    {file = "ruff-0.6.4-py3-none-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:932063a03bac394866683e15710c25b8690ccdca1cf192b9a98260332ca93408"},
+    {file = "ruff-0.6.4-py3-none-manylinux_2_17_ppc64.manylinux2014_ppc64.whl", hash = "sha256:50e30b437cebef547bd5c3edf9ce81343e5dd7c737cb36ccb4fe83573f3d392e"},
+    {file = "ruff-0.6.4-py3-none-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:c44536df7b93a587de690e124b89bd47306fddd59398a0fb12afd6133c7b3818"},
+    {file = "ruff-0.6.4-py3-none-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:0ea086601b22dc5e7693a78f3fcfc460cceabfdf3bdc36dc898792aba48fbad6"},
+    {file = "ruff-0.6.4-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:0b52387d3289ccd227b62102c24714ed75fbba0b16ecc69a923a37e3b5e0aaaa"},
+    {file = "ruff-0.6.4-py3-none-musllinux_1_2_aarch64.whl", hash = "sha256:0308610470fcc82969082fc83c76c0d362f562e2f0cdab0586516f03a4e06ec6"},
+    {file = "ruff-0.6.4-py3-none-musllinux_1_2_armv7l.whl", hash = "sha256:803b96dea21795a6c9d5bfa9e96127cc9c31a1987802ca68f35e5c95aed3fc0d"},
+    {file = "ruff-0.6.4-py3-none-musllinux_1_2_i686.whl", hash = "sha256:66dbfea86b663baab8fcae56c59f190caba9398df1488164e2df53e216248baa"},
+    {file = "ruff-0.6.4-py3-none-musllinux_1_2_x86_64.whl", hash = "sha256:34d5efad480193c046c86608dbba2bccdc1c5fd11950fb271f8086e0c763a5d1"},
+    {file = "ruff-0.6.4-py3-none-win32.whl", hash = "sha256:f0f8968feea5ce3777c0d8365653d5e91c40c31a81d95824ba61d871a11b8523"},
+    {file = "ruff-0.6.4-py3-none-win_amd64.whl", hash = "sha256:549daccee5227282289390b0222d0fbee0275d1db6d514550d65420053021a58"},
+    {file = "ruff-0.6.4-py3-none-win_arm64.whl", hash = "sha256:ac4b75e898ed189b3708c9ab3fc70b79a433219e1e87193b4f2b77251d058d14"},
+    {file = "ruff-0.6.4.tar.gz", hash = "sha256:ac3b5bfbee99973f80aa1b7cbd1c9cbce200883bdd067300c22a6cc1c7fba212"},
 ]
 
 [[package]]
@@ -1278,17 +1305,6 @@ files = [
 ]
 
 [[package]]
-name = "tomlkit"
-version = "0.12.4"
-requires_python = ">=3.7"
-summary = "Style preserving TOML library"
-groups = ["default"]
-files = [
-    {file = "tomlkit-0.12.4-py3-none-any.whl", hash = "sha256:5cd82d48a3dd89dee1f9d64420aa20ae65cfbd00668d6f094d7578a78efbb77b"},
-    {file = "tomlkit-0.12.4.tar.gz", hash = "sha256:7ca1cfc12232806517a8515047ba66a19369e71edf2439d0f5824f91032b6cc3"},
-]
-
-[[package]]
 name = "types-python-dateutil"
 version = "2.9.0.20240316"
 requires_python = ">=3.8"
@@ -1304,7 +1320,7 @@ name = "typing-extensions"
 version = "4.9.0"
 requires_python = ">=3.8"
 summary = "Backported and Experimental Type Hints for Python 3.8+"
-groups = ["default", "test"]
+groups = ["test"]
 files = [
     {file = "typing_extensions-4.9.0-py3-none-any.whl", hash = "sha256:af72aea155e91adfc61c3ae9e0e342dbc0cba726d6cba4b6c72c1f34e47291cd"},
     {file = "typing_extensions-4.9.0.tar.gz", hash = "sha256:23478f88c37f27d76ac8aee6c905017a143b0b1b886c3c9f66bc2fd94f9f5783"},

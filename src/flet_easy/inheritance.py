@@ -1,29 +1,16 @@
-from dataclasses import dataclass
 from inspect import iscoroutinefunction
 from typing import Any, Callable, Dict, List, TypeVar
 
 from flet import (
-    AppBar,
-    BottomAppBar,
     ControlEvent,
-    CrossAxisAlignment,
-    CupertinoNavigationBar,
-    FloatingActionButton,
-    FloatingActionButtonLocation,
     KeyboardEvent,
-    MainAxisAlignment,
-    NavigationBar,
-    NavigationDrawer,
-    OptionalNumber,
-    PaddingValue,
     Page,
     Ref,
-    ScrollMode,
     Text,
-    alignment,
+    View,
 )
 from flet.canvas import Canvas
-from flet_core import Control
+from flet_core import Control, alignment
 from flet_core.session_storage import SessionStorage
 
 T = TypeVar("T")
@@ -194,30 +181,8 @@ class Resizesy:
             return self.width - self.margin_x
 
 
-# Add new attributes if flet adds in its updates.
-
-
-@dataclass
-class Viewsy:
-    route: str | None = None
-    controls: List[Control] | None = None
-    appbar: AppBar | None = None
-    bottom_appbar: BottomAppBar | None = None
-    floating_action_button: FloatingActionButton | None = None
-    floating_action_button_location: FloatingActionButtonLocation | None = None
-    navigation_bar: NavigationBar | CupertinoNavigationBar | None = None
-    drawer: NavigationDrawer | None = None
-    end_drawer: NavigationDrawer | None = None
-    vertical_alignment: MainAxisAlignment | None = None
-    horizontal_alignment: CrossAxisAlignment | None = None
-    spacing: OptionalNumber = None
-    padding: PaddingValue = None
-    bgcolor: str | None = None
-    scroll: ScrollMode | None = None
-    auto_scroll: bool | None = None
-    fullscreen_dialog: bool | None = None
-    on_scroll_interval: OptionalNumber = None
-    on_scroll: Any = None
+class Viewsy(View):
+    pass
 
 
 class ResponsiveControlsy(Canvas):

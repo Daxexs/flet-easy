@@ -1,25 +1,18 @@
 [project]
 name = "flet-easy"
-version = "0.2.2"
-description = "⚡Flet-Easy is a package created as a Flet add-on, designed to be easy to use with a cleaner order in the code, having many customizable features."
-authors = [
-    {name = "Daxexs", email = "Daxexsdev@gmail.com"},
-]
+version = "0.2.4"
+description = "⚡Flet-Easy is a user-friendly add-on package for Flet, offering a cleaner code structure with numerous customizable features like JWT, routers, decorators, middleware and more."
+authors = [{ name = "Daxexs", email = "Daxexsdev@gmail.com" }]
 
-dependencies = [
-    "parse>=1.20.1",
-    "pyJWT>=2.8.0",
-    "rsa>=4.9",
-    "rich-argparse>=1.4.0",
-    "tomlkit>=0.12.4",
-]
+dependencies = ["parse>=1.20.1"]
 requires-python = ">=3.8"
 readme = "README.md"
-license = {text = "apache-2.0"}
+license = { text = "apache-2.0" }
 keywords = [
     "flet easy",
     "flet",
     "python",
+    "flet route",
     "flet easy route",
     "python web template",
     "app python",
@@ -28,7 +21,9 @@ keywords = [
     "flet easy fastapi",
     "flutter python",
     "web application",
-    "fast flet"
+    "flet middleware",
+    "flet jwt",
+    "fast flet",
 ]
 classifiers = [
     "Topic :: Software Development :: Build Tools",
@@ -40,11 +35,22 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
 ]
 
+[project.optional-dependencies]
+all = [
+    "pyJWT>=2.0.0",
+    "rsa>=4.9",
+    "flet>=0.21.0",
+    "cookiecutter>=2.6.0",
+    "rich-argparse>=1.4.0",
+]
+JWT = ["pyJWT>=2.0.0", "rsa>=4.9"]
+cli = ["flet>=0.21.0", "cookiecutter>=2.6.0", "rich-argparse>=1.4.0"]
+
 [project.urls]
 Homepage = "https://github.com/Daxexs"
 Repository = "https://github.com/Daxexs/flet-easy"
-Documentation = "https://github.com/Daxexs/flet-easy/blob/main/README.md"
-Changelog = "https://github.com/Daxexs/flet-easy/blob/main/README.md"
+Documentation = "https://daxexs.github.io/flet-easy"
+Changelog = "https://github.com/Daxexs/flet-easy/blob/main/CHANGELOG.md"
 
 [build-system]
 requires = ["pdm-backend"]
@@ -59,11 +65,12 @@ test = [
     "flet>=0.21.1",
     "ruff>=0.3.4",
     "peewee>=3.17.2",
+    "pyJWT>=2.9.0",
+    "cookiecutter>=2.6.0",
+    "rich-argparse>=1.4.0",
+    "rsa>=4.9",
 ]
-docs = [
-    "mkdocs-material>=9.5.17",
-    "mike>=2.0.0",
-]
+docs = ["mkdocs-material>=9.5.17", "mike>=2.0.0"]
 
 [tool.pdm.build]
 excludes = ["./**/.git"]
@@ -75,6 +82,8 @@ source-includes = ["LICENSE", "README.md"]
 doc = "mkdocs serve"
 format = "ruff format"
 check = "ruff check"
+web = "flet run ./tests/flet-app/main.py -r -w -d -p 7777"
+app = "flet run ./tests/flet-app/main.py -r -d"
 
 [project.scripts]
 fs = "flet_easy.cli.main:run"
