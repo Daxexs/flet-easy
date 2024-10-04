@@ -343,7 +343,11 @@ class FletEasy:
             )
         ```
         """
-        data = {"route": route, "title": title, "page_clear": page_clear}
+        data = {
+            "route": route,
+            "title": "Flet-Easy 404" if title is None else title,
+            "page_clear": page_clear,
+        }
         return self.__decorator("page_404", data)
 
     def view(self, func: Callable[[Datasy], Viewsy]):

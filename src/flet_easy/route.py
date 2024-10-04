@@ -8,7 +8,7 @@ from flet_easy.datasy import Datasy
 from flet_easy.extra import Msg, Redirect
 from flet_easy.inheritance import Keyboardsy, Resizesy, Viewsy
 from flet_easy.pagesy import Middleware, Pagesy
-from flet_easy.view_404 import ViewError
+from flet_easy.view_404 import page_404_fs
 
 
 class FletEasyX:
@@ -42,7 +42,7 @@ class FletEasyX:
         self.__middlewares = middleware
         # ----
         self.__pages = pages
-        self.__view_404 = ViewError(route_init)
+        self.__view_404 = page_404_fs
         self.__page_404 = page_404
         self.__view_data = view_data
         self.__view_config = view_config
@@ -312,14 +312,16 @@ class FletEasyX:
                 except Exception as e:
                     raise Exception(e)
         if pg_404:
-            if self.__page_404 is not None:
-                self.__reload_datasy(self.__page_404)
-                self._view_append(self.__page_404.route, self.__page_404)
+            page = self.__page_404 or Pagesy(route, self.__view_404, "Flet-Easy 404")
 
+            if page.route is None:
+                page.route = route
+
+            self.__reload_datasy(page)
+
+            if use_route_change:
+                self._view_append(page.route, page)
             else:
-                page = Pagesy(self.__view_404.route, self.__view_404.view, "FletEasy-404")
-                self.__reload_datasy(page)
-                self._view_append(
-                    self.__view_404.route,
-                    page,
-                )
+                if self.__page.route != route or use_reload:
+                    self.__pagesy = page
+                self.__page.go(page.route)
