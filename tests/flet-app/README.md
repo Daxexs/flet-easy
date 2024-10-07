@@ -12,19 +12,21 @@
 ---
 
 ## Packaging app
-Route where it should be located in the project: `./flet-app`
 
+Route where it should be located in the project: `./flet-app`
 
 ```bash
 cd flet-app
 ```
 
 ### APK
+
 ```bash
 flet build apk -vv
 ```
 
 ### WINDOWS
+>
 > [!NOTE]
     **If you have any problem - build Windows**
     Remove `print()` from Python if used in 'add_middleware' functions.
@@ -34,6 +36,7 @@ flet build windows -vv
 ```
 
 ### WEB
+>
 > [!NOTE]
     **If you have any problem - build web**
     Use `ft.app(target=app.run(fastapi=true))` when compiling web statica.

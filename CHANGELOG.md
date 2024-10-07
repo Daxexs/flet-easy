@@ -1,6 +1,7 @@
 # Flet-Easy changelog
 
-### 0.2.4 (03/09/24)
+## 0.2.4 (03/09/24)
+
 * ⚡The speed of the router is improved to more than twice as fast. ([#20](https://github.com/Daxexs/flet-easy/issues/20))
   
 * Ways to install Flet-Easy. ([#25](https://github.com/Daxexs/flet-easy/issues/25)) [[Doc](https://daxexs.github.io/flet-easy/0.2.4/installation/)]
@@ -15,26 +16,30 @@
   
 * Documentation improvements and updates. ([#26](https://github.com/Daxexs/flet-easy/issues/22)) [[view](https://daxexs.github.io/flet-easy/)]
 
+### **Changes in the api:**
 
-**Changes in the api:**
 New method added in Datasy (data) [[Doc](https://daxexs.github.io/flet-easy/0.2.4/how-to-use/#datasy-data/)]
 
 * `history_routes` : Get the history of the routes.
 * `go_back` : Method to go back to the previous route.
 
-**🔎Note**
+### **🔎Note**
+
 * Now `page.go()` and `data.go()` work similarly to go to a page (View), the only difference is that `data.go()` checks for url redirects when using `data.redirect()`.
 * The 'clear' parameter of `Pagesy` and the `page` decorator is deprecated, it will be removed in future versions.
 
 ### 0.2.2 (04/05/24)
+
 * Fix sensitivity in url with capital letters ([#15](https://github.com/Daxexs/flet-easy/issues/15))
 * Fix 'back' button in dashboard page app bar not working ([#18](https://github.com/Daxexs/flet-easy/issues/18))
 * Fix error caused by `Timeout waiting invokeMethod` ([#19](https://github.com/Daxexs/flet-easy/issues/19))
   
 ### 0.2.1 (25/04/24)
+
 * Fix page loading twice ([#14](https://github.com/Daxexs/flet-easy/issues/14))
 
 ### 0.2.0 (17/04/24)
+
 * Optimize code for flet >0.21 ([#4](https://github.com/Daxexs/flet-easy/issues/4))
 
 * Fix async.
@@ -56,6 +61,7 @@ New method added in Datasy (data) [[Doc](https://daxexs.github.io/flet-easy/0.2.
 * Ruff Integration ([commit](https://github.com/Daxexs/flet-easy/commit/9de267eb6601d6afb2757d90e5a26e51f2325f2e))
 
 **Changes in the api:**
+
 * The `async` methods have been removed, as they are not necessary.
   
 * Change `update_login` method to `login` of Datasy. ([Docs](https://daxexs.github.io/flet-easy/0.2/Customized-app/Route-protection/#login))
@@ -66,17 +72,19 @@ New method added in Datasy (data) [[Doc](https://daxexs.github.io/flet-easy/0.2.
 
 * Changed function parameter decorated on `config_event_handler` | `(page:ft.Page -> data:fs:Datasy)` ([Docs](https://daxexs.github.io/flet-easy/0.2/Customized-app/Events/))
   
-  
 ### 0.1.3 (11/03/2024)
+
 * Flet installation is required to use Flet-Easy.
 * Fixed error when running the application with flet 0.21 ([#3](https://github.com/Daxexs/flet-easy/issues/3)).
 * Fixed packing when compiling an apk ([#2](https://github.com/Daxexs/flet-easy/issues/2)).
   
 ### 0.1.1 (31/01/2024)
+
 * Small improvements in the code and documentation.
 * Parameter `proctect_route` changed to `protected_route` of `page` decorator ([Docs](https://daxexs.github.io/flet-easy/0.1.3/Customized-app/Route-protection/))
 * Added functionality to share data between pages in a more controlled way ([Docs](https://daxexs.github.io/flet-easy/0.1.3/Data-sharing-between-pages/))
 * Added a more ordered documentation ([Docs](https://daxexs.github.io/flet-easy/))
 
 ### 0.1.0
+
 Initial commit

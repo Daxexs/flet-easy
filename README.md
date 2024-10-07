@@ -1,18 +1,18 @@
-[![github](https://img.shields.io/badge/my_profile-000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Daxexs)[![pypi](https://img.shields.io/badge/Pypi-0A66C2?style=for-the-badge&logo=pypi&logoColor=white)](https://pypi.org/project/flet-easy)
-
-[![image](https://img.shields.io/pypi/pyversions/flet-easy.svg)](https://pypi.python.org/pypi/flet-easy) [![image](https://img.shields.io/pypi/v/flet-easy.svg)](https://pypi.python.org/pypi/flet-easy) [![image](https://img.shields.io/pypi/l/flet-easy.svg)](https://pypi.python.org/pypi/flet-easy) [![socket](https://socket.dev/api/badge/pypi/package/flet-easy/0.2.2#1725204521828)](https://socket.dev/pypi/package/flet-easy)
-
-[![Downloads](https://static.pepy.tech/badge/flet-easy)](https://pepy.tech/project/flet-easy) [![pdm-managed](https://img.shields.io/badge/pdm-managed-blueviolet)](https://pdm-project.org)
+# 🔥Flet-Easy
 
 <div align="center">
-    <img src="https://github.com/Daxexs/flet-easy/blob/main/media/logo.png?raw=true" alt="logo" width="250">
+
+[![github](https://img.shields.io/badge/my_profile-000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Daxexs)[![pypi](https://img.shields.io/badge/Pypi-0A66C2?style=for-the-badge&logo=pypi&logoColor=white)](https://pypi.org/project/flet-easy)
+
+[![image](https://img.shields.io/pypi/pyversions/flet-easy.svg)](https://pypi.python.org/pypi/flet-easy) [![image](https://img.shields.io/pypi/v/flet-easy.svg)](https://pypi.python.org/pypi/flet-easy) [![image](https://img.shields.io/pypi/l/flet-easy.svg)](https://pypi.python.org/pypi/flet-easy) [![socket](https://socket.dev/api/badge/pypi/package/flet-easy/0.2.2#1725204521828)](https://socket.dev/pypi/package/flet-easy) [![linting - Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff) [![Downloads](https://static.pepy.tech/badge/flet-easy)](https://pepy.tech/project/flet-easy)
+
+<img src="https://github.com/Daxexs/flet-easy/blob/main/media/logo.png?raw=true" alt="logo" width="250">
+
+`Flet-Easy` is a package built as an add-on for [`Flet`](https://github.com/flet-dev/flet), designed for beginners what it does is to make `Flet` easier when building your apps, with a tidier and simpler code.
 </div>
 
+## Features
 
-# 🔥Flet-Easy
-`Flet-Easy` is a package built as an add-on for [`Flet`](https://github.com/flet-dev/flet), designed for beginners what it does is to make `Flet` easier when building your apps, with a tidier and simpler code.
-
-# Features
 * Easy to use (**hence the name**).
 * Facilitates `flet` event handling.
 * Simple page routing (There are three ways) for whichever one suits you best. ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/dynamic-routes/))
@@ -32,20 +32,20 @@
 * `ResponsiveControlsy` control to make the app responsive, useful for desktop applications. ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/responsiveControlsy/))
 * Soporta Application Packaging para su distribución. ([view](https://flet.dev/docs/publish))
 
-# 📌Flet events it handles
+## 📌Flet events it handles
 
-- `on_route_change` :  Dynamic routing
-- `on_view_pop`
-- `on_keyboard_event`
-- `on_resize`
-- `on_error`
+* `on_route_change` :  Dynamic routing
+* `on_view_pop`
+* `on_keyboard_event`
+* `on_resize`
+* `on_error`
   
-# 💻Installation
-FletEasy provides several ways to install. This allows you to use dependencies that must be used, avoiding unnecessary things when building your application, allowing better control.
+## 💻 Ways to install
 
 ## Ways to install
 
-### Install FletEasy Complete
+### Install Flet-Easy Complete
+
 > [!NOTE]
 If you use the [`fs`](/flet-easy/0.2.4/cli-to-create-app/) cli, it is important to have [`git`](https://git-scm.com/downloads) installed.
 
@@ -57,7 +57,8 @@ pip install flet-easy[all]
 
 ---
 
-### Install clean FletEasy
+### Install clean Flet-Easy
+
 > [!TIP]
 [Recommended for `Flet` Packaging Application](https://flet.dev/docs/publish).
 
@@ -83,12 +84,14 @@ pip install flet-easy[JWT]
 
 ---
 
-# 💻Update:
+## 💻Update
+
 ```bash
   pip install flet-easy --upgrade
 ```
 
-# 🔥Flet-Easy app example
+## 🔥Flet-Easy app example
+
 Here is an example of an application with 2 pages, "Home" and "Counter":
 
 ```python
@@ -144,19 +147,24 @@ def counter_page(data: fs.Datasy):
 app.run()
 ```
 
-# 🎬 **Demo**
+## 🎬 **Demo**
+
 ![app example](https://github.com/Daxexs/flet-easy/blob/main/media/app-example.gif?raw=true "app example")
 
-# 🚀 How to use `Flet-Easy`?
+## 🚀 How to use `Flet-Easy`?
+
 > [!IMPORTANT]
-📑Documentation: https://daxexs.github.io/flet-easy/latest/
+📑Documentation: <https://daxexs.github.io/flet-easy/latest/>
 
-# 👀 Code examples
+## 👀 Code examples
+
 > [!TIP]
-https://github.com/Daxexs/flet-easy/tree/main/tests
+> <https://github.com/Daxexs/flet-easy/tree/main/tests>
 
-# 🔎 Contribute to this project
+## 🔎 Contribute to this project
+
 Read the [CONTRIBUTING.md](https://github.com/Daxexs/flet-easy/blob/main/CONTRIBUTING.md) file
 
-# 🧾 License
+## 🧾 License
+
 [Apache License 2.0](https://choosealicense.com/licenses/apache-2.0/)
