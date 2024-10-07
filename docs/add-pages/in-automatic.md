@@ -1,7 +1,9 @@
 # In automatic
-It forgets the imports of each of the .py files and the functions or variables of the pages. For this you must have a proper order where all the .py files that contain each page must be in a folder, for example `views`. The configuration is done in the FletEasy class of the [`path_views`](/flet-easy/0.2.4/how-to-use/#fleteasy) parameter and in each of the .py files use the [`AddPages`](/flet-easy/0.2.4/add-pages/through-decorators/#addpagesy) class.
 
-### App structure
+It forgets the imports of each of the .py files and the functions or variables of the pages. For this you must have a proper order where all the .py files that contain each page must be in a folder, for example `views`. The configuration is done in the [`FletEasy`](/flet-easy/0.2.0/how-to-use/#fleteasy) class of the [`path_views`](/flet-easy/0.2.0/how-to-use/#fleteasy) parameter and in each of the .py files use the [`AddPages`](/flet-easy/0.2.0/add-pages/through-decorators/#addpagesy) class.
+
+## App structure
+
 ![FletEasy](../assets/images/funtion_add_page.png "App structure")
 
 ### **Example**

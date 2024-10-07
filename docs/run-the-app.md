@@ -1,20 +1,31 @@
 # Run the app
-To run the application we use an object method already instantiated by Flet-Easy (you can customize the parameters of your method according to your needs):
 
-## 📷 **Demo**
-![FletEasy run](assets/images/method_run.png "FletEasy run")
+To run the application we use an object method already instantiated by [`FletEasy`](/flet-easy/0.2.0/how-to-use/#fleteasy) (you can customize the parameters of method according to your needs):
+
+## Methods
+
+### run
+
+![FletEasy run](assets/images/v0.2.0/method_run.png "FletEasy run()")
+
+### Use with fastapi
+
+To get the main of the app and be able to add Fastapi to it.
+
+![run fastapi](assets/images/v0.2.0/fastapi_run.png "run fastapi()")
+
+### Export asgi app
+
+![run fastapi](assets/images/v0.2.0/export_asgi.png "run export_asgi_app()")
 
 ## customize as it is executed
+
 ![run view](assets/images/run_view.png "run view")
 
-## Use with fastapi
-![run fastapi](assets/images/fastapi_run.png "run fastapi")
+!!! warning "If there are problems in `build web`"
+    Use:
+    ```python
+    import flet as ft
 
-## Export asgi app
-![Export asgi](assets/images/export_asgi.png "Export asgi")
-
-???+ info "If you have any problem in `build Web`"
-     Use:
-     ```python
-     ft.app(target=app.run(fastapi=true))
-     ```
+    ft.app(app.run(fastapi=True))
+    ```

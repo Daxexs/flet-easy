@@ -2,7 +2,7 @@ site_name: Flet-Easy
 site_url: https://daxexs.github.io/flet-easy/
 site_author: Daxexs
 site_description: >-
-  Flet-Easy is a user-friendly add-on package for Flet, offering a cleaner code structure with numerous customizable features like JWT, routers, decorators, and more.
+  Flet-Easy is a user-friendly add-on package for Flet, offering a cleaner code structure with numerous customizable features like JWT, routers, decorators, middleware and more.
 edit_uri: edit/main/docs/
 copyright: Copyright &copy; <span id="dynamic-year"></span> Daxexs
 repo_name: Daxexs/flet-easy
@@ -132,8 +132,8 @@ nav:
   - how-to-use.md
   - run-the-app.md
   - cli-to-create-app.md
-  - data-sharing-between-pages.md
   - dynamic-routes.md
+  - data-sharing-between-pages.md
   - Add pages:
       - Through decorators: add-pages/through-decorators.md
       - By means of functions: add-pages/by-means-of-functions.md

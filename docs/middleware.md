@@ -1,9 +1,10 @@
 # Middleware
+
 It acts as an intermediary between different software components, intercepting and processing requests and responses. Allows adding functionalities before reloading each page in a flexible and modular way. It adds common functionalities, such as authentication, logging, data compression, caching, error handling, data transformation, etc.
 
-The function that will act as middleware will receive as a single mandatory parameter [`data: Datasy`](/flet-easy/0.2.4/how-to-use/#datasy-data) and its structure or content may vary depending on the context and specific requirements of the middleware.
+The function that will act as middleware will receive as a single mandatory parameter [`data: Datasy`](/flet-easy/0.2.0/how-to-use/#datasy-data) and its structure or content may vary depending on the context and specific requirements of the middleware.
 
-## **Method and attribute to use** [[`See more`](/flet-easy/0.2.4/how-to-use/#datasy-data)]
+## **Method and attribute to use** [[`See more`](/flet-easy/0.2.0/how-to-use/#datasy-data)]
 
 * `data.route` : to know the route that is loading.
 * `data.redirect()` : route to redirect.
@@ -16,9 +17,6 @@ The function that will act as middleware will receive as a single mandatory para
 
 ## General Application
 
-???+ info "If you have any problem in `build Windows`"
-    Remove `print()` from Python if used in `add_middleware` functions.
-    
 Another alternative to protected-route
 
 ```python hl_lines="4 12 15 20 24 34 56"
@@ -95,10 +93,12 @@ app.run()
 ```
 
 ## 🎬 **Demo**
+
 ![alt video](../assets/gifs/protected-route.gif "Middleware")
 
 ## For each page
-Another alternative to protected-route 
+
+Another alternative to protected-route
 
 ```python hl_lines="4 12 14 18 24 44"
 import flet as ft
@@ -161,4 +161,5 @@ app.run()
 ```
 
 ## 🎬 **Demo**
+
 ![alt video](../assets/gifs/protected-route.gif "Middleware")

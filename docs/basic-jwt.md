@@ -1,9 +1,10 @@
 # Basic JWT
+
 JWT is a standard for securely transmitting data between parties in JSON format. It is composed of three parts: the header, the payload and the signature. It is commonly used for authentication and authorization in web applications and API services. JWTs are compact, self-contained and easy to use in distributed environments.
 
-Flet Easy contains a basic integration to use JWT in a simple and fast way, by integrating JWT in the app you can configure user session time, as well as an automatic session expiration. In order to add JWT we will need the following configurations.
+Flet-Easy contains a basic integration to use JWT in a simple and fast way, by integrating JWT in the app you can configure user session time, as well as an automatic session expiration. In order to add JWT we will need the following configurations.
 
-In the [`FletEasy`](/flet-easy/0.2.4/how-to-use/#fleteasy) class we must configure the following parameters:
+In the [`FletEasy`](/flet-easy/0.2.0/how-to-use/#fleteasy) class we must configure the following parameters:
 
 * The value of `auto_logout` is false by default (closes session automatically).
 * To configure the `secret_key` it is necessary to use the `SecretKey` class of `FletEasy`.
@@ -11,6 +12,7 @@ In the [`FletEasy`](/flet-easy/0.2.4/how-to-use/#fleteasy) class we must configu
 ## Configuration
 
 ### Algorithm HS256
+
 ```python title="main.py" hl_lines="6-9"
 import flet_easy  as fs
 
@@ -45,6 +47,7 @@ app = fs.FletEasy(
 ```
 
 ## Get `secret_key`
+
 FletEasy provides a class called `EasyKey` to easily get a secret_key to use, then we can copy it to a file or use it as environment variables.
 
 ```python
@@ -63,12 +66,14 @@ PUBLIC_KEY = key.public_key()
 ---
 
 ## How to use it
-After having configured the `secret_key`, we can start configuring the use of JWT. For this we are going to require the use of the [`login`](/flet-easy/0.2.4/customized-app/route-protection) method of `Datasy` (data), it will be used as normally we would use it without using JWT, but we will use the `time_expiry` and `value` parameter that will have to be a dictionary obligatorily.
 
-* [More details of the `login` method](/flet-easy/0.2.4/customized-app/route-protection/#login)
-* [More details of the `logout` method](/flet-easy/0.2.4/customized-app/route-protection/#logout)
+After having configured the `secret_key`, we can start configuring the use of JWT. For this we are going to require the use of the [`login`](/flet-easy/0.2.0/customized-app/route-protection/) method of `Datasy` (data), it will be used as normally we would use it without using JWT, but we will use the `time_expiry` and `value` parameter that will have to be a dictionary obligatorily.
+
+* [More details of the `login` method](/flet-easy/0.2.0/customized-app/route-protection/#login)
+* [More details of the `logout` method](/flet-easy/0.2.0/customized-app/route-protection/#logout)
 
 ### Example
+
 ```python title="sensitive.py"
 SECRET_KEY = "7dbd00fd8ba528257c641b7c5c411cb5abdca774d348d36a3af86f644b132382a3f3f71361fd4e19d2d2dcbcee6f2769af84cbe372a3a5b9db35d3d2707e1d0a"
 
@@ -110,7 +115,7 @@ Kzuz8LYM/PJmIWIBTo2mqDwp/Iv2EbMKw0Jjn0cgnZINs9UciQqhxX4R49I3
 -----END RSA PRIVATE KEY-----"""
 ```
 
-In this example we are going to do very similar with the [`Route-protection`](/flet-easy/0.2.4/customized-app/route-protection/#example) example, we have only configured the `secret_key`, used the [`login`](/flet-easy/0.2.4/customized-app/route-protection/#login) method `time_expiry` parameter and used the [`decode`](/flet-easy/0.2.4/basic-jwt/#decode) function of `FletEasy` to get the payload stored in the decoded client storage.
+In this example we are going to do very similar with the [`Route-protection`](/flet-easy/0.2.0/customized-app/route-protection/#example) example, we have only configured the `secret_key`, used the [`login`](/flet-easy/0.2.0/customized-app/route-protection/#login) method `time_expiry` parameter and used the [`decode`](/flet-easy/0.2.0/basic-jwt/#decode) function of `FletEasy` to get the payload stored in the decoded client storage.
 
 ```python title="main.py"  hl_lines="12-15 22 42 65-70 78"
 from datetime import timedelta
@@ -203,7 +208,9 @@ def login_page(data: fs.Datasy):
 
 app.run()
 ```
+
 ### 🎬 **Demo**
+
 **APP**
 ![alt video](assets/gifs/jwt-app.gif "jwt")
 
@@ -211,16 +218,17 @@ app.run()
 ![alt video](assets/gifs/jwt-web.gif "jwt")
 
 ## decode
+
 Decode the jwt and update the browser sessions.
 
 **Parameters to use:**
 
-* `key_login` : key used to store the data in the client, also used in the [`login`](/flet-easy/0.2.4/customized-app/route-protection/#login) method of [`Datasy`](/flet-easy/0.2.4/how-to-use/#datasy-data).
-* `data` : Object instance of the [`Datasy`](/flet-easy/0.2.4/how-to-use/#datasy-data) class.
+* `key_login` : key used to store the data in the client, also used in the [`login`](/flet-easy/0.2.0/customized-app/route-protection/#login) method of [`Datasy`](/flet-easy/0.2.0/how-to-use/#datasy-data).
+* `data` : Object instance of the [`Datasy`](/flet-easy/0.2.0/how-to-use/#datasy-data) class.
 
 !!! info
-    * Support async, example: `decode_async`.
+    *Support async, example: `decode_async`.
     * If the function to use is async it is recommended to use `decode_async` to avoid errors.
 
 !!! note
-    The `decode` and `decode_async` functions can be used in other parts of the code, for example: [Middleware](/flet-easy/0.2.4/middleware)
+    The `decode` and `decode_async` functions can be used in other parts of the code, for example: [Middleware](/flet-easy/0.2.0/middleware/)

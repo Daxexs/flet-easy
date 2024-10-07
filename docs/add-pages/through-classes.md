@@ -1,8 +1,11 @@
 # Through classes
+
+!!! warning "Available since version 0.2.4"
+
 Create new pages (`View`) by using classes, you don't need to inherit from any other class to add the page, you just need to:
 
-* Use the [`page`](/flet-easy/0.2.4/how-to-use/#decorator-page) decorator.
-* The constructor must have as mandatory parameter [`data:fs.Datasy`](/flet-easy/0.2.4/how-to-use/#datasy-data) and if it receives a parameter bymeans of the url it must be used as parameter.
+* Use the [`page`](/flet-easy/0.2.0/how-to-use/#decorator-page) decorator.
+* The constructor must have as mandatory parameter [`data:fs.Datasy`](/flet-easy/0.2.0/how-to-use/#datasy-data) and if it receives a parameter bymeans of the url it must be used as parameter.
 * That the class to use must have a mandatory method called `build` that will return `View` from flet, itcan be async if necessary. This `build` method does not receive any parameter.
 
 🤔 **why use a class?**
@@ -84,4 +87,5 @@ app.run()
 ```
 
 ## 🎬 **Demo**
+
 ![alt video](../assets/gifs/Use-class-new-page.gif "Use Class new Page")

@@ -1,5 +1,6 @@
 # Data sharing between pages
-To be able to manipulate the data between client sessions, `data.share` is used, `data` is the parameter of the function decorated by `page`. Unlike `page.session` this allows a better protection of the data that you want to share in the pages, because through the `share_data` parameter of the `page` decorator you can limit to which pages you want to share the data, if the page does not have permission to share the data it will be automatically deleted. The methods to use are similar `page.session` [example](https://flet.dev/docs/guides/python/session-storage). 
+
+To be able to manipulate the data between client sessions, `data.share` is used, `data` is the parameter of the function decorated by `page`. Unlike `page.session` this allows a better protection of the data that you want to share in the pages, because through the `share_data` parameter of the `page` decorator you can limit to which pages you want to share the data, if the page does not have permission to share the data it will be automatically deleted. The methods to use are similar `page.session` [example](https://flet.dev/docs/guides/python/session-storage).
 
 Besides that you get some extra methods:
 
@@ -8,11 +9,12 @@ Besides that you get some extra methods:
 * `get_all` : Get the dictionary of all shared values.
 
 ## **Example**
+
 It can be created in different file.py, for example using the `AddPagesy` class of `Flet-Easy` and then added to the main.py file.
 
 In this case page #1 creates the data to be shared with the other pages that have the `share_data` parameter of the `page` decorator enabled. With that in mind page #3 will not be able to access the shared data, in which case the shared data will be deleted automatically. (This works on pages that redirect continuously, if you switch to a page that does not allow data sharing, it will be deleted).
 
-```python hl_lines="6 16 21-22 38 44-49 69 76-81 97"
+```python hl_lines="6 16 20-21 37 42-47 67 72-77 93"
 from dataclasses import dataclass
 
 import flet as ft
@@ -28,12 +30,11 @@ class Test:
 
 
 # 1
-@app.page("/send-data", share_data=True)
+@app.page("/send-data", title="send data", share_data=True)
 async def send_data_page(data: fs.Datasy):
     page = data.page
-    page.title = "send data"
 
-    data.share.set("test", Test("Flet-Easy", "0.1"))
+    data.share.set("test", Test("Flet-Easy", "0.2.0"))
     data.share.set("owner", "Daxexs")
 
     return ft.View(
@@ -50,10 +51,9 @@ async def send_data_page(data: fs.Datasy):
     )
 
 # 2
-@app.page("/data", share_data=True)
+@app.page("/data", title="data", share_data=True)
 async def get_data_page(data: fs.Datasy):
     page = data.page
-    page.title = "data"
 
     # It is checked if there is data stored in the dictionary (data.share.set).
     if data.share.contains():
@@ -81,11 +81,9 @@ async def get_data_page(data: fs.Datasy):
     )
 
 # 3
-@app.page("/info")
+@app.page("/info", title="Information")
 async def info_page(data: fs.Datasy):
     page = data.page
-
-    page.title = "Information"
 
     # It is checked if there is data stored in the dictionary (data.share.set).
     if data.share.contains():
@@ -111,5 +109,7 @@ async def info_page(data: fs.Datasy):
 
 app.run(view=ft.AppView.WEB_BROWSER)
 ```
+
 ### 🎬 **Demo**
+
 ![alt video](assets/gifs/share-data.gif "share data")

@@ -1,26 +1,30 @@
 # Through decorators
 
-## Add pages from other files to the main application.
+## Add pages from other files to the main application
+
 In order to create a page in a `file.py` different from the `main.py` file of the app, you need to use the `AddPagesy` class.
 
 ### `AddPagesy`
+
 Requires the parameter:
 
 * `route_prefix`: text string that will bind to the url of the page decorator, example(/users) this will encompass all urls of this class. (optional)
 
 Methods:
 
-* `page()` : Decorator to add a new page to the app. This decorator method acts similarly to the `Pagesy` class and contains the same required parameters. ([`See more`](/flet-easy/0.2.4/add-pages/by-means-of-functions/#pagesy))
+* `page()` : Decorator to add a new page to the app. This decorator method acts similarly to the `Pagesy` class and contains the same required parameters. ([`See more`](/flet-easy/0.2.0/add-pages/by-means-of-functions/#pagesy))
 
 !!! note "Soporta async"
 
 ## App structure
+
 ![FletEasy](../assets/images/struct-views.png "App structure")
 
 ???+ Example "Urls to be created:"
-    * '/user/task'
-    * '/user/information'
-    * '/user/test'
+
+    * `'/user/task'`
+    * `'/user/information'`
+    * `'/user/test'`
 
 ### **Example using functions**
 
@@ -70,10 +74,13 @@ async def information_page(data: fs.Datasy):
 ```
 
 ### **Example using classes**
+
+!!! warning "Available since version 0.2.4"
+
 Create new pages (`View`) by using classes, you don't need to inherit from any other class to add the page, you just need to:
 
-* Use the [`page`](/flet-easy/0.2.4/how-to-use/#decorator-page) decorator.
-* The constructor must have as mandatory parameter [`data:fs.Datasy`](/flet-easy/0.2.4/how-to-use/#datasy-data) and if it receives a parameter bymeans of the url it must be used as parameter.
+* Use the [`page`](/flet-easy/0.2.0/how-to-use/#decorator-page) decorator.
+* The constructor must have as mandatory parameter [`data:fs.Datasy`](/flet-easy/0.2.0/how-to-use/#datasy-data) and if it receives a parameter bymeans of the url it must be used as parameter.
 * That the class to use must have a mandatory method called `build` that will return `View` from flet, itcan be async if necessary. This `build` method does not receive any parameter.
 
 🤔 **why use a class?**
@@ -103,7 +110,9 @@ Class TestPage:
         )
 
 ```
+
 ### Adding pages
+
 Now how to add to the main app the `main.py` file. For this we use the `add_pages` method that requires as parameter a list of all the pages of other files that we want to add.
 
 ```Python title="main.py" hl_lines="2 8"

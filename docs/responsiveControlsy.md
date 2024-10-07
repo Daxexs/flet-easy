@@ -1,4 +1,5 @@
 # ResponsiveControlsy
+
 Allows the controls to adapt to the size of the app (responsive). It is suitable for use in applications, in web it is not recommended.
 
 !!! note
@@ -13,7 +14,7 @@ This class contains the following parameters:
 * `show_resize: bool` : To observe the size of the controller (width x * height). is disabled when sending an on_resize function. (optional)
 * `show_resize_terminal: bool` : To see the size of the controller (width x height) in the terminal. (optional)
 
-### **Example**
+## **Example**
 
 ```python
 import flet_easy as fs
@@ -29,9 +30,10 @@ fs.ResponsiveControlsy(
     show_resize=True
 )
 ```
-### **Advanced use**
 
-```python
+## **Advanced use**
+
+```python hl_lines="80 93 103 112"
 import flet as ft
 import flet_easy as fs
 from flet.canvas import CanvasResizeEvent
@@ -111,11 +113,12 @@ class ResponseTest(ft.UserControl):
             expand=2,
         )
 
-@app.page(route="/response", title="Response")
-async def response_page(data: fs.Datasy):
+@app.page(route="/response")
+def response_page(data: fs.Datasy):
     page = data.page
+    page.title = "Response"
 
-    async def handle_resize(e: CanvasResizeEvent):
+    def handle_resize(e: CanvasResizeEvent):
         c = e.control.content
         t = c.content
         t.value = f"{e.width} x {e.height}"
@@ -151,5 +154,7 @@ async def response_page(data: fs.Datasy):
 
 app.run()
 ```
-### 🎬 **Demo**
+
+## 🎬 **Demo**
+
 ![alt video](assets/gifs/ControlResponse.gif "ResponsiveControlsy")

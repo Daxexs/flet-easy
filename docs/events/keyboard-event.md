@@ -1,5 +1,6 @@
 # Keyboard event
-In order to use this method, the parameter of the function decorated by [`page`](/flet-easy/0.2.4/how-to-use/#decorator-page) is obtained through [`data`](/flet-easy/0.2.4/how-to-use/#datasy-data).
+
+In order to use this method, the parameter of the function decorated by [`page`](/flet-easy/0.2.0/how-to-use/#decorator-page) is obtained through [`data`](/flet-easy/0.2.0/how-to-use/#datasy-data).
 
 Manages keyboard input of values
 
@@ -52,5 +53,7 @@ def keyboard_page(data: fs.Datasy):
 
 app.run()
 ```
+
 ### 🎬 **Demo**
+
 ![alt video](../assets/gifs/on_keyboard.gif "use keyboard")
