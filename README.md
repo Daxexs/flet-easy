@@ -8,8 +8,8 @@
     <img src="https://github.com/Daxexs/flet-easy/blob/main/media/logo.png?raw=true" alt="logo" width="250">
 </div>
 
-
 # 🔥Flet-Easy
+
 `Flet-Easy` is a package built as an add-on for [`Flet`](https://github.com/flet-dev/flet), designed for beginners what it does is to make `Flet` easier when building your apps, with a tidier and simpler code. Some functions:
 
 * Facilitates the handling of flet events.
@@ -25,28 +25,32 @@ and more extra features.....
 
 ## 📌Flet events it handles
 
-- `on_route_change` :  Dynamic routing
-- `on_view_pop`
-- `on_keyboard_event`
-- `on_resize`
-- `on_error`
+* `on_route_change` :  Dynamic routing
+* `on_view_pop`
+* `on_keyboard_event`
+* `on_resize`
+* `on_error`
 
-## 💻Installation:
+## 💻Installation
 
 Requires installation [`Flet`](https://github.com/flet-dev/flet) for use:
+
 ```bash
   pip install flet --upgrade
 ```
+
 ```bash
   pip install flet-easy
 ```
 
-## 💻Update:
+## 💻Update
+
 ```bash
   pip install flet-easy --upgrade
 ```
 
 ## 🔥Flet-Easy app example
+
 Here is an example of an application with 2 pages, "Home" and "Counter":
 
 ```python
@@ -117,12 +121,15 @@ app.run()
 ```
 
 ## 🚀 How to use `Flet-Easy`?
-> [!IMPORTANT]
-https://daxexs.github.io/flet-easy/
 
-## 👀 Code examples:
+> [!IMPORTANT]
+> <https://daxexs.github.io/flet-easy/>
+
+## 👀 Code examples
+
 > [!NOTE]
-https://github.com/Daxexs/flet-easy/tree/main/tests
+> <https://github.com/Daxexs/flet-easy/tree/main/tests>
 
 # 🧾 License
+
 [Apache License 2.0](https://choosealicense.com/licenses/apache-2.0/)
