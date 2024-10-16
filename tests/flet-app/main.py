@@ -37,8 +37,8 @@ async def starting_page_two(data: fs.Datasy):
         "/home",
         "/share/send-data",
         "/dashboard",
-        "/counter/test/{id:d}",
-        "/counter/use-keyboard/{id}",
+        "/counter/test/{id:int}",
+        "/counter/use-keyboard/{id:int}",
         "/counter/ts",
     ]
     if data.route not in routes:

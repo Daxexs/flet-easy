@@ -15,7 +15,7 @@ async def check_params(data: fs.Datasy):
 
 
 # We add a one page
-@counter.page(route="/test/{id:d}", title="Counter", middleware=[check_params])
+@counter.page(route="/test/{id:int}", title="Counter", middleware=[check_params])
 async def counter_page(data: fs.Datasy, id: str):
     view = data.view
 
@@ -47,7 +47,7 @@ class PageTs(Custom):
 
 
 # add a third page - Using a class
-@counter.page("/use-keyboard/{id}", title="Use Keyboard - Use Class")
+@counter.page("/use-keyboard/{id:int}", title="Use Keyboard - Use Class")
 class PageUseKeyboard(Custom):
     def __init__(self, data: fs.Datasy, id: int):
         self.data = data

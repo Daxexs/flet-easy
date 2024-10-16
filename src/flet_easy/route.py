@@ -1,17 +1,20 @@
+import re
 from inspect import iscoroutinefunction
-from typing import Any, Callable, Dict, List
+from re import Pattern, compile, escape
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from flet import ControlEvent, KeyboardEvent, Page, RouteChangeEvent, View
-from parse import parse
 
 from flet_easy.datasy import Datasy
-from flet_easy.extra import Msg, Redirect
+from flet_easy.extra import TYPE_PATTERNS, Msg, Redirect
 from flet_easy.inheritance import Keyboardsy, Resizesy, Viewsy
 from flet_easy.pagesy import Middleware, Pagesy
 from flet_easy.view_404 import page_404_fs
 
 
 class FletEasyX:
+    __compiled_patterns_cache: Dict[str, re.Pattern[str]] = {}
+
     def __init__(
         self,
         page: Page,
@@ -235,35 +238,12 @@ class FletEasyX:
 
         return True
 
-    def __process_route(self, custom_params: Dict[str, Callable[[], bool]], path: str, route: str):
-        if custom_params is None:
-            route_math = parse(route, path)
-            return [route_math, route_math]
-
-        else:
-            try:
-                route_math = parse(route, path, custom_params)
-                route_check = (
-                    all(
-                        valor is not False and valor is not None
-                        for valor in dict(route_math.named).values()
-                    )
-                    if route_math
-                    else route_math
-                )
-                return [route_math, route_check]
-
-            except Exception as e:
-                raise Exception(
-                    f"The url parse has failed, check the url -> ({route}) parameters for correctness. Error-> {e}"
-                )
-
     def _go(self, route: str, use_route_change: bool = False, use_reload: bool = False):
         pg_404 = True
 
         for page in self.__pages:
-            route_math, route_check = self.__process_route(page.custom_params, route, page.route)
-            if route_check:
+            route_math = self._verify_url(page.route, route, page.custom_params)
+            if route_math is not None:
                 pg_404 = False
                 try:
                     if page.protected_route:
@@ -285,7 +265,7 @@ class FletEasyX:
                             auth = self.__config_login(self.__data)
 
                         if auth:
-                            self.__reload_datasy(page, route_math.named)
+                            self.__reload_datasy(page, route_math)
 
                             if use_route_change:
                                 self._view_append(route, page)
@@ -303,7 +283,7 @@ class FletEasyX:
                         if self.__run_middlewares(
                             route=route,
                             middleware=self.__middlewares,
-                            url_params=route_math.named,
+                            url_params=route_math,
                             pagesy=page,
                             use_route_change=use_route_change,
                             use_reload=use_reload,
@@ -325,3 +305,53 @@ class FletEasyX:
                 if self.__page.route != route or use_reload:
                     self.__pagesy = page
                 self.__page.go(page.route)
+
+    @classmethod
+    def __compile_pattern(cls, pattern_parts: list[str]) -> Pattern[str]:
+        pattern_key = "/".join(pattern_parts)
+        if pattern_key not in cls.__compiled_patterns_cache:
+            cls.__compiled_patterns_cache[pattern_key] = compile(f"^/{pattern_key}/?$")
+        return cls.__compiled_patterns_cache[pattern_key]
+
+    @classmethod
+    def _verify_url(
+        cls,
+        url_pattern: str,
+        url: str,
+        custom_types: Optional[Dict[str, Callable[[str], Optional[bool]]]] = None,
+    ) -> Optional[Dict[str, Optional[bool]]]:
+        combined_patterns = {
+            **TYPE_PATTERNS,
+            **{k: (compile(r"[^/]+"), v) for k, v in (custom_types or {}).items()},
+        }
+
+        segments: list[Tuple[str, Callable[[str], Optional[bool]]]] = []
+        pattern_parts: list[str] = []
+        type_patterns: list[str] = []
+
+        for segment in url_pattern.strip("/").split("/"):
+            try:
+                if segment[0] in "<{" and segment[-1] in ">}":
+                    name, type_ = (
+                        segment[1:-1].split(":", 1) if ":" in segment else (segment[1:-1], "str")
+                    )
+                    type_patterns.append(type_)
+                    regex_part, parser = combined_patterns[type_]
+                    pattern_parts.append(f"({regex_part.pattern})")
+                    segments.append((name, parser))
+                else:
+                    pattern_parts.append(escape(segment))
+            except KeyError as e:
+                raise ValueError(f"Unrecognized data type: {e}")
+
+        if custom_types and type_ not in custom_types:
+            raise ValueError(f"A custom data type is not being used: {custom_types.keys()}")
+
+        pattern = cls.__compile_pattern(pattern_parts)
+        match = pattern.fullmatch(url)
+        if not match:
+            return None
+
+        result = {name: parser(match.group(i + 1)) for i, (name, parser) in enumerate(segments)}
+
+        return None if None in result.values() else result

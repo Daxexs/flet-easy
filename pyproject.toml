@@ -4,7 +4,7 @@ version = "0.2.4"
 description = "⚡Flet-Easy is a user-friendly add-on package for Flet, offering a cleaner code structure with numerous customizable features like JWT, routers, decorators, middleware and more."
 authors = [{ name = "Daxexs", email = "Daxexsdev@gmail.com" }]
 
-dependencies = ["parse>=1.20.1"]
+dependencies = []
 requires-python = ">=3.8"
 readme = "README.md"
 license = { text = "apache-2.0" }
