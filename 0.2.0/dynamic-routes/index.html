@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.39">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.41">
     
     
       
@@ -30,7 +30,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.8c3ca2c6.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.0253249f.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
@@ -540,9 +540,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#example_1" class="md-nav__link">
+  <a href="#example-1" class="md-nav__link">
     <span class="md-ellipsis">
-      Example
+      Example #1
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example #2
     </span>
   </a>
   
@@ -573,9 +582,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#example_2" class="md-nav__link">
+  <a href="#example-1_1" class="md-nav__link">
     <span class="md-ellipsis">
-      Example
+      Example #1
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-2_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example #2
     </span>
   </a>
   
@@ -1178,9 +1196,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#example_1" class="md-nav__link">
+  <a href="#example-1" class="md-nav__link">
     <span class="md-ellipsis">
-      Example
+      Example #1
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example #2
     </span>
   </a>
   
@@ -1211,9 +1238,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#example_2" class="md-nav__link">
+  <a href="#example-1_1" class="md-nav__link">
     <span class="md-ellipsis">
-      Example
+      Example #1
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-2_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example #2
     </span>
   </a>
   
@@ -1260,6 +1296,14 @@
 <p>Flet-Easy provides a simple and powerful routing to manage the access to the pages created, it contains 3 ways of use (choose the one that suits you best).</p>
 <h2 id="simple-form"><strong>Simple form</strong><a class="headerlink" href="#simple-form" title="Permanent link">&para;</a></h2>
 <p>Get the values ​​of the URL parameters, using the data from the parameters of the function decorated by <a href="/flet-easy/0.2.0/how-to-use/#decorator-page"><code>page()</code></a>.</p>
+<details class="warning" open="open">
+<summary>Available from version 0.2.6</summary>
+<p>Any of these formats are supported:</p>
+<ul>
+<li><code>{id}</code></li>
+<li><code>&lt;id&gt;</code></li>
+</ul>
+</details>
 <h3 id="example"><strong>Example</strong><a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span> <span class="nn">flet</span> <span class="k">as</span> <span class="nn">ft</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span> <span class="nn">flet_easy</span> <span class="k">as</span> <span class="nn">fs</span>
@@ -1282,14 +1326,18 @@
 <h3 id="demo">🎬 Demo<a class="headerlink" href="#demo" title="Permanent link">&para;</a></h3>
 <p><img alt="alt video" src="../assets/gifs/route-simple.gif" title="route simple" /></p>
 <h2 id="advanced-form"><strong>Advanced Form</strong><a class="headerlink" href="#advanced-form" title="Permanent link">&para;</a></h2>
-<p>Use dynamic parameters in the url to get specific data, for example <code>{id:d}</code> is requested to be a number and <code>{name:l}</code> a string. For more information <a href="https://github.com/r1chardj0n3s/parse#format-specification">here</a></p>
-<h3 id="example_1"><strong>Example</strong><a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h3>
+<details class="warning" open="open">
+<summary>Available from version 0.2.6</summary>
+<p>The typing of parameters within the url changes, now supporting the native python types <code>(:int, :str, :bool, :float</code>), instead of using <code>(:d, :l)</code> which were for a number and string respectively.</p>
+</details>
+<p>Utilice parámetros dinámicos en la URL para obtener datos específicos, por ejemplo, se solicita que {id:int} sea un número y {name:str} una cadena.</p>
+<h3 id="example-1"><strong>Example #1</strong><a class="headerlink" href="#example-1" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span> <span class="nn">flet</span> <span class="k">as</span> <span class="nn">ft</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">import</span> <span class="nn">flet_easy</span> <span class="k">as</span> <span class="nn">fs</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="hll"><span class="n">app</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">FletEasy</span><span class="p">(</span><span class="n">route_init</span><span class="o">=</span><span class="s2">&quot;/test/10/user/dxs&quot;</span><span class="p">)</span>
 </span></span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="hll"><span class="nd">@app</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="n">route</span><span class="o">=</span><span class="s2">&quot;/test/</span><span class="si">{id:d}</span><span class="s2">/user/{name:l}&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Flet-Easy&quot;</span><span class="p">)</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="hll"><span class="nd">@app</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="n">route</span><span class="o">=</span><span class="s2">&quot;/test/{id:int}/user/&lt;name:str&gt;&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Flet-Easy&quot;</span><span class="p">)</span>
 </span></span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="hll"><span class="k">def</span> <span class="nf">home_page</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">fs</span><span class="o">.</span><span class="n">Datasy</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
 </span></span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
 </span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="k">return</span> <span class="n">ft</span><span class="o">.</span><span class="n">View</span><span class="p">(</span>
@@ -1302,41 +1350,107 @@
 </span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>
 </span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">view</span><span class="o">=</span><span class="n">ft</span><span class="o">.</span><span class="n">AppView</span><span class="o">.</span><span class="n">WEB_BROWSER</span><span class="p">)</span>
 </span></code></pre></div>
+<hr />
+<h3 id="example-2"><strong>Example #2</strong><a class="headerlink" href="#example-2" title="Permanent link">&para;</a></h3>
+<div class="admonition info">
+<p class="admonition-title">Available only up to version 0.2.4</p>
+</div>
+<p>Use dynamic parameters in the url to get specific data, for example <code>{id:d}</code> is requested to be a number and <code>{name:l}</code> a string. For more information <a href="https://github.com/r1chardj0n3s/parse#format-specification">here</a></p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span> <span class="nn">flet</span> <span class="k">as</span> <span class="nn">ft</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">import</span> <span class="nn">flet_easy</span> <span class="k">as</span> <span class="nn">fs</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="hll"><span class="n">app</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">FletEasy</span><span class="p">(</span><span class="n">route_init</span><span class="o">=</span><span class="s2">&quot;/test/10/user/dxs&quot;</span><span class="p">)</span>
+</span></span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="hll"><span class="nd">@app</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="n">route</span><span class="o">=</span><span class="s2">&quot;/test/</span><span class="si">{id:d}</span><span class="s2">/user/{name:l}&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Flet-Easy&quot;</span><span class="p">)</span>
+</span></span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="hll"><span class="k">def</span> <span class="nf">home_page</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">fs</span><span class="o">.</span><span class="n">Datasy</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
+</span></span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="k">return</span> <span class="n">ft</span><span class="o">.</span><span class="n">View</span><span class="p">(</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>        <span class="n">controls</span><span class="o">=</span><span class="p">[</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="hll">            <span class="n">ft</span><span class="o">.</span><span class="n">Text</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ID: </span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">NAME: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">50</span><span class="p">),</span>
+</span></span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>        <span class="p">],</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>        <span class="n">vertical_alignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>        <span class="n">horizontal_alignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>    <span class="p">)</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">view</span><span class="o">=</span><span class="n">ft</span><span class="o">.</span><span class="n">AppView</span><span class="o">.</span><span class="n">WEB_BROWSER</span><span class="p">)</span>
+</span></code></pre></div>
 <h3 id="demo_1"><strong>🎬 Demo</strong><a class="headerlink" href="#demo_1" title="Permanent link">&para;</a></h3>
 <p><img alt="alt video" src="../assets/gifs/route-advanced.gif" title="route advanced" /></p>
 <h2 id="custom-validation"><strong>Custom validation</strong><a class="headerlink" href="#custom-validation" title="Permanent link">&para;</a></h2>
-<p>To control the validation of custom data in the dynamic path, you must use the <code>custom_params</code> parameter of the <code>page</code> decorator, in this you can enter the key and the value as a function, being a dictionary can support a wide variety of data, according to your imagination 🤔.</p>
-<h3 id="example_2"><strong>Example</strong><a class="headerlink" href="#example_2" title="Permanent link">&para;</a></h3>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">UUID</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">import</span> <span class="nn">flet</span> <span class="k">as</span> <span class="nn">ft</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kn">import</span> <span class="nn">flet_easy</span> <span class="k">as</span> <span class="nn">fs</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="hll"><span class="n">app</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">FletEasy</span><span class="p">(</span>
-</span></span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="hll">    <span class="n">route_init</span><span class="o">=</span><span class="s2">&quot;/test/10/user/dxs/a4cb5f2a-2281-4e66-85e4-441a40026357&quot;</span>
-</span></span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="hll">    <span class="p">)</span>
-</span></span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="hll"><span class="k">def</span> <span class="nf">is_uuid</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
-</span></span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="hll">    <span class="k">try</span><span class="p">:</span>
-</span></span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="hll">        <span class="n">UUID</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-</span></span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="hll">        <span class="k">return</span> <span class="n">value</span>
-</span></span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="hll">    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-</span></span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="hll">        <span class="k">return</span> <span class="kc">False</span>
-</span></span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>
-</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="nd">@app</span><span class="o">.</span><span class="n">page</span><span class="p">(</span>
-</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="hll">    <span class="n">route</span><span class="o">=</span><span class="s2">&quot;/test/</span><span class="si">{id:d}</span><span class="s2">/user/{name:l}/{uuid:Uuid}&quot;</span><span class="p">,</span>
-</span></span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Flet-Easy&quot;</span><span class="p">,</span>
-</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="hll">    <span class="n">custom_params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Uuid&quot;</span><span class="p">:</span> <span class="n">is_uuid</span><span class="p">},</span>
-</span></span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="p">)</span>
-</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="k">def</span> <span class="nf">home_page</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">fs</span><span class="o">.</span><span class="n">Datasy</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">uuid</span><span class="p">:</span> <span class="n">UUID</span><span class="p">):</span>
-</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>    <span class="k">return</span> <span class="n">ft</span><span class="o">.</span><span class="n">View</span><span class="p">(</span>
-</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>        <span class="n">controls</span><span class="o">=</span><span class="p">[</span>
-</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>            <span class="n">ft</span><span class="o">.</span><span class="n">Text</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ID: </span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">NAME: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="se">\n</span><span class="s2">UUID: </span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">50</span><span class="p">),</span>
-</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>        <span class="p">],</span>
-</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>        <span class="n">vertical_alignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
-</span><span id="__span-2-27"><a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>        <span class="n">horizontal_alignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
-</span><span id="__span-2-28"><a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>    <span class="p">)</span>
-</span><span id="__span-2-29"><a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>
-</span><span id="__span-2-30"><a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a><span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">view</span><span class="o">=</span><span class="n">ft</span><span class="o">.</span><span class="n">AppView</span><span class="o">.</span><span class="n">WEB_BROWSER</span><span class="p">)</span>
+<details class="warning" open="open">
+<summary>Available from version 0.2.6</summary>
+<ul>
+<li>The typing of parameters within the url changes, now supporting the native python types <code>(:int, :str, :bool, :float</code>), instead of using <code>(:d, :l)</code> which were for a number and string respectively.</li>
+<li>The function used in <code>custom_params</code> now only supports returning <code>None</code>, to say that the url does not match, since <code>False</code> can be interpreted as a <code>:bool</code> value and could match the url. Also you can return any value in case you want to accept the url.</li>
+</ul>
+</details>
+<p>To control the validation of custom data in the dynamic path, you must use the <code>custom_params</code> parameter of the <a href="/0.2.0/how-to-use/#decorator-page"><code>page</code></a> decorator, in this you can enter the key and the value as a function, being a dictionary can support a wide variety of data, according to your imagination 🤔.</p>
+<h3 id="example-1_1"><strong>Example #1</strong><a class="headerlink" href="#example-1_1" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">UUID</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kn">import</span> <span class="nn">flet</span> <span class="k">as</span> <span class="nn">ft</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="kn">import</span> <span class="nn">flet_easy</span> <span class="k">as</span> <span class="nn">fs</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="hll"><span class="n">app</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">FletEasy</span><span class="p">(</span>
+</span></span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="hll">    <span class="n">route_init</span><span class="o">=</span><span class="s2">&quot;/test/10/user/dxs/a4cb5f2a-2281-4e66-85e4-441a40026357&quot;</span>
+</span></span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="hll">    <span class="p">)</span>
+</span></span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="hll"><span class="k">def</span> <span class="nf">is_uuid</span><span class="p">(</span><span class="n">value</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
+</span></span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="hll">    <span class="k">try</span><span class="p">:</span>
+</span></span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="hll">        <span class="k">return</span> <span class="n">UUID</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span></span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="hll">    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+</span></span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="hll">        <span class="k">return</span>
+</span></span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="nd">@app</span><span class="o">.</span><span class="n">page</span><span class="p">(</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="hll">    <span class="n">route</span><span class="o">=</span><span class="s2">&quot;/test/{id:int}/user/{name:str}/{uuid:Uuid}&quot;</span><span class="p">,</span>
+</span></span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Flet-Easy&quot;</span><span class="p">,</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="hll">    <span class="n">custom_params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Uuid&quot;</span><span class="p">:</span> <span class="n">is_uuid</span><span class="p">},</span>
+</span></span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="p">)</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="k">def</span> <span class="nf">home_page</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">fs</span><span class="o">.</span><span class="n">Datasy</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">uuid</span><span class="p">:</span> <span class="n">UUID</span><span class="p">):</span>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>    <span class="k">return</span> <span class="n">ft</span><span class="o">.</span><span class="n">View</span><span class="p">(</span>
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>        <span class="n">controls</span><span class="o">=</span><span class="p">[</span>
+</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>            <span class="n">ft</span><span class="o">.</span><span class="n">Text</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ID: </span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">NAME: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="se">\n</span><span class="s2">UUID: </span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">50</span><span class="p">),</span>
+</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>        <span class="p">],</span>
+</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>        <span class="n">vertical_alignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+</span><span id="__span-3-26"><a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a>        <span class="n">horizontal_alignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+</span><span id="__span-3-27"><a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a>    <span class="p">)</span>
+</span><span id="__span-3-28"><a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a>
+</span><span id="__span-3-29"><a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a><span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">view</span><span class="o">=</span><span class="n">ft</span><span class="o">.</span><span class="n">AppView</span><span class="o">.</span><span class="n">WEB_BROWSER</span><span class="p">)</span>
+</span></code></pre></div>
+<hr />
+<h3 id="example-2_1"><strong>Example #2</strong><a class="headerlink" href="#example-2_1" title="Permanent link">&para;</a></h3>
+<div class="admonition info">
+<p class="admonition-title">Available only up to version 0.2.4</p>
+</div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">UUID</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kn">import</span> <span class="nn">flet</span> <span class="k">as</span> <span class="nn">ft</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="kn">import</span> <span class="nn">flet_easy</span> <span class="k">as</span> <span class="nn">fs</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="hll"><span class="n">app</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">FletEasy</span><span class="p">(</span>
+</span></span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="hll">    <span class="n">route_init</span><span class="o">=</span><span class="s2">&quot;/test/10/user/dxs/a4cb5f2a-2281-4e66-85e4-441a40026357&quot;</span>
+</span></span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="hll">    <span class="p">)</span>
+</span></span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="hll"><span class="k">def</span> <span class="nf">is_uuid</span><span class="p">(</span><span class="n">value</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
+</span></span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="hll">    <span class="k">try</span><span class="p">:</span>
+</span></span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="hll">        <span class="n">UUID</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span></span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="hll">        <span class="k">return</span> <span class="n">value</span>
+</span></span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="hll">    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+</span></span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="hll">        <span class="k">return</span> <span class="kc">False</span>
+</span></span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="nd">@app</span><span class="o">.</span><span class="n">page</span><span class="p">(</span>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="hll">    <span class="n">route</span><span class="o">=</span><span class="s2">&quot;/test/</span><span class="si">{id:d}</span><span class="s2">/user/{name:l}/{uuid:Uuid}&quot;</span><span class="p">,</span>
+</span></span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Flet-Easy&quot;</span><span class="p">,</span>
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="hll">    <span class="n">custom_params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Uuid&quot;</span><span class="p">:</span> <span class="n">is_uuid</span><span class="p">},</span>
+</span></span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="p">)</span>
+</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="k">def</span> <span class="nf">home_page</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">fs</span><span class="o">.</span><span class="n">Datasy</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">uuid</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>    <span class="k">return</span> <span class="n">ft</span><span class="o">.</span><span class="n">View</span><span class="p">(</span>
+</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>        <span class="n">controls</span><span class="o">=</span><span class="p">[</span>
+</span><span id="__span-4-24"><a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a>            <span class="n">ft</span><span class="o">.</span><span class="n">Text</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ID: </span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">NAME: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="se">\n</span><span class="s2">UUID: </span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">50</span><span class="p">),</span>
+</span><span id="__span-4-25"><a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a>        <span class="p">],</span>
+</span><span id="__span-4-26"><a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a>        <span class="n">vertical_alignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+</span><span id="__span-4-27"><a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a>        <span class="n">horizontal_alignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+</span><span id="__span-4-28"><a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a>    <span class="p">)</span>
+</span><span id="__span-4-29"><a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a>
+</span><span id="__span-4-30"><a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a><span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">view</span><span class="o">=</span><span class="n">ft</span><span class="o">.</span><span class="n">AppView</span><span class="o">.</span><span class="n">WEB_BROWSER</span><span class="p">)</span>
 </span></code></pre></div>
 <h3 id="demo_2">🎬 <strong>Demo</strong><a class="headerlink" href="#demo_2" title="Permanent link">&para;</a></h3>
 <p><img alt="alt video" src="../assets/gifs/route-custom.gif" title="route advanced" /></p>
@@ -1448,7 +1562,7 @@
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.instant.prefetch", "navigation.instant.progress", "navigation.instant.preview", "navigation.tracking", "navigation.path", "navigation.indexes", "navigation.top", "search.suggest", "search.highlight", "search.share", "navigation.footer", "content.code.copy", "content.code.select", "content.code.annotate", "content.action.edit"], "search": "../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.525ec568.min.js"></script>
+      <script src="../assets/javascripts/bundle.83f73b43.min.js"></script>
       
         <script src="../assets/js/dynamic-year.js"></script>
       
