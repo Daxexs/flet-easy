@@ -1,5 +1,10 @@
 # Flet-Easy changelog
 
+## 0.2.6 (19/10/24)
+
+* Fix route error page 404. ([#28](https://github.com/Daxexs/flet-easy/issues/28))
+* Add route checker without dependency. ([#29](https://github.com/Daxexs/flet-easy/issues/29))
+
 ## 0.2.4 (03/09/24)
 
 * ⚡The speed of the router is improved to more than twice as fast. ([#20](https://github.com/Daxexs/flet-easy/issues/20))

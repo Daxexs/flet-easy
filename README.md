@@ -15,21 +15,21 @@
 
 * Easy to use (**hence the name**).
 * Facilitates `flet` event handling.
-* Simple page routing (There are three ways) for whichever one suits you best. ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/dynamic-routes/))
+* Simple page routing (There are three ways) for whichever one suits you best. ([**`Docs`**](https://daxexs.github.io/flet-easy/0.2.0/dynamic-routes/))
 * App construction with numerous pages and custom flet configurations for desktop, mobile and web sites.
 * Provides a better construction of your code, which can be scalable and easy to read (it adapts to your preferences, there are no limitations).
-* Dynamic routing, customization in the routes for greater accuracy in sending data. ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/dynamic-routes/#custom-validation))
-* Routing protection ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/customized-app/route-protection/))
-* Custom Page 404 ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/customized-app/page-404/))
-* Controlled data sharing between pages. ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/data-sharing-between-pages/))
+* Dynamic routing, customization in the routes for greater accuracy in sending data. ([**`Docs`**](https://daxexs.github.io/flet-easy/0.2.0/dynamic-routes/#custom-validation))
+* Routing protection ([**`Docs`**](https://daxexs.github.io/flet-easy/0.2.0/customized-app/route-protection/))
+* Custom Page 404 ([**`Docs`**](https://daxexs.github.io/flet-easy/0.2.0/customized-app/page-404/))
+* Controlled data sharing between pages. ([**`Docs`**](https://daxexs.github.io/flet-easy/0.2.0/data-sharing-between-pages/))
 * Asynchronous support.
-* Middleware Support (in the app in general and in each of the pages). ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/middleware/))
-* JWT support for authentication sessions in the data parameter. (useful to control the time of sessions) ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/basic-jwt/))
-* Working with other applications. ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/data-sharing-between-pages/))
-* CLI to create app structure `FletEasy` (`fs init`) ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/cli-to-create-app/))
-* Easy integration of `on_keyboard_event` in each of the pages. ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/events/keyboard-event/))
-* Use the percentage of the page width and height of the page with `on_resize`. ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/events/on-resize/))
-* `ResponsiveControlsy` control to make the app responsive, useful for desktop applications. ([**`Docs`**](https://daxexs.github.io/flet-easy/latest/responsiveControlsy/))
+* Middleware Support (in the app in general and in each of the pages). ([**`Docs`**](https://daxexs.github.io/flet-easy/0.2.0/middleware/))
+* JWT support for authentication sessions in the data parameter. (useful to control the time of sessions) ([**`Docs`**](https://daxexs.github.io/flet-easy/0.2.0/basic-jwt/))
+* Working with other applications. ([**`Docs`**](https://daxexs.github.io/flet-easy/0.2.0/data-sharing-between-pages/))
+* CLI to create app structure `FletEasy` (`fs init`) ([**`Docs`**](https://daxexs.github.io/flet-easy/0.2.0/cli-to-create-app/))
+* Easy integration of `on_keyboard_event` in each of the pages. ([**`Docs`**](https://daxexs.github.io/flet-easy/0.2.0/events/keyboard-event/))
+* Use the percentage of the page width and height of the page with `on_resize`. ([**`Docs`**](https://daxexs.github.io/flet-easy/0.2.0/events/on-resize/))
+* `ResponsiveControlsy` control to make the app responsive, useful for desktop applications. ([**`Docs`**](https://daxexs.github.io/flet-easy/0.2.0/responsiveControlsy/))
 * Soporta Application Packaging para su distribución. ([view](https://flet.dev/docs/publish))
 
 ## 📌Flet events it handles
@@ -47,7 +47,7 @@
 ### Install Flet-Easy Complete
 
 > [!NOTE]
-If you use the [`fs`](/flet-easy/0.2.4/cli-to-create-app/) cli, it is important to have [`git`](https://git-scm.com/downloads) installed.
+> If you use the [`fs`](https://daxexs.github.io/flet-easy/0.2.0/cli-to-create-app/) cli, it is important to have [`git`](https://git-scm.com/downloads) installed.
 
 Installs all the dependencies to use, you can use all the functionalities provided by FletEasy
 
@@ -60,7 +60,7 @@ pip install flet-easy[all]
 ### Install clean Flet-Easy
 
 > [!TIP]
-[Recommended for `Flet` Packaging Application](https://flet.dev/docs/publish).
+> [Recommended for `Flet` Packaging Application](https://flet.dev/docs/publish).
 
 Requires installation of [Flet >= 0.21](https://github.com/flet-dev/flet).
 
@@ -68,7 +68,7 @@ Requires installation of [Flet >= 0.21](https://github.com/flet-dev/flet).
 pip install flet
 ```
 
-#### If you do not use: [CLI-to-create-app](/flet-easy/0.2.4/cli-to-create-app)
+#### If you do not use: [CLI-to-create-app](https://daxexs.github.io/flet-easy/0.2.0/cli-to-create-app)
 
 ```bash
 pip install flet-easy
@@ -76,7 +76,7 @@ pip install flet-easy
 
 ---
 
-#### Install FletEasy if you need to use [Basic-JWT](/flet-easy/0.2.4/basic-jwt)
+#### Install FletEasy if you need to use [Basic-JWT](https://daxexs.github.io/flet-easy/0.2.0/basic-jwt)
 
 ```bash
 pip install flet-easy[JWT]
@@ -154,7 +154,7 @@ app.run()
 ## 🚀 How to use `Flet-Easy`?
 
 > [!IMPORTANT]
-📑Documentation: <https://daxexs.github.io/flet-easy/latest/>
+> 📑Documentation: <https://daxexs.github.io/flet-easy/0.2.0/>
 
 ## 👀 Code examples
 

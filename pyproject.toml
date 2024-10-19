@@ -1,6 +1,6 @@
 [project]
 name = "flet-easy"
-version = "0.2.4"
+version = "0.2.6"
 description = "⚡Flet-Easy is a user-friendly add-on package for Flet, offering a cleaner code structure with numerous customizable features like JWT, routers, decorators, middleware and more."
 authors = [{ name = "Daxexs", email = "Daxexsdev@gmail.com" }]
 
