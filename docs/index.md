@@ -58,3 +58,7 @@ Flet-Easy is a user-friendly add-on package for Flet, offering a cleaner code st
     *New method added in Datasy (data) [`[See more]`](/flet-easy/0.2.0/how-to-use/#datasy-data)
         * `history_routes` : Get the history of the routes.
         * `go_back` : Method to go back to the previous route.
+    
+    # **v0.2.6**
+    * Fix route error page 404. [`[See more]`](/flet-easy/0.2.0/customized-app/page-404/)
+    * Add route checker without dependency. [`[See more]`](/flet-easy/0.2.0/dynamic-routes/)
