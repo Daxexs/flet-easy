@@ -4,7 +4,9 @@
 <head>
     <title>404</title>
     <script>
-        window.location.href = '/latest' + window.location.pathname
+        var path = window.location.pathname;
+        path = path.replace(/^\/[^\/]+\//, '/');
+        window.location.href = '/flet-easy/latest' + path; 
     </script>
 </head>
 
