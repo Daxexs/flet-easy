@@ -54,6 +54,11 @@ class TestVerifyURL(unittest.TestCase):
             self.verify_url("/home/<flag:code>", "/home/code5/", {"code": custom_code}),
             {"flag": "code5"},
         )
+        self.assertEqual(self.verify_url("/", "/"), {})
+        self.assertEqual(self.verify_url("/home", "/home/"), {})
+        self.assertEqual(self.verify_url("/home/data", "/home/data"), {})
+        self.assertEqual(self.verify_url("{id:int}", "/5"), {"id": 5})
+        self.assertEqual(self.verify_url("/{id:int}/user", "/5/user"), {"id": 5})
 
     def test_invalid_cases(self):
         self.assertIsNone(self.verify_url("/home/{id:int}/<flag:bool>", "/home/abc/True/"))
@@ -106,6 +111,8 @@ class TestVerifyURL(unittest.TestCase):
                 custom_types={"uuid_custom": verify_uuid},
             )
         )
+        self.assertIsNone(self.verify_url("{id:int}", "/home"))
+        self.assertIsNone(self.verify_url("/{id:int}/user", "/5x/user"))
 
 
 if __name__ == "__main__":

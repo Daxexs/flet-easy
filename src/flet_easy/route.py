@@ -331,6 +331,9 @@ class FletEasyX:
 
         for segment in url_pattern.strip("/").split("/"):
             try:
+                if segment == "":
+                    continue
+
                 if segment[0] in "<{" and segment[-1] in ">}":
                     name, type_ = (
                         segment[1:-1].split(":", 1) if ":" in segment else (segment[1:-1], "str")
