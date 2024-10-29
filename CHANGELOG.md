@@ -1,5 +1,10 @@
 # Flet-Easy changelog
 
+## v0.2.7 (29/10/24)
+
+* Fix error in non-dynamic routing. ([#30](https://github.com/Daxexs/flet-easy/issues/30)) [[Docs](https://daxexs.github.io/flet-easy/latest/add-pages/through-decorators/#without-instantiating-addpagesy)]
+* Add page without creating an instance of `AddPagesy` class. ([#31](https://github.com/Daxexs/flet-easy/issues/31))
+
 ## 0.2.6 (19/10/24)
 
 * Fix route error page 404. ([#28](https://github.com/Daxexs/flet-easy/issues/28))
