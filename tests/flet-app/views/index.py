@@ -3,13 +3,9 @@ from components import Drawer
 
 import flet_easy as fs
 
-index = fs.AddPagesy()
-
 
 # We add a page
-
-
-@index.page(route="/home", title="Flet-Easy")
+@fs.page(route="/home", title="Flet-Easy")
 async def index_page(data: fs.Datasy):
     view = data.view
     return ft.View(

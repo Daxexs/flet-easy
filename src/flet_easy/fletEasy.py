@@ -19,6 +19,20 @@ from flet_easy.pagesy import AddPagesy, Middleware, Pagesy
 from flet_easy.route import FletEasyX
 
 
+def page(
+    route: str,
+    title: str = None,
+    page_clear: bool = False,
+    share_data: bool = False,
+    protected_route: bool = False,
+    custom_params: Dict[str, Any] = None,
+    middleware: Middleware = None,
+):
+    return FletEasy.page(
+        route, title, page_clear, share_data, protected_route, custom_params, middleware
+    )
+
+
 class FletEasy:
     """
     we create the app object, in it you can configure:
@@ -106,6 +120,8 @@ class FletEasy:
     ```
     """
 
+    __self = None
+
     def __init__(
         self,
         route_prefix: str = None,
@@ -132,6 +148,7 @@ class FletEasy:
         self.__view_config: Callable[[Datasy], None] = None
         self.__config_event: Callable[[Datasy], None] = None
         self.__middlewares: Middleware = None
+        FletEasy.__self = self
 
         if path_views is not None:
             self.add_pages(automatic_routing(path_views))
@@ -253,8 +270,9 @@ class FletEasy:
         except Exception as e:
             raise e
 
+    @classmethod
     def page(
-        self,
+        cls,
         route: str,
         title: str = None,
         page_clear: bool = False,
@@ -305,7 +323,7 @@ class FletEasy:
             "custom_params": custom_params,
             "middleware": middleware,
         }
-        return self.__decorator("page", data)
+        return cls.__decorator(cls.__self, "page", data)
 
     def page_404(
         self,
