@@ -127,3 +127,46 @@ app.add_pages([users])
 
 app.run()
 ```
+
+---
+
+## without instantiating `AddPagesy`
+
+!!! warning "Available since version 0.2.7"
+
+Add page without creating an instance of [`AddPagesy`](/flet-easy/0.2.0/add-pages/through-decorators/#addpagesy) class. For this the `@fs.page()` decorator is used, Useful if you don't need to [share part of the URLs between pages](/flet-easy/0.2.0/add-pages/through-decorators/#app-structure)
+
+### Example
+
+![FletEasy](../assets/images/struct-views.png "App structure FletEasy")
+
+!!! note "It is important to set `path_views` for it to work properly"
+
+```python title="main.py" hl_lines="2 6"
+import flet_easy as fs
+from pathlib import Path
+
+app = fs.FletEasy(
+          route_init="/test",
+          path_views=Path(__file__).parent / "views",
+)
+
+app.run()
+```
+
+---
+
+* `views` folder file
+
+```python title="user.py" hl_lines="2 6"
+import flet_easy as fs
+import flet as ft
+
+@fs.page(route="/test")
+def page_test(data:fs.Datasy):
+      return ft.View(
+             controls=[
+                 ft.Text("Test use")
+             ]
+     )
+```
