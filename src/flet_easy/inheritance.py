@@ -10,8 +10,9 @@ from flet import (
     View,
 )
 from flet.canvas import Canvas
-from flet_core import Control, alignment
-from flet_core.session_storage import SessionStorage
+from flet.core import alignment
+from flet.core.control import Control
+from flet.core.session_storage import SessionStorage
 
 T = TypeVar("T")
 
