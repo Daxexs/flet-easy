@@ -39,12 +39,12 @@ classifiers = [
 all = [
     "pyJWT>=2.0.0",
     "rsa>=4.9",
-    "flet>=0.21.0",
     "cookiecutter>=2.6.0",
     "rich-argparse>=1.4.0",
+    "flet[all]>=0.25.1",
 ]
 JWT = ["pyJWT>=2.0.0", "rsa>=4.9"]
-cli = ["flet>=0.21.0", "cookiecutter>=2.6.0", "rich-argparse>=1.4.0"]
+cli = ["cookiecutter>=2.6.0", "rich-argparse>=1.4.0", "flet[all]>=0.25.1"]
 
 [project.urls]
 Homepage = "https://github.com/Daxexs"
@@ -53,37 +53,13 @@ Documentation = "https://daxexs.github.io/flet-easy"
 Changelog = "https://github.com/Daxexs/flet-easy/blob/main/CHANGELOG.md"
 
 [build-system]
-requires = ["pdm-backend"]
-build-backend = "pdm.backend"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-
-[tool.pdm]
-distribution = true
-
-[tool.pdm.dev-dependencies]
-test = [
-    "flet>=0.21.1",
-    "ruff>=0.3.4",
-    "peewee>=3.17.2",
-    "pyJWT>=2.9.0",
-    "cookiecutter>=2.6.0",
-    "rich-argparse>=1.4.0",
-    "rsa>=4.9",
-]
-docs = ["mkdocs-material>=9.5.17", "mike>=2.0.0"]
-
-[tool.pdm.build]
-excludes = ["./**/.git"]
-package-dir = "src"
-includes = ["src/flet_easy"]
-source-includes = ["LICENSE", "README.md"]
-
-[tool.pdm.scripts]
-doc = "mkdocs serve"
-format = "ruff format"
-check = "ruff check"
-web = "flet run ./tests/flet-app/main.py -r -w -d -p 7777"
-app = "flet run ./tests/flet-app/main.py -r -d"
 
 [project.scripts]
 fs = "flet_easy.cli.main:run"
+
+[dependency-groups]
+test = ["ruff>=0.3.4", "peewee>=3.17.2", "flet[all]>=0.25.1"]
+docs = ["mkdocs-material>=9.5.17", "mike>=2.0.0"]
