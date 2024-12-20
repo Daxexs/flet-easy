@@ -1,6 +1,7 @@
 import flet as ft
-import flet_easy as fs
 from controllers.contador import ContadorC
+
+import flet_easy as fs
 
 """ We create an object of the AddPagesy class to add to the list of the add_routes method of the FletEasy class."""
 counter = fs.AddPagesy(route_prefix="/counter")
@@ -15,25 +16,25 @@ class Contador(ft.UserControl):
 
     def build(self):
         self.test = "test inicio"
-        self.numero = ft.TextButton("0", style=ft.ButtonStyle(bgcolor=ft.colors.BLACK12))
+        self.numero = ft.TextButton("0", style=ft.ButtonStyle(bgcolor=ft.Colors.BLACK12))
         return ft.Container(
             content=ft.Row(
                 controls=[
                     ft.IconButton(
-                        ft.icons.REMOVE,
+                        ft.Icons.REMOVE,
                         on_click=self.new_control.min,  # Al enviar self estamos enviando la clase
-                        bgcolor=ft.colors.RED_400,
+                        bgcolor=ft.Colors.RED_400,
                     ),
                     self.numero,
                     ft.IconButton(
-                        ft.icons.ADD,
+                        ft.Icons.ADD,
                         on_click=self.new_control.max,
-                        bgcolor=ft.colors.GREEN_400,
+                        bgcolor=ft.Colors.GREEN_400,
                     ),
                 ],
                 alignment=ft.CrossAxisAlignment.CENTER,
             ),
-            bgcolor=ft.colors.BLACK26,
+            bgcolor=ft.Colors.BLACK26,
             border_radius=10,
             padding=20,
             width=200,
@@ -41,7 +42,7 @@ class Contador(ft.UserControl):
         )
 
 
-@counter.page("/", title="Counter", protected_route=True, page_clear=True)
+@counter.page("/", title="Counter", protected_route=True)
 async def counter_page(data: fs.Datasy):
     view = data.view
 

@@ -7,6 +7,7 @@ from collections import deque
 from functools import wraps
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
+from warnings import warn
 
 from flet import View
 
@@ -155,6 +156,37 @@ class FletEasy:
 
     # -------------------------------------------------------------------
     # -- initialize / Supports async
+    def __run(self, page: Page):
+        """Initialize FletEasy configuration"""
+        return FletEasyX(
+            page=page,
+            route_prefix=self.__route_prefix,
+            route_init=self.__route_init,
+            route_login=self.__route_login,
+            config_login=self.__config_login,
+            pages=self.__pages,
+            page_404=self.__page_404,
+            view_data=self.__view_data,
+            view_config=self.__view_config,
+            config_event_handler=self.__config_event,
+            on_resize=self.__on_resize,
+            on_Keyboard=self.__on_Keyboard,
+            secret_key=self.__secret_key,
+            auto_logout=self.__auto_logout,
+            middleware=self.__middlewares,
+        ).run()
+
+    def start(self, page: Page):
+        """Start the app in the main function"""
+        return self.__run(page)
+
+    def get_app(self):
+        """Return the app function main"""
+
+        def main(page: Page):
+            self.__run(page)
+
+        return main
 
     def run(
         self,
@@ -173,27 +205,14 @@ class FletEasy:
         """* Execute the app. | Soporta async, fastapi y export_asgi_app."""
 
         def main(page: Page):
-            app = FletEasyX(
-                page=page,
-                route_prefix=self.__route_prefix,
-                route_init=self.__route_init,
-                route_login=self.__route_login,
-                config_login=self.__config_login,
-                pages=self.__pages,
-                page_404=self.__page_404,
-                view_data=self.__view_data,
-                view_config=self.__view_config,
-                config_event_handler=self.__config_event,
-                on_resize=self.__on_resize,
-                on_Keyboard=self.__on_Keyboard,
-                secret_key=self.__secret_key,
-                auto_logout=self.__auto_logout,
-                middleware=self.__middlewares,
-            )
-
-            app.run()
+            self.__run(page)
 
         if fastapi:
+            warn(
+                "Avoid using the 'fastapi' parameter in the 'run()' method, instead it is better to use the 'get_app()' method.",
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
             return main
         try:
             return app(

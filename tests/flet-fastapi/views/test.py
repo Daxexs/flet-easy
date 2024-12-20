@@ -1,7 +1,9 @@
 from dataclasses import dataclass
+from datetime import datetime
 from uuid import UUID
 
 import flet as ft
+
 import flet_easy as fs
 
 ROUTE = "/index"
@@ -40,7 +42,7 @@ async def send_data_page(data: fs.Datasy):
     )
 
 
-@test.page("/{id:d}/user/{name:l}", title="Test", protected_route=True)
+@test.page("/{id:int}/user/{name}", title="Test", protected_route=True)
 async def test_page(data: fs.Datasy, id: int, name: str):
     view = data.view
 
@@ -58,16 +60,27 @@ async def test_page(data: fs.Datasy, id: int, name: str):
     )
 
 
-def is_uuid(value):
+def is_uuid(value: str):
     try:
         UUID(value)
         return value
     except ValueError:
-        return False
+        return
+
+
+def is_time(fecha: str):
+    try:
+        print(fecha)
+        fecha_obj = datetime.strptime(fecha, "%d-%m-%Y")
+        return fecha_obj
+    except ValueError:
+        return
 
 
 @test.page(
-    "/get-params/{time:%Y/%m/%d}/{uuid:Uuid}", title="Get Params", custom_params={"Uuid": is_uuid}
+    "/get-params/{time:Fecha}/{uuid:Uuid}",
+    title="Get Params",
+    custom_params={"Fecha": is_time, "Uuid": is_uuid},
 )
 def get_params_page(data: fs.Datasy, time: str, uuid: UUID):
     view = data.view
@@ -85,7 +98,7 @@ def get_params_page(data: fs.Datasy, time: str, uuid: UUID):
                 ),
                 height=on_resize.heightX(50),
                 width=on_resize.widthX(50),
-                bgcolor=ft.colors.BROWN_500,
+                bgcolor=ft.Colors.BROWN_500,
                 alignment=ft.alignment.center,
                 border_radius=10,
             )

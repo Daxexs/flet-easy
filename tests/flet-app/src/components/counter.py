@@ -17,7 +17,7 @@ class Counter(ft.Container):
                     [
                         ft.IconButton(
                             ref=self.counter.button_remove,
-                            icon=ft.icons.REMOVE,
+                            icon=ft.Icons.REMOVE,
                             on_click=self.counter.minus_click,
                         ),
                         ft.TextField(
@@ -28,7 +28,7 @@ class Counter(ft.Container):
                         ),
                         ft.IconButton(
                             ref=self.counter.button_add,
-                            icon=ft.icons.ADD,
+                            icon=ft.Icons.ADD,
                             on_click=self.counter.plus_click,
                         ),
                     ],

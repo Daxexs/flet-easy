@@ -1,4 +1,5 @@
 import flet as ft
+
 import flet_easy as fs
 
 markdown = fs.AddPagesy()
@@ -15,9 +16,9 @@ async def markdown_page(data: fs.Datasy):
 
     return ft.View(
         controls=[
-            ft.Container(bgcolor=ft.colors.GREEN_600, height=on_resize.heightX(50)),
+            ft.Container(bgcolor=ft.Colors.GREEN_600, height=on_resize.heightX(50)),
             ft.Container(
-                bgcolor=ft.colors.BLUE_600,
+                bgcolor=ft.Colors.BLUE_600,
                 height=on_resize.heightX(50),
                 width=on_resize.widthX(50),
             ),

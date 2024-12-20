@@ -1,6 +1,7 @@
-import asyncio
+from time import sleep
 
 import flet as ft
+
 import flet_easy as fs
 
 login = fs.AddPagesy(route_prefix="/login")
@@ -19,7 +20,7 @@ class Login(ft.UserControl):
         )
         self.menssage = ft.Column()
 
-    async def login(self, e):
+    def login(self, e):
         if self.username.value and self.password.value:
             # Registering in the client's storage the key and value in all browser sessions.
             self.data.login(
@@ -28,10 +29,10 @@ class Login(ft.UserControl):
         else:
             if len(self.menssage.controls) == 0:
                 self.menssage.controls.append(ft.Text("Enter the fields"))
-                await self.update_async()
-                await asyncio.sleep(3)
+                self.update()
+                sleep(3)
                 self.menssage.controls.clear()
-                await self.update_async()
+                self.update()
 
     def build(self):
         conteiner = ft.Container(
@@ -52,7 +53,7 @@ class Login(ft.UserControl):
                 alignment=ft.MainAxisAlignment.CENTER,
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             ),
-            bgcolor=ft.colors.BLUE_500,
+            bgcolor=ft.Colors.BLUE_500,
             padding=20,
             border_radius=10,
         )

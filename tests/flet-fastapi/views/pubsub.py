@@ -2,6 +2,7 @@ import asyncio
 from dataclasses import dataclass
 
 import flet as ft
+
 import flet_easy as fs
 
 pbs = fs.AddPagesy(route_prefix="/chat")
@@ -20,7 +21,7 @@ class Chat(ft.UserControl):
         asyncio.create_task(self.pubsub_init())
         self.username = ft.TextField(
             col={"xs": 5, "sm": 5, "md": 5, "lg": 5, "xl": 3},
-            prefix_icon=ft.icons.ACCOUNT_CIRCLE,
+            prefix_icon=ft.Icons.ACCOUNT_CIRCLE,
             on_change=self.time_alert,
         )
         self.message = ft.TextField(col=10, multiline=True, on_change=self.time_alert)
@@ -47,8 +48,8 @@ class Chat(ft.UserControl):
                             self.message,
                             ft.IconButton(
                                 col=2,
-                                icon=ft.icons.PLAY_CIRCLE_FILL_ROUNDED,
-                                icon_color=ft.colors.BLUE_500,
+                                icon=ft.Icons.PLAY_CIRCLE_FILL_ROUNDED,
+                                icon_color=ft.Colors.BLUE_500,
                                 on_click=self.on_message,
                             ),
                         ],
@@ -57,7 +58,7 @@ class Chat(ft.UserControl):
                 ],
                 expand=True,
             ),
-            bgcolor=ft.colors.BLACK12,
+            bgcolor=ft.Colors.BLACK12,
             border_radius=10,
             border=ft.border.all(2),
             padding=10,
@@ -88,13 +89,13 @@ class Chat(ft.UserControl):
     async def on_message(self, e):
         if len(self.username.value) == 0:
             self.username.label = "Enter your username"
-            self.username.border_color = ft.colors.RED_700
+            self.username.border_color = ft.Colors.RED_700
             await self.update_async()
             await asyncio.sleep(3)
             asyncio.create_task(self.time_alert(self.username))
         elif len(self.message.value) == 0:
             self.message.label = "Enter your message"
-            self.message.border_color = ft.colors.RED_700
+            self.message.border_color = ft.Colors.RED_700
             await self.update_async()
             await asyncio.sleep(3)
             asyncio.create_task(self.time_alert(self.message))
@@ -103,7 +104,7 @@ class Chat(ft.UserControl):
             container_message = ft.Container(
                 content=ft.Container(
                     content=ft.Text(f"{self.username.value}:\n{self.message.value}"),
-                    bgcolor=ft.colors.BLUE_500,
+                    bgcolor=ft.Colors.BLUE_500,
                     padding=ft.padding.only(10, 5, 10, 5),
                     border_radius=ft.border_radius.only(10, 10, 10, 0),
                 ),
@@ -124,7 +125,7 @@ class Chat(ft.UserControl):
         container_message = ft.Container(
             content=ft.Container(
                 content=ft.Text(f"{msg.user}:\n{msg.msg}"),
-                bgcolor=ft.colors.ORANGE_500,
+                bgcolor=ft.Colors.ORANGE_500,
                 padding=ft.padding.only(10, 5, 10, 5),
                 border_radius=ft.border_radius.only(0, 10, 10, 10),
             ),

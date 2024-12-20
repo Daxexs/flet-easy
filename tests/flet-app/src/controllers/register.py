@@ -27,7 +27,7 @@ class RegisterC:
         )
 
         if username and password:
-            if not add_user(User(username=username, password=password)):
+            if not e.page.run_task(add_user, User(username=username, password=password)).result():
                 self.data.page.snack_bar = ft.SnackBar(
                     content=ft.Text("The user already exists"), action="Alright!", open=True
                 )

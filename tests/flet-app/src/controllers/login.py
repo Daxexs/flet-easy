@@ -28,7 +28,7 @@ class LoginC:
         )
 
         if username and password:
-            if not check_user(User(username=username, password=password)):
+            if not e.page.run_task(check_user, User(username=username, password=password)).result():
                 self.data.page.snack_bar = ft.SnackBar(
                     content=ft.Text("User does not exist"), action="Alright!", open=True
                 )

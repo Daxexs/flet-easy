@@ -1,10 +1,11 @@
 import flet as ft
+
 import flet_easy as fs
 
 index = fs.AddPagesy()
 
 
-@index.page("/index", title="Home")
+@index.page("/index", title="Home", page_clear=True)
 async def index_page(data: fs.Datasy):
     view = data.view
 
@@ -20,7 +21,7 @@ async def index_page(data: fs.Datasy):
             ft.ElevatedButton(
                 "Go to Test (get-params)",
                 on_click=data.go(
-                    f"{data.route_prefix}/test/get-params/2023/11/25/550e8400-e29b-41d4-a716-446655440000"
+                    f"{data.route_prefix}/test/get-params/25-11-2024/550e8400-e29b-41d4-a716-446655440000"
                 ),
             ),
             ft.ElevatedButton(
