@@ -1,6 +1,7 @@
 import flet as ft
-import flet_easy as fs
 from flet.canvas import CanvasResizeEvent
+
+import flet_easy as fs
 
 response = fs.AddPagesy()
 
@@ -15,7 +16,7 @@ class ResponseTest(ft.UserControl):
                 fs.ResponsiveControlsy(
                     ft.Container(
                         content=ft.Text("W x H"),
-                        bgcolor=ft.colors.GREEN_400,
+                        bgcolor=ft.Colors.GREEN_400,
                         alignment=ft.alignment.center,
                     ),
                     expand=1,
@@ -30,18 +31,18 @@ class ResponseTest(ft.UserControl):
                                         content=ft.Column(
                                             controls=[
                                                 ft.Container(
-                                                    bgcolor=ft.colors.DEEP_ORANGE_50,
+                                                    bgcolor=ft.Colors.DEEP_ORANGE_50,
                                                     height=170,
                                                     margin=5,
                                                 ),
                                                 ft.Container(
-                                                    bgcolor=ft.colors.BLACK87, height=170, margin=5
+                                                    bgcolor=ft.Colors.BLACK87, height=170, margin=5
                                                 ),
                                             ],
                                             scroll=ft.ScrollMode.HIDDEN,
                                             spacing=0,
                                         ),
-                                        bgcolor=ft.colors.BROWN_500,
+                                        bgcolor=ft.Colors.BROWN_500,
                                         expand=True,
                                         margin=ft.Margin(5, 5, 0, 5),
                                     ),
@@ -53,7 +54,7 @@ class ResponseTest(ft.UserControl):
                                         content=ft.Text(
                                             "ok",
                                         ),
-                                        bgcolor=ft.colors.CYAN_500,
+                                        bgcolor=ft.Colors.CYAN_500,
                                         alignment=ft.alignment.center,
                                         margin=ft.Margin(0, 5, 5, 5),
                                     ),
@@ -64,7 +65,7 @@ class ResponseTest(ft.UserControl):
                             expand=1,
                             spacing=0,
                         ),
-                        bgcolor=ft.colors.AMBER_600,
+                        bgcolor=ft.Colors.AMBER_600,
                         alignment=ft.alignment.center,
                     ),
                     show_resize=True,
@@ -93,7 +94,7 @@ async def response_page(data: fs.Datasy):
             fs.ResponsiveControlsy(
                 content=ft.Container(
                     content=ft.Text("W x H"),
-                    bgcolor=ft.colors.RED,
+                    bgcolor=ft.Colors.RED,
                     alignment=ft.alignment.center,
                     height=100,
                 ),
@@ -102,7 +103,7 @@ async def response_page(data: fs.Datasy):
             ),
             fs.ResponsiveControlsy(
                 ft.Container(
-                    content=ft.Text("W x H"), bgcolor=ft.colors.BLUE, alignment=ft.alignment.center
+                    content=ft.Text("W x H"), bgcolor=ft.Colors.BLUE, alignment=ft.alignment.center
                 ),
                 on_resize=handle_resize,
                 expand=1,

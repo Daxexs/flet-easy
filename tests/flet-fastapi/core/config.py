@@ -1,4 +1,5 @@
 import flet as ft
+
 import flet_easy as fs
 
 
@@ -56,9 +57,9 @@ class ConfigApp:
                 appbar=ft.AppBar(
                     title=ft.Text("AppBar Example"),
                     center_title=False,
-                    bgcolor=ft.colors.SURFACE_VARIANT,
+                    bgcolor=ft.Colors.SURFACE_CONTAINER_HIGHEST,
                     actions=[
-                        ft.IconButton(ft.icons.WB_SUNNY_OUTLINED, on_click=theme),
+                        ft.IconButton(ft.Icons.WB_SUNNY_OUTLINED, on_click=theme),
                         ft.PopupMenuButton(
                             items=[
                                 ft.PopupMenuItem(text="🔥 Home", on_click=data.go(data.route_init)),
@@ -89,8 +90,7 @@ class ConfigApp:
                     ft.Text("Error 404", size=30),
                     ft.ElevatedButton(
                         "Go to Home",
-                        key=data.route_init,
-                        on_click=data.go,
+                        on_click=data.go(data.route_init),
                     ),
                 ],
                 appbar=view.appbar,

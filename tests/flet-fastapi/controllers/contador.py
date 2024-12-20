@@ -1,6 +1,7 @@
-from flet_core.constrained_control import ConstrainedControl
-from flet_easy import Keyboardsy, Resizesy
+from flet.core.constrained_control import ConstrainedControl
 from model import ModelTest
+
+from flet_easy import Keyboardsy, Resizesy
 
 
 class ContadorC:
