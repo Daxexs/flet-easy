@@ -6,8 +6,8 @@ class Drawer(ft.FilledButton):
         super().__init__(**kwargs)
         self.drawer = drawer
         self.text = text
-        self.bgcolor = ft.colors.RED_500
-        self.color = ft.colors.WHITE
+        self.bgcolor = ft.Colors.RED_500
+        self.color = ft.Colors.WHITE
         self.on_click = self.show_drawer
 
     def show_drawer(self, e):

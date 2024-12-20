@@ -7,7 +7,7 @@
 
 * flet
 * flet-easy[jwt]
-* peewee
+* tortoise-orm
 
 ---
 
@@ -39,7 +39,7 @@ flet build windows -vv
 >
 > [!NOTE]
     **If you have any problem - build web**
-    Use `ft.app(target=app.run(fastapi=true))` when compiling web statica.
+    Use `ft.app(target=app.get())` when compiling web statica.
 
 ```bash
 flet build web -vv
