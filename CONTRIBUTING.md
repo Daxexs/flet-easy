@@ -9,12 +9,12 @@ First off, thanks for taking the time to contribute! Contributions include but a
 
 The following is a set of guidelines for contributing.
 
-## 1. Install pdm
+## 1. Install uv
 
-For more information [here](https://github.com/pdm-project/pdm).
+For more information [here](https://github.com/astral-sh/uv).
 
 ```bash
-pip install pdm
+pip install uv
 ```
 
 ## 2. Clone repository
@@ -28,7 +28,7 @@ git clone https://github.com/Daxexs/flet-easy.git
 Install all dependencies and create a runtime environment for python automatically.
 
 ```bash
-pdm update
+uv sync --all-extras --all-groups 
 ```
 
 ## 4. Code formatting and check
@@ -38,11 +38,11 @@ If you make some changes in the src/ and you want to preview the result of the c
 !!! info Recommended to install the Ruff extension to get the errors immediately. [See here](https://marketplace.visualstudio.com/items?itemName=charliermarsh.ruff).
 
 ```bash
-pdm run format
+uv run ruff format
 ```
 
 ```bash
-pdm run check
+uv run ruff check --fix
 ```
 
 ## 5. Preview the documentation
@@ -50,7 +50,7 @@ pdm run check
 If you make some changes to the docs/ and you want to preview the build result, simply do:
 
 ```bash
-pdm run doc
+uv run mkdocs serve
 ```
 
 ## 6. Create a Pull Request
