@@ -1,8 +1,9 @@
 from pathlib import Path
 
-import flet_easy as fs
 from core.config import ConfigApp
 from flet import fastapi
+
+import flet_easy as fs
 
 ROUTE = "/tools"
 
@@ -23,7 +24,7 @@ ConfigApp(app)
 assets = Path(__file__).resolve().parent / "assets"
 """ Execute the app through flet_fastapi (async)"""
 run = fastapi.app(
-    app.run(fastapi=True),
+    session_handler=app.get_app(),
     app_short_name="Easy app",
     app_description="test Flet-Easy",
     assets_dir=assets,

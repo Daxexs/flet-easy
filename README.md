@@ -4,7 +4,7 @@
 
 [![github](https://img.shields.io/badge/my_profile-000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Daxexs)[![pypi](https://img.shields.io/badge/Pypi-0A66C2?style=for-the-badge&logo=pypi&logoColor=white)](https://pypi.org/project/flet-easy)
 
-[![image](https://img.shields.io/pypi/pyversions/flet-easy.svg)](https://pypi.python.org/pypi/flet-easy) [![image](https://img.shields.io/pypi/v/flet-easy.svg)](https://pypi.python.org/pypi/flet-easy) [![image](https://img.shields.io/pypi/l/flet-easy.svg)](https://pypi.python.org/pypi/flet-easy) [![socket](https://socket.dev/api/badge/pypi/package/flet-easy/0.2.2#1725204521828)](https://socket.dev/pypi/package/flet-easy) [![linting - Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff) [![Downloads](https://static.pepy.tech/badge/flet-easy)](https://pepy.tech/project/flet-easy)
+[![image](https://img.shields.io/pypi/pyversions/flet-easy.svg)](https://pypi.python.org/pypi/flet-easy) [![image](https://img.shields.io/pypi/v/flet-easy.svg)](https://pypi.python.org/pypi/flet-easy) [![image](https://img.shields.io/pypi/l/flet-easy.svg)](https://pypi.python.org/pypi/flet-easy) [![socket](https://socket.dev/api/badge/pypi/package/flet-easy/0.2.2#1725204521828)](https://socket.dev/pypi/package/flet-easy) [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv) [![linting - Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff) [![Downloads](https://static.pepy.tech/badge/flet-easy)](https://pepy.tech/project/flet-easy)
 
 <img src="https://github.com/Daxexs/flet-easy/blob/main/media/logo.png?raw=true" alt="logo" width="250">
 
@@ -62,10 +62,10 @@ pip install flet-easy[all]
 > [!TIP]
 > [Recommended for `Flet` Packaging Application](https://flet.dev/docs/publish).
 
-Requires installation of [Flet >= 0.21](https://github.com/flet-dev/flet).
+Requires installation of [Flet >= 0.25](https://github.com/flet-dev/flet).
 
 ```bash
-pip install flet
+pip install flet[all]
 ```
 
 #### If you do not use: [CLI-to-create-app](https://daxexs.github.io/flet-easy/0.2.0/cli-to-create-app)
@@ -87,7 +87,7 @@ pip install flet-easy[JWT]
 ## 💻Update
 
 ```bash
-  pip install flet-easy --upgrade
+  pip install flet-easy[all] --upgrade
 ```
 
 ## 🔥Flet-Easy app example
@@ -131,9 +131,9 @@ def counter_page(data: fs.Datasy):
         controls=[
             ft.Row(
                 [
-                    ft.IconButton(ft.icons.REMOVE, on_click=minus_click),
+                    ft.IconButton(ft.Icons.REMOVE, on_click=minus_click),
                     txt_number,
-                    ft.IconButton(ft.icons.ADD, on_click=plus_click),
+                    ft.IconButton(ft.Icons.ADD, on_click=plus_click),
                 ],
                 alignment="center",
             ),

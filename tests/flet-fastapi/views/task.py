@@ -1,4 +1,5 @@
 import flet as ft
+
 import flet_easy as fs
 
 task = fs.AddPagesy(route_prefix="/task")
@@ -21,13 +22,13 @@ class Task(ft.UserControl):
         self.add = ft.FloatingActionButton(
             content=ft.Row(
                 [
-                    ft.IconButton(ft.icons.ADD, on_click=self.open_dlg_modal),
+                    ft.IconButton(ft.Icons.ADD, on_click=self.open_dlg_modal),
                     ft.Text("Add"),
                 ],
                 alignment="center",
                 spacing=5,
             ),
-            bgcolor=ft.colors.BLUE_700,
+            bgcolor=ft.Colors.BLUE_700,
             shape=ft.RoundedRectangleBorder(radius=5),
             width=100,
             mini=True,
@@ -50,7 +51,7 @@ class Task(ft.UserControl):
                     ],
                     # expand=True
                 ),
-                bgcolor=ft.colors.BLACK12,
+                bgcolor=ft.Colors.BLACK12,
                 # expand=True,
                 height=self.on_resize.heightX(50),
                 width=self.on_resize.widthX(50),
@@ -71,9 +72,9 @@ class Task(ft.UserControl):
                     ),
                 ]
             ),
-            bgcolor=ft.colors.BLACK12,
+            bgcolor=ft.Colors.BLACK12,
             border_radius=10,
-            border=ft.border.all(2, ft.colors.BLACK26),
+            border=ft.border.all(2, ft.Colors.BLACK26),
             padding=20,
         )
 

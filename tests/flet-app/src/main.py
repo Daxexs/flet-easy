@@ -4,11 +4,8 @@ from core.config import ConfigApp
 
 # from core.sensitive import PRIVATE_KEY, PUBLIC_KEY
 from core.sensitive import SECRET_KEY
-from models import create_tables
 
 import flet_easy as fs
-
-create_tables()
 
 app = fs.FletEasy(
     route_init="/home",
@@ -22,12 +19,13 @@ app = fs.FletEasy(
 
 def starting_page(data: fs.Datasy):
     """Remove [print()] from Python if build Windows"""
-    print(f"\n⚡[MIDDLEWARES RUNNING]\n-> Route:{data.route}\n1. Loading the page")
+    pass
+    # print(f"\n⚡[MIDDLEWARES RUNNING]\n-> Route:{data.route}\n1. Loading the page")
 
 
 async def starting_page_two(data: fs.Datasy):
     """Remove [print()] from Python if build Windows"""
-    print("2. Loading the page")
+    # ("2. Loading the page")
 
     # We allow the following paths, otherwise it redirects to the path ('/login').
     # Note: To check the urls you should use (data.route) and not (data.page.route), as this will cause an infinite loop.
@@ -56,5 +54,5 @@ ConfigApp(app)
 # run =app.run(export_asgi_app=True)
 
 """ [If you have any problem - build web]
-Use ft.app(target=app.run(fastapi=true)) when compiling web statica. """
+Use ft.app(target=app.get_app()) when compiling web statica. """
 app.run()

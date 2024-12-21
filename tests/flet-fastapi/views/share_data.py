@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 import flet as ft
+
 import flet_easy as fs
 
 data = fs.AddPagesy(route_prefix="/data")
@@ -28,7 +29,7 @@ async def get_data_page(data: fs.Datasy):
 
     return ft.View(
         controls=[
-            ft.Container(content=res, padding=20, border_radius=20, bgcolor=ft.colors.BLACK26),
+            ft.Container(content=res, padding=20, border_radius=20, bgcolor=ft.Colors.BLACK26),
             ft.ElevatedButton(
                 "Check the following page for matched data",
                 on_click=data.go(f"{data.route_prefix}/data/info"),
@@ -57,7 +58,7 @@ async def info_page(data: fs.Datasy):
     return ft.View(
         controls=[
             ft.Text("Access to shared data?"),
-            ft.Container(content=res, padding=20, border_radius=20, bgcolor=ft.colors.BLACK26),
+            ft.Container(content=res, padding=20, border_radius=20, bgcolor=ft.Colors.BLACK26),
         ],
         appbar=view.appbar,
         vertical_alignment=ft.MainAxisAlignment.CENTER,

@@ -15,14 +15,14 @@ class Custom:
                             "Go back",
                             on_click=self.data.go_back(),
                             style=ft.ButtonStyle(
-                                bgcolor=ft.colors.RED_600,
+                                bgcolor=ft.Colors.RED_600,
                             ),
                         ),
                         ft.FilledButton(
                             "Page 2",
                             on_click=self.data.go("/counter/ts"),
                             style=ft.ButtonStyle(
-                                bgcolor=ft.colors.AMBER_500,
+                                bgcolor=ft.Colors.AMBER_500,
                             ),
                         ),
                     ]
