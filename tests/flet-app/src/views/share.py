@@ -49,7 +49,7 @@ async def get_data_page(data: fs.Datasy):
 
     return ft.View(
         controls=[
-            ft.Container(content=res, padding=20, border_radius=20, bgcolor=ft.colors.BLACK26),
+            ft.Container(content=res, padding=20, border_radius=20, bgcolor=ft.Colors.BLACK26),
             ft.ElevatedButton(
                 "Check the following page for matched data", on_click=data.go("/share/info")
             ),
@@ -75,7 +75,7 @@ def info_page(data: fs.Datasy):
     return ft.View(
         controls=[
             ft.Text("Access to shared data?"),
-            ft.Container(content=res, padding=20, border_radius=20, bgcolor=ft.colors.BLACK26),
+            ft.Container(content=res, padding=20, border_radius=20, bgcolor=ft.Colors.BLACK26),
             Drawer(text="Show_drawer", drawer=data.view.drawer),
         ],
         drawer=data.view.drawer,

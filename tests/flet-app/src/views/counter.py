@@ -66,7 +66,7 @@ class PageUseKeyboard(Custom):
             self.keyboard.controls.append(
                 ft.Chip(
                     label=ft.Text(self.on_keyboard.test()),
-                    color=ft.colors.GREEN_900,
+                    color=ft.Colors.GREEN_900,
                 )
             )
 
