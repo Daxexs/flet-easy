@@ -62,3 +62,11 @@ Flet-Easy is a user-friendly add-on package for Flet, offering a cleaner code st
     # **v0.2.6**
     * Fix route error page 404. [`[See more]`](/flet-easy/0.2.0/customized-app/page-404/)
     * Add route checker without dependency. [`[See more]`](/flet-easy/0.2.0/dynamic-routes/)
+
+    # **v0.2.7**
+    * Fix error in non-dynamic routing. ([#30](https://github.com/Daxexs/flet-easy/issues/30))
+    * Add page without creating an instance of `AddPagesy` class. ([#31](https://github.com/Daxexs/flet-easy/issues/31))
+
+    # **v0.2.8**
+    * Support for `Flet>=0.25.*`.
+    * New methods to initialize and obtain by the application. [`[See more]`](/flet-easy/0.2.0/run-the-app/#use-flet-easy-in-an-existing-app)
