@@ -350,7 +350,7 @@ wheels = [
 
 [[package]]
 name = "flet-easy"
-version = "0.2.8.dev2"
+version = "0.2.8"
 source = { editable = "." }
 
 [package.optional-dependencies]

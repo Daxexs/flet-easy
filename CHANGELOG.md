@@ -1,5 +1,12 @@
 # Flet-Easy changelog
 
+## v0.2.8 (21/12/24)
+
+* Support for `Flet>=0.25.*`.
+* Switching to `uv` as package manager.
+* New methods to initialize and obtain by the application. ([#33](https://github.com/Daxexs/flet-easy/issues/33)) [[Docs](https://daxexs.github.io/flet-easy/0.2.0/run-the-app/#use-flet-easy-in-an-existing-app)]
+* Update of the tests code for flet 0.25.*
+
 ## v0.2.7 (29/10/24)
 
 * Fix error in non-dynamic routing. ([#30](https://github.com/Daxexs/flet-easy/issues/30)) [[Docs](https://daxexs.github.io/flet-easy/latest/add-pages/through-decorators/#without-instantiating-addpagesy)]
