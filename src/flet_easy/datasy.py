@@ -4,6 +4,7 @@ from typing import Any, Callable, Dict
 
 from flet import Page
 
+from flet_easy.exceptions import LoginError
 from flet_easy.extra import Msg, Redirect
 from flet_easy.extrasJwt import (
     SecretKey,
@@ -275,6 +276,40 @@ class Datasy:
                 sleep_time=sleep,
             ).start()
 
+    def __login(
+        self,
+        key: str,
+        value: Dict[str, Any] | Any,
+        next_route: str,
+        time_expiry: timedelta = None,
+        sleep: int = 1,
+    ) -> str | None:
+        if time_expiry:
+            assert isinstance(
+                value, Dict
+            ), "Use a dict in login method values or don't use time_expiry."
+            assert (
+                self.__secret_key is not None
+            ), "Set the secret_key in the FletEasy class parameter or don't use time_expiry."
+
+        if self.__secret_key:
+            evaluate_secret_key(self)
+            self._key_login = key
+            self.__sleep = sleep
+            value = encode_verified(self.secret_key, value, time_expiry)
+            self._login_done = True
+
+        if self.__auto_logout:
+            self._create_tasks(time_expiry, key, sleep)
+
+        if self.page.web:
+            self.page.pubsub.send_others_on_topic(
+                self.page.client_ip + self.page.client_user_agent,
+                Msg("login", key, {"value": value, "next_route": next_route}),
+            )
+
+        return value
+
     def login(
         self,
         key: str,
@@ -293,32 +328,40 @@ class Datasy:
         * `time_expiry` : Time to expire the session, use the `timedelta` class  to configure. (Optional)
         * `sleep` : Time to do login checks, default is 1s. (Optional)
         """
-        if time_expiry:
-            assert isinstance(
-                value, Dict
-            ), "Use a dict in login method values or don't use time_expiry."
-            assert (
-                self.__secret_key is not None
-            ), "Set the secret_key in the FletEasy class parameter or don't use time_expiry."
+        value = self.__login(key, value, next_route, time_expiry, sleep)
 
-        if self.__secret_key:
-            evaluate_secret_key(self)
-            self._key_login = key
-            self.__sleep = sleep
-            value = encode_verified(self.secret_key, value, time_expiry)
-            self._login_done = True
-
-            if self.__auto_logout:
-                self._create_tasks(time_expiry, key, sleep)
-
-        self.page.run_task(self.page.client_storage.set_async, key, value).result()
-
-        if self.page.web:
-            self.page.pubsub.send_others_on_topic(
-                self.page.client_ip + self.page.client_user_agent,
-                Msg("login", key, {"value": value, "next_route": next_route}),
+        try:
+            self.page.client_storage.set(key, value)
+        except TimeoutError:
+            raise LoginError(
+                "The operation has timed out. Please use 'login_async()' instead of 'login()'."
             )
+
         self.__go(next_route)
+
+    async def login_async(
+        self,
+        key: str,
+        value: Dict[str, Any] | Any,
+        next_route: str,
+        time_expiry: timedelta = None,
+        sleep: int = 1,
+    ):
+        """Registering in the client's storage the key and value in all browser sessions.
+        * This method is asynchronous.
+
+        ### Parameters to use:
+
+        * `key` : It is the identifier to store the value in the client storage.
+        * `value` : Recommend to use a dict if you use JWT.
+        * `next_route` : Redirect to next route after creating login.
+        * `time_expiry` : Time to expire the session, use the `timedelta` class  to configure. (Optional)
+        * `sleep` : Time to do login checks, default is 1s. (Optional)
+        """
+
+        value = self.__login(key, value, next_route, time_expiry, sleep)
+        await self.page.client_storage.set_async(key, value)
+        self.page.run_thread(self.__go, next_route)
 
     """ Page go  """
 
