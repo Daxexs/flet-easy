@@ -37,6 +37,10 @@ class LogoutError(FletEasyError):
 class MidlewareError(FletEasyError):
     """Middleware error"""
 
+    pass
+
 
 class AddPagesError(FletEasyError):
     """Add pages error in route"""
+
+    pass
