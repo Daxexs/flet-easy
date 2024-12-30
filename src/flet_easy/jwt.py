@@ -9,6 +9,7 @@ with contextlib.suppress(ImportError):
     from rsa import newkeys
 
 from flet_easy.datasy import Datasy, evaluate_secret_key
+from flet_easy.exceptions import LogoutError
 from flet_easy.extra import Msg
 from flet_easy.extrasJwt import _decode_payload_async
 
@@ -85,14 +86,13 @@ async def _handle_decode_errors(data: Datasy, key_login: str) -> Union[Dict[str,
         return False
     except DecodeError as e:
         data.logout(key_login)()
-        Exception(
+        raise LogoutError(
             "Decoding error, possibly there is a double use of the 'client_storage' 'key', Secret key invalid! or ",
             e,
         )
-        return False
     except Exception as e:
         data.logout(key_login)()
-        raise Exception("Login error:", e)
+        raise LogoutError("Login error:", e)
 
 
 def decode(key_login: str, data: Datasy) -> Dict[str, Any] | bool:

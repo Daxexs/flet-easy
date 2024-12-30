@@ -5,6 +5,8 @@ from typing import Any, Dict
 
 from flet import Page
 
+from flet_easy.exceptions import AlgorithmJwtError
+
 with contextlib.suppress(ImportError):
     from jwt import decode, encode
 
@@ -74,7 +76,7 @@ def encode_verified(secret_key: SecretKey, value: str, time_expiration) -> str |
             time_expiry=time_expiration,
         )
     else:
-        Exception("Algorithm not implemented in encode_verified method.")
+        raise AlgorithmJwtError("Algorithm not implemented in encode_verified method.")
 
 
 async def _decode_payload_async(
