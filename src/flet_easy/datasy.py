@@ -8,7 +8,7 @@ from flet_easy.exceptions import LoginError
 from flet_easy.extra import Msg, Redirect
 from flet_easy.extrasJwt import (
     SecretKey,
-    _decode_payload_async,
+    _decode_payload,
     encode_verified,
 )
 from flet_easy.inheritance import Keyboardsy, Resizesy, SessionStorageEdit, Viewsy
@@ -57,7 +57,6 @@ class Datasy:
         auto_logout: bool,
         page_on_keyboard: Keyboardsy,
         page_on_resize: Resizesy,
-        login_async: bool = False,
         go: Callable[[str], None] = None,
     ) -> None:
         self.__page: Page = page
@@ -78,7 +77,6 @@ class Datasy:
         self.__sleep: int = 1
         self._key_login: str = None
         self._login_done: bool = False
-        self._login_async: bool = login_async
 
     @property
     def page(self):
@@ -243,9 +241,8 @@ class Datasy:
         elif msg.method == "updateLoginSessions":
             self._login_done = msg.value
             self._create_task_login_update(
-                decode=await _decode_payload_async(
-                    page=self.page,
-                    key_login=self.key_login,
+                decode=_decode_payload(
+                    jwt=await self.page.client_storage.get_async(self.key_login),
                     secret_key=(
                         self.secret_key.secret
                         if self.secret_key.secret is not None

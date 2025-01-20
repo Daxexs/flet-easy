@@ -62,7 +62,6 @@ class FletEasyX:
             auto_logout=auto_logout,
             page_on_keyboard=self.__page_on_keyboard,
             page_on_resize=self.__page_on_resize,
-            login_async=iscoroutinefunction(self.__config_login),
             go=self._go,
         )
         self.__data.view = self.__view_data_config() if self.__view_data is not None else None
