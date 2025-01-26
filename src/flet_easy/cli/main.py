@@ -1,13 +1,15 @@
 import argparse
 import contextlib
 
+from flet_easy.exceptions import FletEasyError
+
 try:
     from cookiecutter.main import cookiecutter
     from rich_argparse import RichHelpFormatter
 except ImportError:
-    raise Exception('To use the cli (fs) Install: "pip install flet-easy[all] --upgrade"')
+    raise FletEasyError('To use the cli (fs) Install: "pip install flet-easy[all] --upgrade"')
 
-VERSION = "0.2.8"
+VERSION = "0.2.9"
 
 RichHelpFormatter.styles["argparse.text"] = "italic"
 RichHelpFormatter.styles["argparse.help"] = "light_sky_blue3"

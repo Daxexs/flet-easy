@@ -14,7 +14,7 @@ class LoginC:
         self.password = fs.Ref[ft.TextField]()
         self.time_logout = fs.Ref[ft.TextField]()
 
-    def check(self, e):
+    async def check(self, e):
         username = (
             self.username.c.value
             if self.username.c.value != "" and self.username.c.value
@@ -28,12 +28,12 @@ class LoginC:
         )
 
         if username and password:
-            if not e.page.run_task(check_user, User(username=username, password=password)).result():
+            if not await check_user(User(username=username, password=password)):
                 self.data.page.snack_bar = ft.SnackBar(
                     content=ft.Text("User does not exist"), action="Alright!", open=True
                 )
             else:
-                self.data.login(
+                await self.data.login_async(
                     key="login",
                     value={"user": username},
                     time_expiry=timedelta(seconds=int(self.time_logout.c.value)),

@@ -9,8 +9,9 @@ with contextlib.suppress(ImportError):
     from rsa import newkeys
 
 from flet_easy.datasy import Datasy, evaluate_secret_key
+from flet_easy.exceptions import LoginError, LogoutError
 from flet_easy.extra import Msg
-from flet_easy.extrasJwt import _decode_payload_async
+from flet_easy.extrasJwt import _decode_payload
 
 
 class EasyKey:
@@ -46,13 +47,13 @@ class EasyKey:
         return token_bytes(64).hex().encode("utf-8")
 
 
-async def _handle_decode_errors(data: Datasy, key_login: str) -> Union[Dict[str, Any], bool]:
+def _handle_decode_errors(jwt: str, data: Datasy, key_login: str) -> Union[Dict[str, Any], bool]:
     """decodes the jwt and updates the browser sessions."""
     try:
         data._key_login = key_login
         evaluate_secret_key(data)
 
-        if not await data.page.client_storage.contains_key_async(key_login):
+        if jwt is None:
             return False
 
         if data.auto_logout and not data._login_done:
@@ -60,9 +61,8 @@ async def _handle_decode_errors(data: Datasy, key_login: str) -> Union[Dict[str,
                 data.page.client_ip, Msg("updateLogin", value=data._login_done)
             )
 
-        decode = await _decode_payload_async(
-            page=data.page,
-            key_login=key_login,
+        decode = _decode_payload(
+            jwt=jwt,
             secret_key=(
                 data.secret_key.secret
                 if data.secret_key.secret is not None
@@ -85,14 +85,13 @@ async def _handle_decode_errors(data: Datasy, key_login: str) -> Union[Dict[str,
         return False
     except DecodeError as e:
         data.logout(key_login)()
-        Exception(
+        raise LogoutError(
             "Decoding error, possibly there is a double use of the 'client_storage' 'key', Secret key invalid! or ",
             e,
         )
-        return False
     except Exception as e:
         data.logout(key_login)()
-        raise Exception("Login error:", e)
+        raise LogoutError("Login error:", e)
 
 
 def decode(key_login: str, data: Datasy) -> Dict[str, Any] | bool:
@@ -102,10 +101,13 @@ def decode(key_login: str, data: Datasy) -> Dict[str, Any] | bool:
     * `key_login` : key used to store data in the client, also used in the `login` method of `Datasy`.
     * `data` : Instance object of the `Datasy` class.
     """
-    assert not data._login_async, "Use the 'decode_async' method instead of 'decode'."
     assert data.secret_key is not None, "set the 'secret_key' in the class parameter (FletEasy)."
-
-    return data.page.run_task(_handle_decode_errors, data, key_login).result()
+    try:
+        return _handle_decode_errors(
+            jwt=data.page.client_storage.get(key_login), data=data, key_login=key_login
+        )
+    except TimeoutError as e:
+        raise LoginError("Use the 'decode_async' method instead of 'decode'. | More details:", e)
 
 
 async def decode_async(key_login: str, data: Datasy) -> Dict[str, Any] | bool:
@@ -115,7 +117,11 @@ async def decode_async(key_login: str, data: Datasy) -> Dict[str, Any] | bool:
     * `key_login` : key used to store data in the client, also used in the `login` method of `Datasy`.
     * `data` : Instance object of the `Datasy` class.
     """
-    assert data._login_async, "Use the 'decode' method instead of 'decode_async'."
     assert data.secret_key is not None, "set the 'secret_key' in the class parameter (FletEasy)."
 
-    return await _handle_decode_errors(data, key_login)
+    try:
+        return _handle_decode_errors(
+            jwt=await data.page.client_storage.get_async(key_login), data=data, key_login=key_login
+        )
+    except TimeoutError as e:
+        raise LoginError("Use the 'decode' method instead of 'decode_async'. | More details:", e)

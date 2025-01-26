@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any, Dict
 
-from flet import Page
+from flet_easy.exceptions import AlgorithmJwtError
 
 with contextlib.suppress(ImportError):
     from jwt import decode, encode
@@ -74,19 +74,17 @@ def encode_verified(secret_key: SecretKey, value: str, time_expiration) -> str |
             time_expiry=time_expiration,
         )
     else:
-        Exception("Algorithm not implemented in encode_verified method.")
+        raise AlgorithmJwtError("Algorithm not implemented in encode_verified method.")
 
 
-async def _decode_payload_async(
-    page: Page, key_login: str, secret_key: str, algorithms: str
-) -> Dict[str, Any]:
+def _decode_payload(jwt: str, secret_key: str, algorithms: str) -> Dict[str, Any]:
     """Decodes the payload stored in the client storage."""
     assert (
         secret_key is not None
     ), "The secret_key algorithm is not supported, only (RS256, HS256) is accepted."
 
     return decode(
-        jwt=await page.client_storage.get_async(key_login),
+        jwt=jwt,
         key=secret_key,
         algorithms=[algorithms],
     )

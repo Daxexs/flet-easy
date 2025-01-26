@@ -6,6 +6,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 from flet import ControlEvent, KeyboardEvent, Page, RouteChangeEvent, View
 
 from flet_easy.datasy import Datasy
+from flet_easy.exceptions import LoginRequiredError, MidlewareError, RouteError
 from flet_easy.extra import TYPE_PATTERNS, Msg, Redirect
 from flet_easy.inheritance import Keyboardsy, Resizesy, Viewsy
 from flet_easy.pagesy import Middleware, Pagesy
@@ -61,7 +62,6 @@ class FletEasyX:
             auto_logout=auto_logout,
             page_on_keyboard=self.__page_on_keyboard,
             page_on_resize=self.__page_on_resize,
-            login_async=iscoroutinefunction(self.__config_login),
             go=self._go,
         )
         self.__data.view = self.__view_data_config() if self.__view_data is not None else None
@@ -207,7 +207,7 @@ class FletEasyX:
                 return True
 
             if not res_middleware:
-                raise Exception(
+                raise MidlewareError(
                     "Ocurrió un error en una función middleware. Usa los métodos para redirigir (data.redirect) o devolver False."
                 )
 
@@ -257,7 +257,7 @@ class FletEasyX:
                                     self.__config_login, self.__data
                                 ).result()
                             except Exception as e:
-                                raise Exception(
+                                raise LoginRequiredError(
                                     "Use async methods in the function decorated by 'login', to avoid conflicts.",
                                     e,
                                 )
@@ -290,7 +290,7 @@ class FletEasyX:
                         ):
                             break
                 except Exception as e:
-                    raise Exception(e)
+                    raise RouteError(e)
         if pg_404:
             page = self.__page_404 or Pagesy(route, self.__view_404, "Flet-Easy 404")
 

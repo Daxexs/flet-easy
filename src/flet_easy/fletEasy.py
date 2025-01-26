@@ -1,7 +1,11 @@
+from flet_easy.exceptions import AddPagesError, FletEasyError
+
 try:
     from flet import AppView, Page, WebRenderer, app
 except ImportError:
-    raise Exception('Install "flet" the latest version available -> pip install flet --upgrade.')
+    raise FletEasyError(
+        'Install "flet" the latest version available -> pip install flet[all] --upgrade.'
+    )
 
 from collections import deque
 from functools import wraps
@@ -229,7 +233,7 @@ class FletEasy:
                 export_asgi_app=export_asgi_app,
             )
         except RuntimeError:
-            raise Exception(
+            raise FletEasyError(
                 "Ifs you are using fastapi from flet, set the 'fastapi = True' parameter of the run() method."
             )
 
@@ -287,7 +291,7 @@ class FletEasy:
                 else:
                     self.__pages.extend(page._add_pages())
         except Exception as e:
-            raise e
+            raise AddPagesError("Add pages error in route: ", e)
 
     @classmethod
     def page(
