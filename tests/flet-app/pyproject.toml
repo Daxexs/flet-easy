@@ -2,7 +2,7 @@
 name = "flet-app"
 version = "0.1.0"
 license = "MIT"
-dependencies = ["flet==0.25.*", "flet-easy==0.2.8", "tortoise-orm==0.22.2"]
+dependencies = ["flet==0.25.*", "flet-easy==0.2.9", "tortoise-orm==0.22.2"]
 
 [[project.authors]]
 name = "Daxexs"

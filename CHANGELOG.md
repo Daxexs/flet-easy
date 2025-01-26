@@ -1,5 +1,12 @@
 # Flet-Easy changelog
 
+## v0.2.9 (25/01/25)
+
+### Bug fixes
+
+* Fix error when using login() method in async function ([#34](https://github.com/Daxexs/flet-easy/issues/34))
+* Fix and improve error message in fs.decode (async) ([#35](https://github.com/Daxexs/flet-easy/issues/35))
+
 ## v0.2.8 (21/12/24)
 
 * Support for `Flet>=0.25.*`.

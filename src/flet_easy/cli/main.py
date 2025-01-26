@@ -9,7 +9,7 @@ try:
 except ImportError:
     raise FletEasyError('To use the cli (fs) Install: "pip install flet-easy[all] --upgrade"')
 
-VERSION = "0.2.8"
+VERSION = "0.2.9"
 
 RichHelpFormatter.styles["argparse.text"] = "italic"
 RichHelpFormatter.styles["argparse.help"] = "light_sky_blue3"
