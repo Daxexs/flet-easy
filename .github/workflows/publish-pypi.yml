@@ -1,0 +1,47 @@
+name: pypi
+
+on:
+  release:
+    types:
+      - created
+
+env:
+  PYTHON_VERSION: 3.12
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install the latest version of uv and enable caching and define a custom cache key suffix
+        id: setup-uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+          enable-cache: true
+          cache-suffix: "optional-suffix"
+
+      - name: Do something if the cache was restored
+        if: steps.setup-uv.outputs.cache-hit == 'true'
+        run: echo "Cache was restored"
+
+      #- name: Install Python Dependencies
+      #  run: uv sync --all-extras --all-groups
+
+      - name: Build Python Package
+        run: |
+          uv build
+          echo "Package build completed successfully"
+
+      - name: Publish to PyPI
+        run: |
+          uv publish -t ${{ secrets.PYPI_TOKEN }}
+          echo "Package published successfully"
