@@ -20,19 +20,28 @@ jobs:
           uses: actions/setup-python@v4
           with:
             python-version: "3.12"
+
+        - name: Install the latest version of uv and enable caching and define a custom cache key suffix
+          id: setup-uv
+          uses: astral-sh/setup-uv@v5
+          with:
+            version: "latest"
+            enable-cache: true
+            cache-suffix: "optional-suffix"
+      
   
         - name: Install dependencies
-          run: pip install ruff
+          run: uv sync --all-extras --all-groups 
   
         - name: Run Ruff - Mode Check
           run: |
-              ruff check .
-              echo "Ruff check passed"
+              uv run ruff check .
+              echo "Ruff check completed"
   
-        - name: Run Ruff - Format
+        - name: Run Ruff - Mode Format
           run: |
-              ruff format --check .
-              echo "Ruff format passed"
+              uv run ruff format.
+              echo "Ruff format check completed"
 
         - name: Markdown Lint install
           uses: DavidAnson/markdownlint-cli2-action@v19
