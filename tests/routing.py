@@ -1,7 +1,7 @@
 import unittest
 from uuid import UUID
 
-from flet_easy.route import FletEasyX
+from src.flet_easy.route import FletEasyX
 
 
 def custom_bool(value: str):
