@@ -35,12 +35,12 @@ jobs:
   
         - name: Run Ruff - Mode Check
           run: |
-              uv run ruff check .
+              uv run ruff check
               echo "Ruff check completed"
   
         - name: Run Ruff - Mode Format
           run: |
-              uv run ruff format.
+              uv run ruff format
               echo "Ruff format check completed"
 
         - name: Markdown Lint install
