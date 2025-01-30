@@ -65,5 +65,8 @@ test = [
     "ruff>=0.3.4",
     "flet[all]>=0.25.1",
     "tortoise-orm>=0.22.2",
+    "pytest>=8.3.4",
+    "pyjwt>=2.0.0",
+    "rsa>=4.9",
 ]
 docs = ["mkdocs-material>=9.5.17", "mike>=2.0.0"]
