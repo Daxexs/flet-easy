@@ -21,7 +21,20 @@ jobs:
           with:
             python-version: "3.12"
 
-        - name: Test with unittest
+        - name: Install the latest version of uv and enable caching and define a custom cache key suffix
+          id: setup-uv
+          uses: astral-sh/setup-uv@v5
+          with:
+            version: "latest"
+            enable-cache: true
+            cache-suffix: "optional-suffix"
+
+        - name: syncronize flet-easy
           run: |
-            python3 -m unittest tests/routing.py -v
-            echo "Unit test completed"
+            uv sync --group test
+            echo "Syncronize flet-easy completed"
+
+        - name: run py
+          run: |
+            uv run pytest tests/routing.py
+            echo "Pytest completed"
