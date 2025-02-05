@@ -2,6 +2,13 @@ name: Linters
 
 on:
   push:
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "docs/**"
+      - "README.md"
+      - "CHANGELOG.md"
+      - "CONTRIBUTING.md"
     branches:
       - main
   pull_request:
