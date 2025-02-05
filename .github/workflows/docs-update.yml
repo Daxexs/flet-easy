@@ -1,0 +1,94 @@
+name: Deploy docs-site
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "docs/**"
+      - "mkdocs.yml"
+    branches:
+      - main
+
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout the repository with full history (including all tags)
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Step 2: Set up Python 3.12
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      # Step 3: Set up the uv environment with caching enabled
+      - name: Setup uv environment
+        id: setup-uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+          enable-cache: true
+          cache-suffix: "optional-suffix"
+
+      # Step 4: Determine the release tag version
+      - name: Set Release Tag Version (if available)
+        id: set-tag
+        run: |
+          # If the event is a release, extract the tag from the event.
+          # Otherwise, retrieve the latest existing tag from the repository.
+          if [ "${{ github.event_name }}" = "release" ]; then
+            TAG="${{ github.event.release.tag_name }}"
+            echo "New tag detected (release): $TAG"
+          else
+            if git tag --list | grep -q .; then
+              TAG=$(git describe --tags --abbrev=0)
+              echo "No new tag. Using existing tag: $TAG"
+            else
+              echo "No tags found in the repository. Using default version 0.1.0."
+              TAG="0.1.0"
+            fi
+          fi
+
+          # Remove a leading 'v' if present.
+          RELEASE_TAG_VERSION="${TAG#v}"
+          echo "RELEASE_TAG_VERSION=$RELEASE_TAG_VERSION" >> $GITHUB_ENV
+
+      # Step 5: Install project dependencies
+      - name: Install Dependencies
+        run: uv sync --group docs
+
+      # Step 6: Configure Git settings for deployment
+      - name: Configure Git for Deployment
+        run: |
+          git config user.name "Daxexs"
+          git config user.email "${{ secrets.EMAIL }}"
+
+      # Step 7: Format the tag and deploy the docs using mike
+      - name: Deploy Docs Website and API Reference
+        run: |
+          # For an existing tag, extract MAJOR and MINOR parts and fix PATCH to 0.
+          echo "Existing tag detected: ${RELEASE_TAG_VERSION}"
+          IFS='.' read -r MAJOR MINOR PATCH <<< "${RELEASE_TAG_VERSION}"
+          FORMATTED_TAG="0.${MINOR}.0"
+          echo "Deploying with formatted existing tag ${FORMATTED_TAG}..."
+
+          # Fetch the 'docs-site' branch to ensure it is up to date.
+          git fetch --no-tags --prune --depth=1 origin +refs/heads/docs-site:refs/remotes/origin/docs-site
+
+          # Deploy the docs using mike via uv.
+          uv run mike deploy ${FORMATTED_TAG} latest -b docs-site -p --update-aliases
+
+      # Step 8: Push the default alias changes to the 'docs-site' branch.
+      - name: Push Changes to docs-site Branch
+        run: |
+          uv run mike set-default --push latest --branch docs-site
