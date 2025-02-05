@@ -2,6 +2,8 @@ name: Tests
 
 on:
   push:
+    paths:
+      - "tests/**"
     branches:
       - main
   pull_request:
