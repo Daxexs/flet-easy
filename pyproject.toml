@@ -72,3 +72,14 @@ test = [
     "pyinstrument>=5.0.1",
 ]
 docs = ["mkdocs-material>=9.5.17", "mike>=2.0.0"]
+
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+cache_dir = ".pytest_cache"
+addopts = "-ra -q --color=yes -vv"
+console_output_style = "progress"
+testpaths = [
+    "tests",
+]
+tmp_path_retention_count = 3
