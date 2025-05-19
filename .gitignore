@@ -154,6 +154,23 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+# Ignore the pre-commit-config.yaml since this is defined with devenv.nix
+.pre-commit-config.yaml
+
+# Ignore the .flake.nix file since this is defined with devenv.nix
+.devenv.flake.nix
+
+
+# Ignore the pre-commit-config.yaml since this is defined with devenv.nix
+.pre-commit-config.yaml
+
+# Ignore the .flake.nix file since this is defined with devenv.nix, and the devenv directory
+.devenv.flake.nix
+.devenv
+
+# Ignore pytest cache dir
+.pytest_cache
+
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
