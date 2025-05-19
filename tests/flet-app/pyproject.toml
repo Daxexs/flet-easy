@@ -3,15 +3,24 @@ name = "flet-app"
 version = "0.1.0"
 license = "MIT"
 dependencies = [
-    "flet[all]==0.25.*",
-    "flet-easy==0.2.9",
+    "flet[all]==0.28.*",
+    "flet-easy>=0.3.0.dev9",
     "tortoise-orm==0.22.2"
 ]
-requires-python = ">=3.11"
+requires-python = ">=3.9"
 
 [[project.authors]]
 name = "Daxexs"
 email = "Daxexs@test.com"
+
+[tool.uv]
+prerelease = "allow"
+# no-build-isolation-package = ["flet-easy"]
+
+# [[tool.uv.dependency-metadata]]
+# name = "flash-attn"
+# version = "0.3.0"
+# requires-dist = ["flet-easy"]
 
 [tool.flet]
 # org name in reverse domain name notation, e.g. "com.mycompany".
