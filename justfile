@@ -31,7 +31,7 @@ ready-py:
 
 # Set the git repo remote url (should be set to original repo)   
 set-remote:
-    git remote set-url origin git@github.com:topher097/flet-easy.git
+    git remote set-url origin git@github.com:Daxexs/flet-easy.git
     
 # Run windows VM
 windows:
