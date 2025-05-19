@@ -167,9 +167,13 @@ cython_debug/
 # Ignore the .flake.nix file since this is defined with devenv.nix, and the devenv directory
 .devenv.flake.nix
 .devenv
+local.properties
 
 # Ignore pytest cache dir
 .pytest_cache
+
+# Ignore android studio
+.android
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can

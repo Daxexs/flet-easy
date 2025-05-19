@@ -14,9 +14,35 @@ in {
         sync = { enable = true; };
       };
     };
+    dart = {
+      enable = true;
+      package = pkgs.dart;
+    };
   };
 
-  packages = with pkgs; [ bashInteractive pre-commit just uv ];
+  # Enable android studio
+  android = {
+    enable = true;
+    android-studio = {
+      enable = true;
+      package = pkgs.android-studio;
+    };
+    flutter = {
+      enable = true;
+      package = pkgs.flutter;
+    };
+    emulator = { enable = true; };
+  };
+
+  # Define packages to be included in the development environment
+  packages = with pkgs; [
+    bashInteractive
+    pre-commit
+    just
+    uv
+    flutter
+    ungoogled-chromium
+  ];
 
   # Git pre-commit hooks, defined here. LINK: https://github.com/cachix/git-hooks.nix/tree/master
   git-hooks = {
@@ -32,7 +58,10 @@ in {
       yamlfmt.enable = false;
 
       # Lint and format shell scripts
-      shellcheck.enable = true;
+      shellcheck = {
+        enable = true;
+        excludes = [ ".envrc" ];
+      };
       shfmt.enable = true;
 
       # Lint and format python using ruff
@@ -64,11 +93,18 @@ in {
     UV_PYTHON_PREFERENCE = "only-system";
     UV_PYTHON = "3.12";
     UV_PYTHON_DOWNLOADS = "never";
+
+    CHROME_EXECUTABLE = "${pkgs.ungoogled-chromium}/bin/chromium";
   };
 
   # Commands which run when the shell is started
   enterShell = ''
     export UV_PROJECT_ENVIRONMENT=$(pwd)/.venv
+
+
+    # Flutter configuration
+    flutter config --enable-web
+    #flutter config --android-studio-dir $ANDROID_STUDIO_DIR
 
     # Set the SSH agent if not already set
     if [ -z "$SSH_AUTH_SOCK" ] ; then

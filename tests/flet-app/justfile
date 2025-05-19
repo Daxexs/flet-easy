@@ -1,0 +1,17 @@
+set windows-shell := ["C:\\Program Files\\Git\\bin\\sh.exe","-c"]
+set export := true
+set positional-arguments := true
+
+user := file_stem(home_directory())
+curr_time := datetime("%Y%m%dT%H%M%S")
+
+# Initialize the python project environment
+ready-py:
+    uv lock
+    uv sync --locked --all-extras --all-groups
+
+run: ready-py
+    uv run flet src/main.py
+
+build platform: ready-py
+    flet build {{ platform }} -vv
