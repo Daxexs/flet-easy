@@ -66,50 +66,6 @@ in {
     CHROME_EXECUTABLE = "${pkgs.ungoogled-chromium}/bin/chromium";
   };
 
-  # Git pre-commit hooks, defined here. LINK: https://github.com/cachix/git-hooks.nix/tree/master
-  git-hooks = {
-    excludes = [ ".xml" ".dll" ".exe" ".pdb" ".flake.nix" ];
-    enabledPackages = [ pkgs.python312Packages.ruff ];
-    hooks = {
-      # Lint and format YAML files
-      yamllint = {
-        enable = false;
-        #excludes = [ "*/.circleci/config.yml" ];
-        settings = { preset = "relaxed"; };
-      };
-      yamlfmt.enable = false;
-
-      # Lint and format shell scripts
-      shellcheck = {
-        enable = true;
-        excludes = [ ".envrc" ];
-      };
-      shfmt.enable = true;
-
-      # Lint and format python using ruff
-      ruff.enable = true; # ruff check
-      ruff-format.enable = true;
-
-      # Lint and format for nix files
-      nixfmt-classic.enable = true;
-      #   statix.enable = true;
-      #   statix.settings.ignore = [ ".devenv*" ];
-
-      # No-commit-to-branch
-      no-commit-to-branch.enable = true;
-
-      # Spell-checking hook
-      typos = {
-        enable = true;
-        settings = { ignored-words = [ "datas" ]; };
-
-      };
-
-      # Prevent secrets from being committed
-      ripsecrets.enable = true;
-    };
-  };
-
   # Commands which run when the shell is started
   enterShell = ''
     export UV_PROJECT_ENVIRONMENT=$(pwd)/.venv
