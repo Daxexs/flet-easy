@@ -1,3 +1,5 @@
+import logging
+
 from flet_easy.exceptions import AddPagesError, FletEasyError, MidlewareError
 
 try:
@@ -16,26 +18,10 @@ from flet_easy.auto_route import automatic_routing
 from flet_easy.datasy import Datasy
 from flet_easy.extrasJwt import SecretKey
 from flet_easy.inheritance import Viewsy
+from flet_easy.logger import LoggingFletEasy, get_logger
 from flet_easy.middleware import MiddlewareHandler, MiddlewareRequest
 from flet_easy.pagesy import AddPagesy, Pagesy
 from flet_easy.route import FletEasyX
-
-
-def page(
-    route: str,
-    title: str = None,
-    page_clear: bool = False,
-    share_data: bool = False,
-    protected_route: bool = False,
-    custom_params: Dict[str, Any] = None,
-    middleware: Optional[
-        List[MiddlewareHandler | MiddlewareRequest] | MiddlewareHandler | MiddlewareRequest
-    ] = None,
-    cache: bool = False,
-):
-    return FletEasy.page(
-        route, title, page_clear, share_data, protected_route, custom_params, middleware, cache
-    )
 
 
 class FletEasy(FletEasyX):
@@ -50,6 +36,7 @@ class FletEasy(FletEasyX):
     * `secret_key` : Used with `SecretKey` class of Flet easy, to configure JWT or client storage.
     * `auto_logout` : If you use JWT, you can configure it.
     * `path_views` : Configuration of the folder where are the .py files of the pages, you use the `Path` class to configure it.
+    * `logger` : Activates the logger, by default it is disabled (False).
 
     Example:
     ```python
@@ -126,20 +113,6 @@ class FletEasy(FletEasyX):
     """
 
     __self = None
-    __slots__ = (
-        "__route_prefix",
-        "__path_views",
-        "__pagesys",
-        "_data",
-        "_pages",
-        "_page_404",
-        "_view_data",
-        "_view_config",
-        "_config_login",
-        "_config_event",
-        "_middlewares",
-        "_middlewares_after",
-    )
 
     def __init__(
         self,
@@ -151,7 +124,12 @@ class FletEasy(FletEasyX):
         secret_key: SecretKey = None,
         auto_logout: bool = False,
         path_views: Path = None,
+        logger: bool = False,
     ):
+        if logger:
+            LoggingFletEasy.enable(logging.DEBUG)
+        self.logger = get_logger("FletEasy")
+
         self.__route_prefix = route_prefix
         self.__path_views = path_views
         FletEasy.__self = self
@@ -183,6 +161,7 @@ class FletEasy(FletEasyX):
 
     def start(self, page: Page):
         """Start the app in the main function"""
+        self.logger.debug("enabling connection with flet app")
         self.__pre_config(page)
 
     def get_app(self):
@@ -191,6 +170,7 @@ class FletEasy(FletEasyX):
         def main(page: Page):
             self.__pre_config(page)
 
+        self.logger.debug("getting app from fletEasy to export")
         return main
 
     def run(
@@ -220,6 +200,7 @@ class FletEasy(FletEasyX):
             )
             return main
         try:
+            self.logger.debug("running app from fletEasy with flet")
             return app(
                 target=main,
                 name=name,
@@ -256,6 +237,8 @@ class FletEasy(FletEasyX):
 
             if value == "page_404":
                 self._page_404 = Pagesy(route, func, data.get("title"), data.get("page_clear"))
+                self.logger.debug(f"Adding page 404: {self._page_404}")
+
             elif value == "page":
                 self._pages.append(
                     Pagesy(
@@ -271,6 +254,8 @@ class FletEasy(FletEasyX):
                         cache=data.get("cache"),
                     )
                 )
+                self.logger.debug(f"Adding page: {self._pages[-1]}")
+
             return wrapper
 
         return decorator
@@ -290,6 +275,8 @@ class FletEasy(FletEasyX):
                     self._pages.extend(page._add_pages(self.__route_prefix))
                 else:
                     self._pages.extend(page._add_pages())
+
+                self.logger.debug(f"Adding group of pages: {len(group_pages)}: {page}\n")
         except Exception as e:
             raise AddPagesError("Add pages error in route: ", e)
 
@@ -457,6 +444,7 @@ class FletEasy(FletEasyX):
         ```
         """
         self._view_data = func
+        self.logger.debug(f"Adding view: {self._view_data}")
 
     def config(self, func: Callable[[Datasy], None]):
         """Decorator to add a custom configuration to the app:
@@ -484,6 +472,7 @@ class FletEasy(FletEasyX):
         ```
         """
         self._view_config = func
+        self.logger.debug(f"Adding config: {self._view_config}")
 
     def login(self, func: Callable[[Datasy], bool]):
         """Decorator to add a login configuration to the app (protected_route):
@@ -508,6 +497,7 @@ class FletEasy(FletEasyX):
         ```
         """
         self._config_login = func
+        self.logger.debug(f"Adding login: {self._config_login}")
 
     def config_event_handler(self, func: Callable[[Datasy], None]):
         """Decorator to add charter event settings -> https://flet.dev/docs/controls/page#events
@@ -524,6 +514,7 @@ class FletEasy(FletEasyX):
         """
 
         self._config_event = func
+        self.logger.debug(f"Adding config event: {self._config_event}")
 
     def add_routes(self, add_views: List[Pagesy]):
         """-> Add routes without the use of decorators.
@@ -550,6 +541,7 @@ class FletEasy(FletEasyX):
                 page.route = self.__route_prefix + page.route
 
             self._pages.append(page)
+            self.logger.debug(f"Add routes: {page}")
 
     def add_middleware(
         self,
@@ -579,6 +571,8 @@ class FletEasy(FletEasyX):
                         )
                 else:
                     self._middlewares.append(m)
+
+            self.logger.debug(f"Add middlewares in method 'add_middleware': {middleware}")
         except Exception as e:
             raise MidlewareError(
                 "You are not adding any midleware but you are using the 'add_middleware' method:",

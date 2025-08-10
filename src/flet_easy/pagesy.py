@@ -106,6 +106,9 @@ class Pagesy:
             if not isinstance(self.middleware, list):
                 self.middleware = [self.middleware]
 
+    def __repr__(self):
+        return f"Pagesy(route={self.route}, view={self.view}, title={self.title}, index={self.index}, clear={self.clear}, share_data={self.share_data}, protected_route={self.protected_route}, custom_params={self.custom_params}, middleware={self.middleware}, cache={self.cache})"
+
 
 class AddPagesy:
     """
@@ -226,3 +229,6 @@ class AddPagesy:
                 page.route = route if page.route == "/" else route + page.route
 
         return self.__pages
+
+    def __repr__(self) -> str:
+        return f"AddPagesy(route_prefix={self.route_prefix}, middleware={self.middleware}, number_pages={len(self.__pages)}, pages={self.__pages})"

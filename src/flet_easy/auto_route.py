@@ -4,6 +4,7 @@ from os import listdir, path
 from sys import modules
 from typing import List, Optional
 
+from flet_easy.logger import get_logger
 from flet_easy.pagesy import AddPagesy
 
 
@@ -22,6 +23,7 @@ def automatic_routing(dir: str) -> Optional[List[AddPagesy]]:
         return None
 
     pages = []
+    logger = get_logger("Automatic routing")
 
     python_files = [
         file
@@ -50,8 +52,9 @@ def automatic_routing(dir: str) -> Optional[List[AddPagesy]]:
                 for _, obj in getmembers(module):
                     if isinstance(obj, AddPagesy):
                         pages.append(obj)
+                        logger.debug(f"Adding AddPagesy automatic routing: {obj}")
         except Exception as e:
-            print(f"Error processing file {file}: {e}")
+            logger.error(f"Error processing file {file}: {e}")
             continue
 
     if not pages:
@@ -59,4 +62,5 @@ def automatic_routing(dir: str) -> Optional[List[AddPagesy]]:
             "No instances of AddPagesy found. Check the assigned path of the 'path_views' parameter of the class (FletEasy)."
         )
 
+    logger.info(f"Automatic routing completed successfully: {len(pages)} Pagesy objects")
     return pages
