@@ -1,7 +1,6 @@
 from collections import deque
-from ctypes import Union
 from datetime import datetime, timedelta, timezone
-from typing import Any, Callable, Dict, Tuple
+from typing import Any, Callable, Dict, Tuple, Union
 
 from flet import Control, ControlEvent, Page
 

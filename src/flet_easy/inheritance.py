@@ -1,6 +1,5 @@
-from ctypes import Union
 from inspect import iscoroutinefunction
-from typing import Any, Callable, Dict, List, TypeVar
+from typing import Any, Callable, Dict, List, TypeVar, Union
 
 from flet import (
     ControlEvent,

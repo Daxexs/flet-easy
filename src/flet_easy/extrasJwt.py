@@ -1,8 +1,7 @@
 import contextlib
-from ctypes import Union
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import Any, Dict
+from typing import Any, Dict, Union
 
 from flet_easy.exceptions import AlgorithmJwtError
 

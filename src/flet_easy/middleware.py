@@ -1,5 +1,4 @@
-from ctypes import Union
-from typing import Callable, List, Optional
+from typing import Callable, List, Optional, Union
 
 from flet import View
 

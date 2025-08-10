@@ -1,5 +1,5 @@
 import logging
-from ctypes import Union
+from typing import Union
 
 from flet_easy.exceptions import AddPagesError, FletEasyError, MidlewareError
 
