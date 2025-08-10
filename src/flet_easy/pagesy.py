@@ -40,7 +40,7 @@ class Pagesy:
         protected_route: bool = False,
         custom_params: Optional[Dict[str, Callable[[], bool]]] = None,
         middleware: Optional[
-            List[MiddlewareHandler | MiddlewareRequest] | MiddlewareHandler | MiddlewareRequest
+            Union[List[Union[MiddlewareHandler, MiddlewareRequest]], MiddlewareHandler, MiddlewareRequest]
         ] = None,
         cache: bool = False,
     ):
@@ -165,7 +165,7 @@ class AddPagesy:
         self,
         route_prefix: Optional[str] = None,
         middleware: Optional[
-            List[MiddlewareHandler | MiddlewareRequest] | MiddlewareHandler | MiddlewareRequest
+            Union[List[Union[MiddlewareHandler, MiddlewareRequest]], MiddlewareHandler, MiddlewareRequest]
         ] = None,
     ):
         self.route_prefix = route_prefix.rstrip("/") if route_prefix else None
@@ -190,7 +190,7 @@ class AddPagesy:
         protected_route: bool = False,
         custom_params: Optional[Dict[str, Any]] = None,
         middleware: Optional[
-            List[MiddlewareHandler | MiddlewareRequest] | MiddlewareHandler | MiddlewareRequest
+            Union[List[Union[MiddlewareHandler, MiddlewareRequest]], MiddlewareHandler, MiddlewareRequest]
         ] = None,
         cache: bool = False,
     ) -> Callable:

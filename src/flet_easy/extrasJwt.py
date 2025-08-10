@@ -1,4 +1,5 @@
 import contextlib
+from ctypes import Union
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any, Dict
@@ -55,7 +56,7 @@ def encode_HS256(payload: Dict[str, Any], secret_key: str, time_expiry: timezone
     )
 
 
-def encode_verified(secret_key: SecretKey, value: str, time_expiration) -> str | None:
+def encode_verified(secret_key: SecretKey, value: str, time_expiration) -> Union[str, None]:
     """Verify the possible encryption of the value sent."""
     assert secret_key.algorithm is not None, (
         "The secret_key algorithm is not supported, only (RS256, HS256) is accepted."

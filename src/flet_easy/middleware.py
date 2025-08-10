@@ -1,3 +1,4 @@
+from ctypes import Union
 from typing import Callable, List, Optional
 
 from flet import View
@@ -21,6 +22,6 @@ class MiddlewareRequest:
 
 MiddlewareHandler = Callable[[Datasy], Optional[Redirect]]
 Middleware = Optional[
-    List[MiddlewareHandler | MiddlewareRequest] | MiddlewareHandler | MiddlewareRequest
+    Union[List[Union[MiddlewareHandler, MiddlewareRequest]], MiddlewareHandler, MiddlewareRequest]
 ]
 ViewHandler = Callable[[Datasy], View]

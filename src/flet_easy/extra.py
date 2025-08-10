@@ -1,13 +1,13 @@
 from dataclasses import dataclass
 from re import Pattern, compile
-from typing import Callable, Dict, Optional, Tuple
+from typing import Callable, Dict, Optional, Tuple, Union
 
 
 @dataclass
 class Msg:
     method: str
     key: str = None
-    value: str | dict = None
+    value: Union[str, Dict] = None
 
 
 @dataclass

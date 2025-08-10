@@ -94,7 +94,7 @@ def _handle_decode_errors(jwt: str, data: Datasy, key_login: str) -> Union[Dict[
         raise LogoutError("Login error:", e)
 
 
-def decode(key_login: str, data: Datasy) -> Dict[str, Any] | bool:
+def decode(key_login: str, data: Datasy) -> Union[Dict[str, Any], bool]:
     """decodes the jwt and updates the browser sessions.
 
     ### Parameters to use:
@@ -110,7 +110,7 @@ def decode(key_login: str, data: Datasy) -> Dict[str, Any] | bool:
         raise LoginError("Use the 'decode_async' method instead of 'decode'. | More details:", e)
 
 
-async def decode_async(key_login: str, data: Datasy) -> Dict[str, Any] | bool:
+async def decode_async(key_login: str, data: Datasy) -> Union[Dict[str, Any], bool]:
     """decodes the jwt and updates the browser sessions.
 
     ### Parameters to use:

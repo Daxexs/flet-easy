@@ -1,4 +1,5 @@
 import logging
+from ctypes import Union
 
 from flet_easy.exceptions import AddPagesError, FletEasyError, MidlewareError
 
@@ -291,7 +292,7 @@ class FletEasy(FletEasyX):
         protected_route: bool = False,
         custom_params: Dict[str, Any] = None,
         middleware: Optional[
-            List[MiddlewareHandler | MiddlewareRequest] | MiddlewareHandler | MiddlewareRequest
+            Union[List[Union[MiddlewareHandler, MiddlewareRequest]], MiddlewareHandler, MiddlewareRequest]
         ] = None,
         cache: bool = False,
     ) -> Callable:
@@ -546,7 +547,7 @@ class FletEasy(FletEasyX):
     def add_middleware(
         self,
         *middleware: Optional[
-            Tuple[MiddlewareHandler | MiddlewareRequest] | MiddlewareHandler | MiddlewareRequest
+            Union[Tuple[Union[MiddlewareHandler, MiddlewareRequest]], MiddlewareHandler, MiddlewareRequest]
         ],
     ):
         """

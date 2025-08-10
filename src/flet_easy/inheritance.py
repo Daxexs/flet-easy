@@ -1,3 +1,4 @@
+from ctypes import Union
 from inspect import iscoroutinefunction
 from typing import Any, Callable, Dict, List, TypeVar
 
@@ -115,8 +116,8 @@ class Resizesy:
         self.__page = page
         self.__height: float = page.height
         self.__width: float = page.width
-        self.__margin_y: float | int = 0
-        self.__margin_x: float | int = 0
+        self.__margin_y: Union[float, int] = 0
+        self.__margin_x: Union[float, int] = 0
         self.__e: ControlEvent = None
 
     @property

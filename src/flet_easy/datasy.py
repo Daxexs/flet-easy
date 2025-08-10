@@ -1,4 +1,5 @@
 from collections import deque
+from ctypes import Union
 from datetime import datetime, timedelta, timezone
 from typing import Any, Callable, Dict, Tuple
 
@@ -273,11 +274,11 @@ class Datasy:
     def __login(
         self,
         key: str,
-        value: Dict[str, Any] | Any,
+        value: Union[Dict[str, Any], Any],
         next_route: str,
         time_expiry: timedelta = None,
         sleep: int = 1,
-    ) -> str | None:
+    ) -> Union[str, None]:
         if time_expiry:
             assert isinstance(value, Dict), (
                 "Use a dict in login method values or don't use time_expiry."
@@ -307,7 +308,7 @@ class Datasy:
     def login(
         self,
         key: str,
-        value: Dict[str, Any] | Any,
+        value: Union[Dict[str, Any], Any],
         next_route: str,
         time_expiry: timedelta = None,
         sleep: int = 1,
@@ -336,7 +337,7 @@ class Datasy:
     async def login_async(
         self,
         key: str,
-        value: Dict[str, Any] | Any,
+        value: Union[Dict[str, Any], Any],
         next_route: str,
         time_expiry: timedelta = None,
         sleep: int = 1,
