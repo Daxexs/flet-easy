@@ -4,7 +4,15 @@ from inspect import iscoroutinefunction
 from re import Pattern, compile, escape
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
-from flet import ControlEvent, KeyboardEvent, Page, RouteChangeEvent, View, ViewPopEvent
+from flet import (
+    ControlEvent,
+    KeyboardEvent,
+    Page,
+    PagePlatform,
+    RouteChangeEvent,
+    View,
+    ViewPopEvent,
+)
 
 from flet_easy.datasy import Datasy
 from flet_easy.exceptions import LoginRequiredError, MidlewareError, RouteError
@@ -169,37 +177,51 @@ class FletEasyX:
     def _view_append(self, route: str, pagesy: Pagesy) -> None:
         """Add a new page and update it."""
 
-        # To make the page change faster.
-        self.__manage_dynamic_appbar(route)
+        # Local shortcuts
+        page = self.__page
+        page_views = page.views
 
-        if len(self.__page.views) > 1:
-            self.__page.views.pop()
+        # Fast appbar handling depending on platform
+        plat = page.platform
+        if plat != PagePlatform.ANDROID and plat != PagePlatform.IOS:
+            self.__manage_dynamic_appbar(route)
+        elif route == self.__route_init:
+            page_views.clear()
 
+        # Keep only one view on stack (last)
+        if len(page_views) > 1:
+            page_views.pop()
+
+        # Reuse cached instance if available
         view = self.__history_pages.get(route)
 
+        # Build if not cached
         if view is None:
-            if callable(pagesy.view) and not isinstance(pagesy.view, type):
-                view = self.__check_async(
-                    pagesy.view, self._data, **self._data.url_params, result=True
-                )
-            elif isinstance(pagesy.view, type):
-                view_class = pagesy.view(self._data, **self._data.url_params)
-                view = self.__check_async(view_class.build, result=True)
+            pv = pagesy.view
+            if callable(pv) and not isinstance(pv, type):
+                view = self.__check_async(pv, self._data, **self._data.url_params, result=True)
+            elif isinstance(pv, type):
+                view_instance = pv(self._data, **self._data.url_params)
+                view = self.__check_async(view_instance.build, result=True)
+            else:
+                view = pv
 
             view.route = route
-
             if pagesy.cache:
                 self.__history_pages[route] = view
 
-        dynamic_control = self._data._dynamic_control.get(route)
+        # Run dynamic control if present
+        dyn = self._data._dynamic_control.get(route)
+        if dyn:
+            for control, func_update in dyn:
+                self.__check_async(func_update, control, result=True)
 
-        if dynamic_control:
-            self.__check_async(dynamic_control[1], dynamic_control[0], result=True)
-
-        self.__page.views.append(view)
+        # add view to the page and update it
+        page_views.append(view)
         self._data.history_routes.append((route, pagesy.index))
-        self.__page.update()
+        page.update()
 
+        # After-request middlewares
         if self._middlewares_after:
             for middleware in self._middlewares_after:
                 self.__check_async(middleware.after_request)

@@ -1,6 +1,6 @@
 from collections import deque
 from datetime import datetime, timedelta, timezone
-from typing import Any, Callable, Dict, Tuple, Union
+from typing import Any, Callable, Dict, List, Tuple, Union
 
 from flet import Control, ControlEvent, Page
 
@@ -70,7 +70,7 @@ class Datasy:
         self.__route: str = None
         self.__go = go
         self.__history_routes: deque[Tuple[str, int]] = deque()
-        self._dynamic_control: Dict[str, Tuple[Control, Callable[[Control], None]]] = {}
+        self._dynamic_control: Dict[str, List[Tuple[Control, Callable[[Control]], None]]] = {}
 
         self.__secret_key: SecretKey = secret_key
         self.__auto_logout: bool = auto_logout
@@ -389,8 +389,11 @@ class Datasy:
         return lambda _=None: go_back_func()
 
     def dynamic_control(self, control: Control, func_update: Callable[[Control], None]) -> None:
-        """Adds dynamic control to the page."""
-        self._dynamic_control[self.page.route] = (control, func_update)
+        """Adds dynamic control to the page, allowing real-time updates when caching is enabled on the page."""
+        if self.page.route not in self._dynamic_control:
+            self._dynamic_control[self.page.route] = [(control, func_update)]
+        else:
+            self._dynamic_control[self.page.route].append((control, func_update))
 
 
 def evaluate_secret_key(data: Datasy):
