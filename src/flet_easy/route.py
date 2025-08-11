@@ -181,19 +181,21 @@ class FletEasyX:
         page = self.__page
         page_views = page.views
 
+        # Reuse cached instance if available
+        view = None
+
         # Fast appbar handling depending on platform
         plat = page.platform
         if plat != PagePlatform.ANDROID and plat != PagePlatform.IOS:
             self.__manage_dynamic_appbar(route)
+            view = self.__history_pages.get(route)
+
         elif route == self.__route_init:
             page_views.clear()
 
         # Keep only one view on stack (last)
         if len(page_views) > 1:
             page_views.pop()
-
-        # Reuse cached instance if available
-        view = self.__history_pages.get(route)
 
         # Build if not cached
         if view is None:
