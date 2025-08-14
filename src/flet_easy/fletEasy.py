@@ -292,7 +292,11 @@ class FletEasy(FletEasyX):
         protected_route: bool = False,
         custom_params: Dict[str, Any] = None,
         middleware: Optional[
-            Union[List[Union[MiddlewareHandler, MiddlewareRequest]], MiddlewareHandler, MiddlewareRequest]
+            Union[
+                List[Union[MiddlewareHandler, MiddlewareRequest]],
+                MiddlewareHandler,
+                MiddlewareRequest,
+            ]
         ] = None,
         cache: bool = False,
     ) -> Callable:
@@ -547,7 +551,11 @@ class FletEasy(FletEasyX):
     def add_middleware(
         self,
         *middleware: Optional[
-            Union[Tuple[Union[MiddlewareHandler, MiddlewareRequest]], MiddlewareHandler, MiddlewareRequest]
+            Union[
+                Tuple[Union[MiddlewareHandler, MiddlewareRequest]],
+                MiddlewareHandler,
+                MiddlewareRequest,
+            ]
         ],
     ):
         """

@@ -5,7 +5,10 @@ from re import Pattern, compile, escape
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 from flet import (
+    AppBar,
     ControlEvent,
+    IconButton,
+    Icons,
     KeyboardEvent,
     Page,
     PagePlatform,
@@ -132,11 +135,6 @@ class FletEasyX:
         """Add the `View` configuration, to reuse on every page."""
         self._data.view = self.__check_async(self._view_data, self._data, result=True)
 
-        if self._data.view:
-            self.__automatically_imply_leading = getattr(
-                self._data.view.appbar, "automatically_imply_leading", True
-            )
-
         if self.__route_login is not None:
             self._data._create_login()
 
@@ -177,25 +175,9 @@ class FletEasyX:
     def _view_append(self, route: str, pagesy: Pagesy) -> None:
         """Add a new page and update it."""
 
-        # Local shortcuts
         page = self.__page
         page_views = page.views
-
-        # Reuse cached instance if available
-        view = None
-
-        # Fast appbar handling depending on platform
-        plat = page.platform
-        if plat != PagePlatform.ANDROID and plat != PagePlatform.IOS:
-            self.__manage_dynamic_appbar(route)
-            view = self.__history_pages.get(route)
-
-        elif route == self.__route_init:
-            page_views.clear()
-
-        # Keep only one view on stack (last)
-        if len(page_views) > 1:
-            page_views.pop()
+        view = self.__pop_supported(route)
 
         # Build if not cached
         if view is None:
@@ -209,6 +191,11 @@ class FletEasyX:
                 view = pv
 
             view.route = route
+
+            if self._can_pop_supported and route != self.__route_init and view.confirm_pop is None:
+                view.can_pop = False
+                view.confirm_pop = self._data.confirm_pop
+
             if pagesy.cache:
                 self.__history_pages[route] = view
 
@@ -219,6 +206,7 @@ class FletEasyX:
                 self.__check_async(func_update, control, result=True)
 
         # add view to the page and update it
+        self.__manage_dynamic_appbar(route, view.appbar, self._can_pop_supported, pagesy.clear)
         page_views.append(view)
         self._data.history_routes.append((route, pagesy.index))
         page.update()
@@ -232,20 +220,57 @@ class FletEasyX:
             for middleware in pagesy._middlewares_request:
                 self.__check_async(middleware.after_request)
 
-    def __manage_dynamic_appbar(self, route: str) -> None:
+    def __manage_dynamic_appbar(
+        self, route: str, appbar: AppBar, can_pop: bool = False, clear: bool = False
+    ) -> None:
         """Manage the appbar automatically_imply_leading parameter"""
+
+        # clear: to cancel the leading configuration
+        if appbar is None or clear:
+            return
+
+        # support for flet < v0.28.0
+        if route == self.__route_init:
+            if can_pop:
+                appbar.leading = None
+            elif appbar.automatically_imply_leading:
+                appbar.automatically_imply_leading = False
+                self.__automatically_imply_leading = True
+            return
+
+        if can_pop and appbar.automatically_imply_leading:
+            appbar.leading = IconButton(Icons.ARROW_BACK, on_click=self._data.go_back())
+        elif not appbar.automatically_imply_leading and self.__automatically_imply_leading:
+            appbar.automatically_imply_leading = True
+
+    def __pop_supported(self, route: str) -> Union[View, None]:
+        """Pop the view from the page if it is supported"""
+
+        if not hasattr(self, "_can_pop_supported"):
+            self._can_pop_supported = hasattr(View(), "can_pop")
+
+        view = None
+
         if route == self.__route_init:
             self._data.history_routes.clear()
-            appbar = getattr(self._data.view, "appbar", None)
 
-            if appbar and getattr(appbar, "automatically_imply_leading", None):
-                appbar.automatically_imply_leading = False
+        if self._can_pop_supported:
+            self.__page.views.clear()
+            view = self.__history_pages.get(route)
+        else:
+            # support for flet < v0.28.0
+            plat = self.__page.platform
 
-        elif self.__automatically_imply_leading:
-            appbar = getattr(self._data.view, "appbar", None)
+            if plat not in (PagePlatform.ANDROID, PagePlatform.IOS):
+                view = self.__history_pages.get(route)
+            elif route == self.__route_init:
+                self.__page.views.clear()
 
-            if appbar:
-                appbar.automatically_imply_leading = True
+            # Keep only last view on stack
+            if len(self.__page.views) > 1:
+                self.__page.views.pop()
+
+        return view
 
     def __reload_datasy(
         self,

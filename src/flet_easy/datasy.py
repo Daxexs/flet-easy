@@ -2,7 +2,7 @@ from collections import deque
 from datetime import datetime, timedelta, timezone
 from typing import Any, Callable, Dict, List, Tuple, Union
 
-from flet import Control, ControlEvent, Page
+from flet import Control, ControlEvent, Page, ViewPopEvent
 
 from flet_easy.exceptions import LoginError
 from flet_easy.extra import Msg, Redirect
@@ -394,6 +394,11 @@ class Datasy:
             self._dynamic_control[self.page.route] = [(control, func_update)]
         else:
             self._dynamic_control[self.page.route].append((control, func_update))
+
+    def confirm_pop(self, e: ViewPopEvent) -> None:
+        """Confirm pop view"""
+        e.page.go(self.history_routes[-1][0])
+        e.control.confirm_pop(False)
 
 
 def evaluate_secret_key(data: Datasy):
