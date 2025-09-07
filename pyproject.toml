@@ -1,11 +1,11 @@
 [project]
 name = "flet-easy"
-version = "0.3.0.dev5"
+version = "0.3.0.dev18"
 description = "⚡Flet-Easy is a user-friendly add-on package for Flet, offering a cleaner code structure with numerous customizable features like JWT, routers, decorators, middleware and more."
 authors = [{ name = "Daxexs", email = "Daxexsdev@gmail.com" }]
 
 dependencies = []
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 readme = "README.md"
 license = { text = "apache-2.0" }
 keywords = [
@@ -28,7 +28,6 @@ keywords = [
 classifiers = [
     "Topic :: Software Development :: Build Tools",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -41,10 +40,10 @@ all = [
     "rsa>=4.9",
     "cookiecutter>=2.6.0",
     "rich-argparse>=1.4.0",
-    "flet[all]>=0.25.1",
+    "flet[all]==0.28.3",
 ]
 JWT = ["pyJWT>=2.0.0", "rsa>=4.9"]
-cli = ["cookiecutter>=2.6.0", "rich-argparse>=1.4.0", "flet[all]>=0.25.1"]
+cli = ["cookiecutter>=2.6.0", "rich-argparse>=1.4.0", "flet[all]==0.28.3"]
 
 [project.urls]
 Homepage = "https://github.com/Daxexs"
@@ -63,7 +62,7 @@ fs = "flet_easy.cli.main:run"
 [dependency-groups]
 test = [
     "ruff>=0.3.4",
-    "flet[all]>=0.25.1",
+    "flet[all]==0.28.3",
     "tortoise-orm>=0.22.2",
     "pytest>=8.3.4",
     "pyjwt>=2.0.0",
@@ -72,3 +71,22 @@ test = [
     "pyinstrument>=5.0.1",
 ]
 docs = ["mkdocs-material>=9.5.17", "mike>=2.0.0"]
+dev = ["taskipy>=1.14.1"]
+
+[tool.taskipy.settings]
+use_vars = true
+
+[tool.taskipy.variables]
+path = "tests/cache-pages"
+path_src = "src"
+path_tests = "tests"
+
+[tool.taskipy.tasks]
+app = { cmd = "uv run flet run -r {path}/witch-main.py", help = "runs app flet>=0.28.*" }
+app2 = { cmd = "uv run --with flet[all]==0.27.3 {path}/witch-main.py", help = "runs app flet==0.27.3" }
+check-src = { cmd = "uv run ruff check {path_src}", help = "check code src" }
+format-src = { cmd = "uv run ruff format {path_src}", help = "format code src" }
+check-tests = { cmd = "uv run ruff check {path_tests}", help = "check code tests" }
+format-tests = { cmd = "uv run ruff format {path_tests}", help = "format code tests" }
+check-all = { cmd = "uv run ruff check", help = "check code all" }
+format-all = { cmd = "uv run ruff format", help = "format code all" }

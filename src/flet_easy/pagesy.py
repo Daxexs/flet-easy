@@ -1,5 +1,6 @@
 from collections import deque
 from functools import wraps
+from types import FunctionType
 from typing import Any, Callable, Dict, List, Optional, Union
 
 from flet_easy.middleware import (
@@ -67,18 +68,15 @@ class Pagesy:
     def _process_middleware(self, middleware: Union[MiddlewareRequest, MiddlewareHandler]) -> None:
         """Process and validate middleware handlers."""
 
-        if isinstance(middleware, type):
-            if issubclass(middleware, MiddlewareRequest):
-                middleware_instance = middleware()
-
-                self._middlewares_request.append(middleware_instance)
-                self.middleware.append(middleware_instance)
-            else:
-                raise TypeError(
-                    f"Class '{middleware.__name__}' must inherit from MiddlewareRequest class",
-                )
-        else:
+        if isinstance(middleware, FunctionType):
             self.middleware.append(middleware)
+        elif issubclass(middleware, MiddlewareRequest):
+            self._middlewares_request.append(middleware)
+            self.middleware.append(middleware)
+        else:
+            raise TypeError(
+                f"Class '{middleware.__name__}' must inherit from MiddlewareRequest class or be a function",
+            )
 
     def _check_middleware(self, middleware: Middleware) -> None:
         if middleware is None and self.middleware is None:

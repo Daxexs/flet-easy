@@ -2,7 +2,7 @@ from collections import deque
 from datetime import datetime, timedelta, timezone
 from typing import Any, Callable, Dict, List, Tuple, Union
 
-from flet import Control, ControlEvent, Page, ViewPopEvent
+from flet import Control, ControlEvent, Page, View, ViewPopEvent
 
 from flet_easy.exceptions import LoginError
 from flet_easy.extra import Msg, Redirect
@@ -50,23 +50,25 @@ class Datasy:
 
     def __init__(
         self,
+        page: Page,
         route_prefix: str,
         route_init: str,
         route_login: str,
         secret_key: str,
         auto_logout: bool,
         page_on_keyboard: Keyboardsy,
+        page_on_resize: Resizesy,
         go: Callable[[str, int], None] = None,
     ) -> None:
-        self.__page: Page = None
+        self.__page: Page = page
         self.__url_params: Dict[str, Any] = None
         self.__view: Viewsy = None
         self.__route_prefix = route_prefix
         self.__route_init = route_init
         self.__route_login = route_login
-        self.__share = None
+        self.__share = SessionStorageEdit(page)
         self.__on_keyboard_event = page_on_keyboard
-        self.__on_resize: Resizesy = None
+        self.__on_resize: Resizesy = page_on_resize
         self.__route: str = None
         self.__go = go
         self.__history_routes: deque[Tuple[str, int]] = deque()
@@ -79,20 +81,19 @@ class Datasy:
         self._login_done: bool = False
 
     @property
-    def page(self):
+    def page(self) -> Page:
         return self.__page
 
     @page.setter
-    def page(self, page: object):
+    def page(self, page: Page):
         self.__page = page
-        self.__share = SessionStorageEdit(page)
 
     @property
-    def history_routes(self):
+    def history_routes(self) -> deque[Tuple[str, int]]:
         return self.__history_routes
 
     @property
-    def url_params(self):
+    def url_params(self) -> Dict[str, Any]:
         return self.__url_params
 
     @url_params.setter
@@ -100,15 +101,15 @@ class Datasy:
         self.__url_params = url_params
 
     @property
-    def view(self):
+    def view(self) -> Union[Viewsy, View]:
         return self.__view
 
     @view.setter
-    def view(self, view: Viewsy):
+    def view(self, view: Union[Viewsy, View]):
         self.__view = view
 
     @property
-    def route_prefix(self):
+    def route_prefix(self) -> str:
         return self.__route_prefix
 
     @route_prefix.setter
@@ -116,7 +117,7 @@ class Datasy:
         self.__route_prefix = route_prefix
 
     @property
-    def route_init(self):
+    def route_init(self) -> str:
         return self.__route_init
 
     @route_init.setter
@@ -124,7 +125,7 @@ class Datasy:
         self.__route_init = route_init
 
     @property
-    def route_login(self):
+    def route_login(self) -> str:
         return self.__route_login
 
     @route_login.setter
@@ -132,12 +133,12 @@ class Datasy:
         self.__route_login = route_login
 
     @property
-    def share(self):
+    def share(self) -> SessionStorageEdit:
         return self.__share
 
     # events
     @property
-    def on_keyboard_event(self):
+    def on_keyboard_event(self) -> Keyboardsy:
         return self.__on_keyboard_event
 
     @on_keyboard_event.setter
@@ -145,7 +146,7 @@ class Datasy:
         self.__on_keyboard_event = on_keyboard_event
 
     @property
-    def on_resize(self):
+    def on_resize(self) -> Resizesy:
         return self.__on_resize
 
     @on_resize.setter
@@ -153,19 +154,19 @@ class Datasy:
         self.__on_resize = on_resize
 
     @property
-    def key_login(self):
+    def key_login(self) -> str:
         return self._key_login
 
     @property
-    def auto_logout(self):
+    def auto_logout(self) -> bool:
         return self.__auto_logout
 
     @property
-    def secret_key(self):
+    def secret_key(self) -> SecretKey:
         return self.__secret_key
 
     @property
-    def route(self):
+    def route(self) -> str:
         return self.__route
 
     @route.setter
@@ -174,10 +175,10 @@ class Datasy:
 
     """--------- login authentication : asynchronously | synchronously -------"""
 
-    def _login_done_evaluate(self):
+    def _login_done_evaluate(self) -> bool:
         return self._login_done
 
-    def _create_task_login_update(self, decode: Dict[str, Any]):
+    def _create_task_login_update(self, decode: Dict[str, Any]) -> None:
         """Updates the login status, in case it does not exist it creates a new task that checks the user's login status."""
         time_exp = datetime.fromtimestamp(float(decode.get("exp")), tz=timezone.utc)
         time_now = datetime.now(tz=timezone.utc)
@@ -192,7 +193,7 @@ class Datasy:
             sleep_time=self.__sleep,
         ).start()
 
-    def logout(self, key: str):
+    def logout(self, key: str) -> Callable[[ControlEvent], None]:
         """Closes the sessions of all browser tabs or the device used, which has been previously configured with the `login` method.
 
         ### Example:
@@ -221,7 +222,7 @@ class Datasy:
 
         return lambda _=None: execute(key)
 
-    async def __logaut_init(self, topic, msg: Msg):
+    async def __logaut_init(self, topic, msg: Msg) -> None:
         if msg.method == "login":
             await self.page.client_storage.set_async(msg.key, msg.value.get("value"))
             if self.page.route == self.route_login:
@@ -251,7 +252,7 @@ class Datasy:
         else:
             raise ValueError("Method not implemented in logout_init method.")
 
-    def _create_login(self):
+    def _create_login(self) -> None:
         """Create the connection between sessions."""
         if self.page.web:
             self.page.pubsub.subscribe_topic(
@@ -311,7 +312,7 @@ class Datasy:
         next_route: str,
         time_expiry: timedelta = None,
         sleep: int = 1,
-    ):
+    ) -> None:
         """Registering in the client's storage the key and value in all browser sessions.
 
         ### Parameters to use:
@@ -340,7 +341,7 @@ class Datasy:
         next_route: str,
         time_expiry: timedelta = None,
         sleep: int = 1,
-    ):
+    ) -> None:
         """Registering in the client's storage the key and value in all browser sessions.
         * This method is asynchronous.
 
@@ -359,7 +360,7 @@ class Datasy:
 
     """ Page go  """
 
-    def go(self, route: str):
+    def go(self, route: str) -> Callable[[ControlEvent], None]:
         """To change the application path, it is important for better validation to avoid using `page.go()`."""
         return lambda _=None: self.__go(route)
 
@@ -368,7 +369,7 @@ class Datasy:
         'ft.NavigationBar' or 'ft.CupertinoNavigationBar' controls."""
         self.__go(e.control.selected_index)
 
-    def redirect(self, route: str):
+    def redirect(self, route: str) -> Redirect:
         """Useful if you do not want to access a route that has already been sent."""
         return Redirect(route)
 
@@ -397,11 +398,11 @@ class Datasy:
 
     def confirm_pop(self, e: ViewPopEvent) -> None:
         """Confirm pop view"""
-        e.page.go(self.history_routes[-1][0])
+        self.go_back()()
         e.control.confirm_pop(False)
 
 
-def evaluate_secret_key(data: Datasy):
+def evaluate_secret_key(data: Datasy) -> None:
     assert (
         data.secret_key.secret is None
         and data.secret_key.algorithm == "RS256"

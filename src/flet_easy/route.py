@@ -2,6 +2,7 @@ import re
 from collections import deque
 from inspect import iscoroutinefunction
 from re import Pattern, compile, escape
+from types import FunctionType
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 from flet import (
@@ -10,6 +11,7 @@ from flet import (
     IconButton,
     Icons,
     KeyboardEvent,
+    NavigationBar,
     Page,
     PagePlatform,
     RouteChangeEvent,
@@ -21,7 +23,8 @@ from flet_easy.datasy import Datasy
 from flet_easy.exceptions import LoginRequiredError, MidlewareError, RouteError
 from flet_easy.extra import TYPE_PATTERNS, Msg, Redirect
 from flet_easy.inheritance import Keyboardsy, Resizesy, Viewsy
-from flet_easy.middleware import Middleware
+from flet_easy.logger import get_logger
+from flet_easy.middleware import MiddlewareHandler
 from flet_easy.pagesy import MiddlewareRequest, Pagesy
 from flet_easy.view_404 import page_404_fs
 
@@ -31,9 +34,18 @@ class FletEasyX:
 
     def __init__(
         self,
+        page: Page,
         route_prefix: str,
         route_init: str,
         route_login: str,
+        page_404: Callable[[Datasy], View],
+        pages: deque[Pagesy],
+        view_data: Callable[[Datasy], Viewsy],
+        config_login: Callable[[Datasy], bool],
+        view_config: Callable[[Datasy], None],
+        config_event: Callable[[Datasy], None],
+        middlewares: List[Union[MiddlewareHandler, MiddlewareRequest]],
+        middlewares_after: List[Union[MiddlewareHandler, MiddlewareRequest]],
         on_resize: bool,
         on_Keyboard: bool,
         secret_key: str,
@@ -47,37 +59,57 @@ class FletEasyX:
         self.__on_resize = on_resize
         self.__on_Keyboard = on_Keyboard
 
-        self._pages = deque()
+        self.__pages = pages
         self.__history_pages: Dict[str, View] = {}
         self.__view_404 = page_404_fs
         self.__automatically_imply_leading = False
+        self.__can_pop_supported = hasattr(View(), "can_pop")
 
-        self.__page: Page = None
-        self._page_404: Pagesy = None
-        self._view_data: Callable[[Datasy], Viewsy] = None
-        self._config_login: Callable[[Datasy], bool] = None
-        self._view_config: Callable[[Datasy], None] = None
-        self._config_event: Callable[[Datasy], None] = None
-        self._middlewares_after: Optional[List[MiddlewareRequest]] = None
+        self.__page: Page = page
+        self.__page_404: Pagesy = page_404
+        self.__config_login: Callable[[Datasy], bool] = config_login
+
+        self.__middlewares_after = middlewares_after
         self.__pagesy: Pagesy = None
-        self._middlewares: Middleware = None
+        self.__middlewares = middlewares
 
         self.__auto_logout = auto_logout
         self.__secret_key = secret_key
-        self.__page_on_resize: Resizesy = None
+        self.__page_on_resize = Resizesy(self.__page)
         self._data: Datasy = Datasy(
-            route_prefix="" if self.__route_prefix is None else self.__route_prefix,
+            page=self.__page,
+            route_prefix=self.__route_prefix,
             route_init=self.__route_init,
             route_login=self.__route_login,
             secret_key=self.__secret_key,
             auto_logout=self.__auto_logout,
             page_on_keyboard=self.__page_on_keyboard,
+            page_on_resize=self.__page_on_resize,
             go=self._go,
         )
 
+        # Add data to middleware request
+        MiddlewareRequest._data = self._data
+
+        # Add login
+        if self.__route_login is not None:
+            self._data._create_login()
+
+        # Add view data
+        self._data.view = self.__check_async(view_data, self._data, result=True)
+
+        # Add view configuration
+        self.__check_async(view_config, self.__page)
+
+        # Add configuration event
+        self.__check_async(config_event, self._data)
+
+        # logger
+        self._logger = get_logger("FletEasyX")
+
     # -------- ---------[Handling 'flet' event]----------
 
-    def __route_change(self, e: RouteChangeEvent):
+    def __route_change(self, e: RouteChangeEvent) -> None:
         if self.__pagesy is None:
             if e.route == "/" and self.__route_init != "/":
                 return self.__page.go(self.__route_init)
@@ -87,18 +119,18 @@ class FletEasyX:
             self._view_append(e.route, self.__pagesy)
             self.__pagesy = None
 
-    def __view_pop(self, e: ViewPopEvent):
+    def __view_pop(self, e: ViewPopEvent) -> None:
         self._data.go_back()()
 
-    async def __on_keyboard(self, e: KeyboardEvent):
+    async def __on_keyboard(self, e: KeyboardEvent) -> None:
         self.__page_on_keyboard.call = e
         if self.__page_on_keyboard._controls():
             await self.__page_on_keyboard._run_controls()
 
-    def __page_resize(self, e: ControlEvent):
+    def __page_resize(self, e: ControlEvent) -> None:
         self.__page_on_resize.e = e
 
-    def __disconnect(self, e):
+    def __disconnect(self, e: ControlEvent) -> None:
         if self._data._login_done and self.__page.web:
             self.__page.pubsub.send_others_on_topic(
                 self.__page.client_ip,
@@ -113,6 +145,7 @@ class FletEasyX:
         self, func: Callable[[Union[Datasy, Page]], Any], *args, result: bool = False, **kwargs
     ) -> Union[View, bool, None]:
         """Check if the function is async or not"""
+
         if func is None:
             return
 
@@ -126,33 +159,9 @@ class FletEasyX:
         else:
             return func(*args, **kwargs)
 
-    def __config_datasy(self):
-        """configure datasy"""
-        self.__page_on_resize = Resizesy(self.__page)
-        self._data.page = self.__page
-        self._data.on_resize = self.__page_on_resize
-
-        """Add the `View` configuration, to reuse on every page."""
-        self._data.view = self.__check_async(self._view_data, self._data, result=True)
-
-        if self.__route_login is not None:
-            self._data._create_login()
-
-    def _add_configuration_start(self, page: Page):
-        """Add general settings to the pages."""
-        self.__page = page
-        self.__config_datasy()
-
-        """ Add view configuration """
-        self.__check_async(self._view_config, self.__page)
-
-        """ Add configuration event """
-        self.__check_async(self._config_event, self._data)
-
-    # ------------[Initialization]----------
-
-    def _run(self):
+    def run(self):
         """configure the route init"""
+
         if self.__route_init != "/" and self.__page.route == "/":
             self.__page.route = self.__route_init
 
@@ -182,19 +191,25 @@ class FletEasyX:
         # Build if not cached
         if view is None:
             pv = pagesy.view
-            if callable(pv) and not isinstance(pv, type):
+
+            if isinstance(pv, FunctionType):
                 view = self.__check_async(pv, self._data, **self._data.url_params, result=True)
             elif isinstance(pv, type):
                 view_instance = pv(self._data, **self._data.url_params)
                 view = self.__check_async(view_instance.build, result=True)
             else:
-                view = pv
+                raise ValueError("View must be a callable or a class:", pv)
 
             view.route = route
 
-            if self._can_pop_supported and route != self.__route_init and view.confirm_pop is None:
+            # support pop flet >= 0.28.0
+            if (
+                self.__can_pop_supported
+                and route != self.__route_init
+                and view.on_confirm_pop is None
+            ):
                 view.can_pop = False
-                view.confirm_pop = self._data.confirm_pop
+                view.on_confirm_pop = self._data.confirm_pop
 
             if pagesy.cache:
                 self.__history_pages[route] = view
@@ -206,19 +221,31 @@ class FletEasyX:
                 self.__check_async(func_update, control, result=True)
 
         # add view to the page and update it
-        self.__manage_dynamic_appbar(route, view.appbar, self._can_pop_supported, pagesy.clear)
+        self.__manage_dynamic_appbar(route, view.appbar, self.__can_pop_supported, pagesy.clear)
+        self.__manage_dynamic_navigationBar(view.navigation_bar, pagesy.index)
+
         page_views.append(view)
         self._data.history_routes.append((route, pagesy.index))
         page.update()
 
         # After-request middlewares
-        if self._middlewares_after:
-            for middleware in self._middlewares_after:
-                self.__check_async(middleware.after_request)
+        if self.__middlewares_after:
+            for i, middleware in enumerate(self.__middlewares_after):
+                self.__verify_instance_middleware(self.__middlewares_after, middleware, i)
+                self.__check_async(self.__middlewares_after[i].after_request)
 
         if pagesy._valid_middlewares_request():
-            for middleware in pagesy._middlewares_request:
-                self.__check_async(middleware.after_request)
+            for i, middleware in enumerate(pagesy._middlewares_request):
+                self.__verify_instance_middleware(pagesy._middlewares_request, middleware, i)
+                self.__check_async(pagesy._middlewares_request[i].after_request)
+
+    def __manage_dynamic_navigationBar(self, navigation_bar: NavigationBar, index: int) -> None:
+        """Manage the navigation bar selected index"""
+
+        if navigation_bar is None:
+            return
+
+        navigation_bar.selected_index = index
 
     def __manage_dynamic_appbar(
         self, route: str, appbar: AppBar, can_pop: bool = False, clear: bool = False
@@ -238,7 +265,12 @@ class FletEasyX:
                 self.__automatically_imply_leading = True
             return
 
-        if can_pop and appbar.automatically_imply_leading:
+        if (
+            can_pop
+            and appbar.automatically_imply_leading
+            and len(self._data.history_routes) != 0
+            and appbar.leading is None
+        ):
             appbar.leading = IconButton(Icons.ARROW_BACK, on_click=self._data.go_back())
         elif not appbar.automatically_imply_leading and self.__automatically_imply_leading:
             appbar.automatically_imply_leading = True
@@ -246,15 +278,12 @@ class FletEasyX:
     def __pop_supported(self, route: str) -> Union[View, None]:
         """Pop the view from the page if it is supported"""
 
-        if not hasattr(self, "_can_pop_supported"):
-            self._can_pop_supported = hasattr(View(), "can_pop")
-
         view = None
 
         if route == self.__route_init:
             self._data.history_routes.clear()
 
-        if self._can_pop_supported:
+        if self.__can_pop_supported:
             self.__page.views.clear()
             view = self.__history_pages.get(route)
         else:
@@ -262,8 +291,10 @@ class FletEasyX:
             plat = self.__page.platform
 
             if plat not in (PagePlatform.ANDROID, PagePlatform.IOS):
+                # cache is available
                 view = self.__history_pages.get(route)
             elif route == self.__route_init:
+                # cache not available
                 self.__page.views.clear()
 
             # Keep only last view on stack
@@ -276,8 +307,9 @@ class FletEasyX:
         self,
         pagesy: Pagesy,
         url_params: Dict[str, Any] = dict(),
-    ):
+    ) -> None:
         """Update `datasy` values when switching between pages."""
+
         self.__page.title = pagesy.title
 
         if not pagesy.share_data:
@@ -288,20 +320,44 @@ class FletEasyX:
         self._data.url_params = url_params
         self._data.route = pagesy.route
 
+    def __verify_instance_middleware(
+        self, middlewares: List[MiddlewareRequest], middleware: MiddlewareRequest, index: int
+    ) -> MiddlewareRequest:
+        """Verify if the middleware is a class or a function"""
+        try:
+            if isinstance(middleware, type):
+                middleware = middleware()
+                middlewares[index] = middleware
+                self._logger.debug(f"Middleware instantiated: {middleware}")
+
+        except Exception as e:
+            raise MidlewareError("Failed to instantiate middleware: ", e)
+
     def __execute_middleware(
-        self, pagesy: Pagesy, url_params: Dict[str, Any], middleware_list: Middleware
+        self,
+        pagesy: Pagesy,
+        url_params: Dict[str, Any],
+        middleware_list: List[Union[MiddlewareRequest, MiddlewareHandler]],
     ) -> bool:
+        """Execute the middleware"""
+
         if not middleware_list:
             return False
 
         self.__reload_datasy(pagesy, url_params)
 
         try:
-            for middleware in middleware_list:
+            for i, middleware in enumerate(middleware_list):
+                self.__verify_instance_middleware(middleware_list, middleware, i)
+                m = middleware_list[i]
+
+                self._logger.debug(
+                    f"Execute middleware: index: {i} | {m} == {middleware} | {middleware_list is self.__middlewares}"
+                )
                 res = (
-                    self.__check_async(middleware.before_request, result=True)
-                    if isinstance(middleware, MiddlewareRequest)
-                    else self.__check_async(middleware, self._data, result=True)
+                    self.__check_async(m.before_request, result=True)
+                    if isinstance(m, MiddlewareRequest)
+                    else self.__check_async(m, self._data, result=True)
                 )
 
                 if self._handle_middleware_result(res):
@@ -312,8 +368,9 @@ class FletEasyX:
         except Exception as e:
             raise MidlewareError(e)
 
-    def _handle_middleware_result(self, result):
+    def _handle_middleware_result(self, result: Union[bool, Redirect]) -> bool:
         """Helper method to handle middleware results"""
+
         if not result:
             return False
 
@@ -323,11 +380,14 @@ class FletEasyX:
 
         return False
 
-    def _go(self, route: Union[str, int], use_route_change: bool = False, use_reload: bool = False):
-        """method to go to the route, if the route is not found, it will return a 404 page."""
+    def _go(
+        self, route: Union[str, int], use_route_change: bool = False, use_reload: bool = False
+    ) -> None:
+        """Method to go to the route, if the route is not found, it will return a 404 page."""
+
         pg_404 = True
 
-        for page in self._pages:
+        for page in self.__pages:
             if isinstance(route, int):
                 if page.index != route:
                     continue
@@ -360,50 +420,62 @@ class FletEasyX:
             self._handle_404_case(route, use_route_change, use_reload)
 
     def __check_protected_route_optimized(
-        self, page, route, route_match, use_route_change, use_reload
-    ):
+        self, pagesy: Pagesy, route: str, route_match: str, use_route_change: bool, use_reload: bool
+    ) -> bool:
         """Optimized protected route checker"""
+
         if self.__route_login is None:
             raise AssertionError("Configure the route of the login page in Flet-Easy class")
 
         try:
-            auth = self.__check_async(self._config_login, self._data, result=True)
+            auth = self.__check_async(self.__config_login, self._data, result=True)
             if not auth:
                 self._go(self.__route_login)
                 return False
 
-            self.__reload_datasy(page, route_match)
-            self._navigate(route, page, use_route_change, use_reload)
+            self.__reload_datasy(pagesy, route_match)
+            self._navigate(route, pagesy, use_route_change, use_reload)
             return True
         except Exception as e:
             raise LoginRequiredError(
                 "use async methods in the function decorated by 'login', to avoid conflicts.", e
             )
 
-    def __run_middlewares_optimized(self, route, route_match, page, use_route_change, use_reload):
+    def __run_middlewares_optimized(
+        self, route: str, route_match: str, pagesy: Pagesy, use_route_change: bool, use_reload: bool
+    ) -> bool:
         """Optimized middleware runner"""
-        if self._middlewares and self.__execute_middleware(page, route_match, self._middlewares):
+        self._logger.debug(f"Middlewares: {self.__middlewares}")
+        self._logger.debug(f"Middleware Pagesy: {pagesy.middleware}")
+
+        if self.__middlewares and self.__execute_middleware(
+            pagesy, route_match, self.__middlewares
+        ):
             return True
 
-        if page.middleware and self.__execute_middleware(page, route_match, page.middleware):
+        if pagesy.middleware and self.__execute_middleware(pagesy, route_match, pagesy.middleware):
             return True
 
-        self.__reload_datasy(page, route_match)
-        self._navigate(route, page, use_route_change, use_reload)
+        self.__reload_datasy(pagesy, route_match)
+        self._navigate(route, pagesy, use_route_change, use_reload)
         return True
 
-    def _navigate(self, route, page, use_route_change, use_reload):
+    def _navigate(
+        self, route: str, pagesy: Pagesy, use_route_change: bool, use_reload: bool
+    ) -> None:
         """Unified navigation handler"""
+
         if use_route_change:
-            self._view_append(route, page)
+            self._view_append(route, pagesy)
         else:
             if self.__page.route != route or use_reload:
-                self.__pagesy = page
+                self.__pagesy = pagesy
             self.__page.go(route)
 
-    def _handle_404_case(self, route, use_route_change, use_reload):
+    def _handle_404_case(self, route: str, use_route_change: bool, use_reload: bool) -> None:
         """Optimized 404 handler"""
-        page = self._page_404 or Pagesy(route, self.__view_404, "Flet-Easy 404")
+
+        page = self.__page_404 or Pagesy(route, self.__view_404, "Flet-Easy 404")
         if page.route is None:
             page.route = route
 
