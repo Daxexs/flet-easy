@@ -46,6 +46,9 @@ class Datasy:
     * `history_routes` : Get the history of the routes.
     * `route` : route provided by the route event, it is useful when using middlewares to check if the route is assecible.
     * `redirect` : To redirect to a path before the page loads, it is used in middleware.
+    * `page_reload` : Use this method to reload the page, restores the default values of the page.
+    * `dynamic_control` : Adds dynamic control to the page, allowing real-time updates when caching is enabled on the page.
+    * `confirm_pop` : Confirm pop view.
     """
 
     def __init__(
@@ -58,7 +61,7 @@ class Datasy:
         auto_logout: bool,
         page_on_keyboard: Keyboardsy,
         page_on_resize: Resizesy,
-        go: Callable[[str, int], None] = None,
+        go: Callable[[Union[str, int], bool], None] = None,
     ) -> None:
         self.__page: Page = page
         self.__url_params: Dict[str, Any] = None
@@ -388,6 +391,10 @@ class Datasy:
                 print("-> I can't go back! there is no history. ")
 
         return lambda _=None: go_back_func()
+
+    def page_reload(self):
+        """Use this method to reload the page, restores the default values of the page"""
+        self.__go(self.page.route, page_reload=True)
 
     def dynamic_control(self, control: Control, func_update: Callable[[Control], None]) -> None:
         """Adds dynamic control to the page, allowing real-time updates when caching is enabled on the page."""

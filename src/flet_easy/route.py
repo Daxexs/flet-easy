@@ -381,7 +381,11 @@ class FletEasyX:
         return False
 
     def _go(
-        self, route: Union[str, int], use_route_change: bool = False, use_reload: bool = False
+        self,
+        route: Union[str, int],
+        use_route_change: bool = False,
+        use_reload: bool = False,
+        page_reload: bool = False,
     ) -> None:
         """Method to go to the route, if the route is not found, it will return a 404 page."""
 
@@ -397,6 +401,9 @@ class FletEasyX:
 
             if route_match is None:
                 continue
+
+            if page_reload:
+                return self.__page_reload(self.__page.route, page)
 
             pg_404 = False
 
@@ -481,6 +488,11 @@ class FletEasyX:
 
         self.__reload_datasy(page)
         self._navigate(page.route, page, use_route_change, use_reload)
+
+    def __page_reload(self, route: str, pagesy: Pagesy) -> None:
+        """Use this method to reload the page"""
+        self.__reload_datasy(pagesy)
+        self._view_append(route, pagesy)
 
     @classmethod
     def __compile_pattern(cls, pattern_parts: list[str]) -> Pattern[str]:
