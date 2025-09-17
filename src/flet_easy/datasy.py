@@ -367,6 +367,10 @@ class Datasy:
         """To change the application path, it is important for better validation to avoid using `page.go()`."""
         return lambda _=None: self.__go(route)
 
+    def go_route(self, route: Union[str, int]) -> None:
+        """To change the application path, it is important for better validation to avoid using `page.go()`."""
+        self.__go(route)
+
     def go_navigation_bar(self, e: ControlEvent) -> None:
         """Handles navigation bar changes. Use this method in the on_change event of
         'ft.NavigationBar' or 'ft.CupertinoNavigationBar' controls."""
@@ -376,21 +380,19 @@ class Datasy:
         """Useful if you do not want to access a route that has already been sent."""
         return Redirect(route)
 
-    def go_back(self) -> Callable[[ControlEvent], None]:
+    def go_back(self, e: ControlEvent = None) -> None:
         """Go back to the previous route."""
 
-        def go_back_func():
-            if len(self.history_routes) > 1:
-                self.history_routes.pop()
-                route, index = self.history_routes.pop()
-                if index is not None:
-                    self.view.navigation_bar.selected_index = index
+        if len(self.history_routes) > 1:
+            self.history_routes.pop()
+            route, index = self.history_routes.pop()
 
-                self.__go(route)
-            else:
-                print("-> I can't go back! there is no history. ")
+            if index is not None:
+                self.view.navigation_bar.selected_index = index
 
-        return lambda _=None: go_back_func()
+            self.__go(route)
+        else:
+            print("-> I can't go back! there is no history. ")
 
     def page_reload(self):
         """Use this method to reload the page, restores the default values of the page"""
@@ -405,7 +407,7 @@ class Datasy:
 
     def confirm_pop(self, e: ViewPopEvent) -> None:
         """Confirm pop view"""
-        self.go_back()()
+        self.go_back()
         e.control.confirm_pop(False)
 
 

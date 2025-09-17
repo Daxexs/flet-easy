@@ -120,7 +120,7 @@ class FletEasyX:
             self.__pagesy = None
 
     def __view_pop(self, e: ViewPopEvent) -> None:
-        self._data.go_back()()
+        self._data.go_back()
 
     async def __on_keyboard(self, e: KeyboardEvent) -> None:
         self.__page_on_keyboard.call = e
@@ -200,6 +200,9 @@ class FletEasyX:
             else:
                 raise ValueError("View must be a callable or a class:", pv)
 
+            if isinstance(view, Redirect):
+                return self._go(view.route)
+
             view.route = route
 
             # support pop flet >= 0.28.0
@@ -271,7 +274,7 @@ class FletEasyX:
             and len(self._data.history_routes) != 0
             and appbar.leading is None
         ):
-            appbar.leading = IconButton(Icons.ARROW_BACK, on_click=self._data.go_back())
+            appbar.leading = IconButton(Icons.ARROW_BACK, on_click=self._data.go_back)
         elif not appbar.automatically_imply_leading and self.__automatically_imply_leading:
             appbar.automatically_imply_leading = True
 
