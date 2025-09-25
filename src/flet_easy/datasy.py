@@ -40,7 +40,7 @@ class Datasy:
     * `on_resize` : get event values to use in the page.
     * `logout` : method to close sessions of all sections in the browser (client storage), requires as parameter the key or the control (the parameter key of the control must have the value to delete), this is to avoid creating an extra function.
     * `login` : method to create sessions of all sections in the browser (client storage), requires as parameters the key and the value, the same used in the `page.client_storage.set` method.
-    * `go` : `go`: Method to change the application path, supports url redirections.
+    * `go` - `go_route`: Method to change the application path, supports url redirections.
     * `go_back` : Method to go back to the previous route.
     * `go_navigation_bar` : Handles navigation bar changes. Use this method in the on_change event of 'ft.NavigationBar' or 'ft.CupertinoNavigationBar' controls.
     * `history_routes` : Get the history of the routes.
@@ -196,7 +196,7 @@ class Datasy:
             sleep_time=self.__sleep,
         ).start()
 
-    def logout(self, key: str) -> Callable[[ControlEvent], None]:
+    def logout(self, key: str) -> None:
         """Closes the sessions of all browser tabs or the device used, which has been previously configured with the `login` method.
 
         ### Example:
@@ -208,22 +208,20 @@ class Datasy:
         def dashboard(data:fs.Datasy)
             return ft.View(
                 controls=[
-                    ft.FilledButton('Logout', onclick=data.logout('key-login')),
+                    ft.FilledButton('Logout', onclick=lambda e: data.logout('key-login')),
             )
         ```
         """
 
-        def execute(key: str):
-            assert self.route_login is not None, "Adds a login path in the FletEasy Class"
-            if self.page.web:
-                self.page.pubsub.send_all_on_topic(
-                    self.page.client_ip + self.page.client_user_agent, Msg("logout", key)
-                )
-            else:
-                self.page.run_task(self.page.client_storage.remove_async, key)
-                self.page.go(self.route_login)
+        assert self.route_login is not None, "Adds a login path in the FletEasy Class"
 
-        return lambda _=None: execute(key)
+        if self.page.web:
+            self.page.pubsub.send_all_on_topic(
+                self.page.client_ip + self.page.client_user_agent, Msg("logout", key)
+            )
+        else:
+            self.page.run_task(self.page.client_storage.remove_async, key)
+            self.page.go(self.route_login)
 
     async def __logaut_init(self, topic, msg: Msg) -> None:
         if msg.method == "login":
