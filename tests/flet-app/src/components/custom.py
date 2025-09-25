@@ -13,7 +13,7 @@ class Custom:
                     controls=[
                         ft.FilledButton(
                             "Go back",
-                            on_click=self.data.go_back(),
+                            on_click=self.data.go_back,
                             style=ft.ButtonStyle(
                                 bgcolor=ft.Colors.RED_600,
                             ),
