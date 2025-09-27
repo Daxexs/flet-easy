@@ -123,7 +123,7 @@ class FletEasy:
         route_init: str = "/",
         route_login: str = None,
         on_resize: bool = False,
-        on_Keyboard: bool = False,
+        on_keyboard: bool = False,
         secret_key: SecretKey = None,
         auto_logout: bool = False,
         path_views: Path = None,
@@ -138,7 +138,7 @@ class FletEasy:
         self.__route_login = route_login
         self.__path_views = path_views
         self.__on_resize = on_resize
-        self.__on_keyboard = on_Keyboard
+        self.__on_keyboard = on_keyboard
         self.__secret_key = secret_key
         self.__auto_logout = auto_logout
 
