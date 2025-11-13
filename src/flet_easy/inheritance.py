@@ -14,6 +14,8 @@ from flet.core import alignment
 from flet.core.control import Control
 from flet.core.session_storage import SessionStorage
 
+from flet_easy.exceptions import KeyBoardEventError
+
 T = TypeVar("T")
 
 
@@ -69,11 +71,20 @@ class Keyboardsy:
         self.__controls.append(function)
 
     async def _run_controls(self):
-        for value in self.__controls:
-            if iscoroutinefunction(value):
-                await value()
-            else:
-                value()
+        """Execute all registered keyboard control functions."""
+        if not self.__controls:
+            return
+
+        for control_func in self.__controls:
+            try:
+                if iscoroutinefunction(control_func):
+                    await control_func()
+                else:
+                    control_func()
+            except Exception as e:
+                raise KeyBoardEventError(
+                    f"Error executing keyboard control in function: {control_func} - {e}"
+                )
 
     def key(self) -> str:
         return self.call.key

@@ -13,7 +13,7 @@ app = fs.FletEasy(
     secret_key=fs.SecretKey(algorithm=fs.Algorithm.HS256, secret=SECRET_KEY),
     auto_logout=True,
     path_views=Path(__file__).parent / "views",
-    on_Keyboard=True,
+    on_keyboard=True,
 )
 
 

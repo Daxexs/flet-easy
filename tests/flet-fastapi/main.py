@@ -11,7 +11,7 @@ app = fs.FletEasy(
     route_prefix=ROUTE,
     route_init=f"{ROUTE}/index",
     route_login=f"{ROUTE}/login/user",
-    on_Keyboard=True,
+    on_keyboard=True,
     on_resize=True,
     path_views=Path(__file__).parent / "views",
 )

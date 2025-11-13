@@ -12,6 +12,7 @@ from flet import (
     Icons,
     KeyboardEvent,
     NavigationBar,
+    NavigationDrawer,
     Page,
     PagePlatform,
     RouteChangeEvent,
@@ -47,7 +48,7 @@ class FletEasyX:
         middlewares: List[Union[MiddlewareHandler, MiddlewareRequest]],
         middlewares_after: List[Union[MiddlewareHandler, MiddlewareRequest]],
         on_resize: bool,
-        on_Keyboard: bool,
+        on_keyboard: bool,
         secret_key: str,
         auto_logout: bool,
     ):
@@ -57,7 +58,7 @@ class FletEasyX:
         self.__route_init = route_init
         self.__route_login = route_login
         self.__on_resize = on_resize
-        self.__on_Keyboard = on_Keyboard
+        self.__on_keyboard = on_keyboard
 
         self.__pages = pages
         self.__history_pages: Dict[str, View] = {}
@@ -122,10 +123,10 @@ class FletEasyX:
     def __view_pop(self, e: ViewPopEvent) -> None:
         self._data.go_back()
 
-    async def __on_keyboard(self, e: KeyboardEvent) -> None:
+    def __on_keyboard_event(self, e: KeyboardEvent) -> None:
         self.__page_on_keyboard.call = e
         if self.__page_on_keyboard._controls():
-            await self.__page_on_keyboard._run_controls()
+            self.__check_async(self.__page_on_keyboard._run_controls)
 
     def __page_resize(self, e: ControlEvent) -> None:
         self.__page_on_resize.e = e
@@ -174,8 +175,8 @@ class FletEasyX:
         """ activation of charter events """
         if self.__on_resize:
             self.__page.on_resize = self.__page_resize
-        if self.__on_Keyboard:
-            self.__page.on_keyboard_event = self.__on_keyboard
+        if self.__on_keyboard:
+            self.__page.on_keyboard_event = self.__on_keyboard_event
 
         self._go(self.__page.route, use_reload=True)
 
@@ -224,7 +225,9 @@ class FletEasyX:
                 self.__check_async(func_update, control, result=True)
 
         # add view to the page and update it
-        self.__manage_dynamic_appbar(route, view.appbar, self.__can_pop_supported, pagesy.clear)
+        self.__manage_dynamic_appbar(
+            route, view.appbar, view.drawer, self.__can_pop_supported, pagesy.clear
+        )
         self.__manage_dynamic_navigationBar(view.navigation_bar, pagesy.index)
 
         page_views.append(view)
@@ -251,7 +254,12 @@ class FletEasyX:
         navigation_bar.selected_index = index
 
     def __manage_dynamic_appbar(
-        self, route: str, appbar: AppBar, can_pop: bool = False, clear: bool = False
+        self,
+        route: str,
+        appbar: AppBar,
+        drawer: NavigationDrawer,
+        can_pop: bool = False,
+        clear: bool = False,
     ) -> None:
         """Manage the appbar automatically_imply_leading parameter"""
 
@@ -273,6 +281,7 @@ class FletEasyX:
             and appbar.automatically_imply_leading
             and len(self._data.history_routes) != 0
             and appbar.leading is None
+            and drawer is None
         ):
             appbar.leading = IconButton(Icons.ARROW_BACK, on_click=self._data.go_back)
         elif not appbar.automatically_imply_leading and self.__automatically_imply_leading:
@@ -317,7 +326,7 @@ class FletEasyX:
 
         if not pagesy.share_data:
             self._data.share.clear()
-        if self.__on_Keyboard:
+        if self.__on_keyboard:
             self._data.on_keyboard_event.clear()
 
         self._data.url_params = url_params

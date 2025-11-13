@@ -50,3 +50,9 @@ class FunctionError(FletEasyError):
     """Function error | is not a function"""
 
     pass
+
+
+class KeyBoardEventError(FletEasyError):
+    """KeyBoard event error"""
+
+    pass

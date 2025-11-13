@@ -34,7 +34,7 @@ class FletEasy:
     * `route_prefix` : The route that is different from ` /`.
     * `route_init` : The initial route to initialize the app, by default is `/`.
     * `route_login` : The route that will be redirected when the app has route protectionconfigured.
-    * `on_Keyboard` : Enables the on_Keyboard event, by default it is disabled (False).
+    * `on_keyboard` : Enables the on_keyboard event, by default it is disabled (False).
     * `on_resize` : Triggers the on_resize event, by default it is disabled (False).
     * `secret_key` : Used with `SecretKey` class of Flet easy, to configure JWT or client storage.
     * `auto_logout` : If you use JWT, you can configure it.
@@ -174,7 +174,7 @@ class FletEasy:
             middlewares=self.__middlewares,
             middlewares_after=self.__middlewares_after,
             on_resize=self.__on_resize,
-            on_Keyboard=self.__on_keyboard,
+            on_keyboard=self.__on_keyboard,
             secret_key=self.__secret_key,
             auto_logout=self.__auto_logout,
         )
@@ -285,7 +285,7 @@ class FletEasy:
 
         return decorator
 
-    def add_pages(self, group_pages: List[AddPagesy]):
+    def add_pages(self, group_pages: Union[List[AddPagesy], AddPagesy]):
         """Add pages from other archives
         * In the list you enter objects of class `AddPagesy` from other .py files.
 
@@ -294,6 +294,8 @@ class FletEasy:
         app.add_pages([index, test, contador, login, task])
         ```
         """
+        group_pages = group_pages if isinstance(group_pages, list) else [group_pages]
+
         try:
             for page in group_pages:
                 if self.__route_prefix:

@@ -196,7 +196,7 @@ class Datasy:
             sleep_time=self.__sleep,
         ).start()
 
-    def logout(self, key: str) -> None:
+    def logout(self, key: str, next_route: str = None) -> None:
         """Closes the sessions of all browser tabs or the device used, which has been previously configured with the `login` method.
 
         ### Example:
@@ -217,11 +217,12 @@ class Datasy:
 
         if self.page.web:
             self.page.pubsub.send_all_on_topic(
-                self.page.client_ip + self.page.client_user_agent, Msg("logout", key)
+                self.page.client_ip + self.page.client_user_agent,
+                Msg("logout", key, {"next_route": next_route}),
             )
         else:
             self.page.run_task(self.page.client_storage.remove_async, key)
-            self.page.go(self.route_login)
+            self.page.go(next_route or self.route_login)
 
     async def __logaut_init(self, topic, msg: Msg) -> None:
         if msg.method == "login":
@@ -232,7 +233,7 @@ class Datasy:
         elif msg.method == "logout":
             self._login_done = False
             await self.page.client_storage.remove_async(msg.key)
-            self.page.go(self.route_login)
+            self.page.go(msg.value.get("next_route") or self.route_login)
 
         elif msg.method == "updateLogin":
             self._login_done = msg.value
