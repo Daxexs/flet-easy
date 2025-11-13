@@ -504,6 +504,10 @@ class FletEasyX:
     def __page_reload(self, route: str, pagesy: Pagesy) -> None:
         """Use this method to reload the page"""
         self.__reload_datasy(pagesy)
+
+        if pagesy.cache:
+            self.__history_pages.pop(route)
+
         self._view_append(route, pagesy)
 
     @classmethod
