@@ -247,17 +247,21 @@ class ResponsiveControlsy(Canvas):
         self.show_resize_terminal = show_resize_terminal
         self.on_resize = self.__handle_canvas_resize
 
-    async def __handle_canvas_resize(self, e):
-        if self.resize_callback:
-            await self.resize_callback(e)
+    def __handle_canvas_resize(self, e):
+        if self.resize_callback is not None:
+            if iscoroutinefunction(self.resize_callback):
+                self.page.run_task(self.resize_callback, e)
+            else:
+                self.resize_callback(e)
+
         elif self.show_resize:
             if self.content.content:
                 self.content.content.value = f"{e.width} x {e.height}"
-                await self.update_async()
+                self.update()
             else:
                 self.content.alignment = alignment.center
                 self.content.content = Text(f"{e.width} x {e.height}")
-                await self.update_async()
+                self.update()
 
         if self.show_resize_terminal:
             print(f"{e.width} x {e.height}")

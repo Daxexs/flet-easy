@@ -213,7 +213,9 @@ class Datasy:
         ```
         """
 
-        assert self.route_login is not None, "Adds a login path in the FletEasy Class"
+        assert self.route_login is not None or next_route is not None, (
+            "Adds a login path in the FletEasy Class"
+        )
 
         if self.page.web:
             self.page.pubsub.send_all_on_topic(

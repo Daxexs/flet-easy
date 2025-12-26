@@ -78,19 +78,19 @@ def _handle_decode_errors(jwt: str, data: Datasy, key_login: str) -> Union[Dict[
         return decode
 
     except ExpiredSignatureError:
-        data.logout(key_login)()
+        data.logout(key_login)
         return False
     except InvalidKeyError:
-        data.logout(key_login)()
+        data.logout(key_login)
         return False
     except DecodeError as e:
-        data.logout(key_login)()
+        data.logout(key_login)
         raise LogoutError(
             "Decoding error, possibly there is a double use of the 'client_storage' 'key', Secret key invalid! or ",
             e,
         )
     except Exception as e:
-        data.logout(key_login)()
+        data.logout(key_login)
         raise LogoutError("Login error:", e)
 
 

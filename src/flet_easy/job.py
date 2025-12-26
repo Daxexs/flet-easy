@@ -40,7 +40,7 @@ class Job:
         while datetime.now() <= self.next_run_time and self.login_done():
             await sleep(self.sleep_time)
         if self.login_done():
-            self.func(self.key)()
+            self.func(self.key)
 
     def stop(self):
         self.task_running = False
