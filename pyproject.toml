@@ -1,6 +1,6 @@
 [project]
 name = "flet-easy"
-version = "0.3.0.dev18"
+version = "0.3.0.dev19"
 description = "⚡Flet-Easy is a user-friendly add-on package for Flet, offering a cleaner code structure with numerous customizable features like JWT, routers, decorators, middleware and more."
 authors = [{ name = "Daxexs", email = "Daxexsdev@gmail.com" }]
 
@@ -70,23 +70,9 @@ test = [
     "sqlmodel>=0.0.24",
     "pyinstrument>=5.0.1",
 ]
-docs = ["mkdocs-material>=9.5.17", "mike>=2.0.0"]
-dev = ["taskipy>=1.14.1"]
-
-[tool.taskipy.settings]
-use_vars = true
-
-[tool.taskipy.variables]
-path = "tests/cache-pages"
-path_src = "src"
-path_tests = "tests"
-
-[tool.taskipy.tasks]
-app = { cmd = "uv run flet run -r {path}/witch-main.py", help = "runs app flet>=0.28.*" }
-app2 = { cmd = "uv run --with flet[all]==0.27.3 {path}/witch-main.py", help = "runs app flet==0.27.3" }
-check-src = { cmd = "uv run ruff check {path_src}", help = "check code src" }
-format-src = { cmd = "uv run ruff format {path_src}", help = "format code src" }
-check-tests = { cmd = "uv run ruff check {path_tests}", help = "check code tests" }
-format-tests = { cmd = "uv run ruff format {path_tests}", help = "format code tests" }
-check-all = { cmd = "uv run ruff check", help = "check code all" }
-format-all = { cmd = "uv run ruff format", help = "format code all" }
+docs = [
+    "mkdocs-material>=9.5.17",
+    "mike>=2.0.0",
+    "mkdocstrings[python]>=0.30.0",
+    "mkdocs-minify-plugin>=0.8.0",
+]
