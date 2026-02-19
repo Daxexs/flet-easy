@@ -415,7 +415,9 @@ class FletEasyX:
                 continue
 
             if page_reload:
-                return self.__page_reload(self.__page.route, page)
+                return self.__run_middlewares_optimized(
+                    route, route_match, page, use_route_change, use_reload, page_reload
+                )
 
             pg_404 = False
 
@@ -461,7 +463,13 @@ class FletEasyX:
             )
 
     def __run_middlewares_optimized(
-        self, route: str, route_match: str, pagesy: Pagesy, use_route_change: bool, use_reload: bool
+        self,
+        route: str,
+        route_match: str,
+        pagesy: Pagesy,
+        use_route_change: bool,
+        use_reload: bool,
+        page_reload: bool = False,
     ) -> bool:
         """Optimized middleware runner"""
         self._logger.debug(f"Middlewares: {self.__middlewares}")
@@ -476,17 +484,25 @@ class FletEasyX:
             return True
 
         self.__reload_datasy(pagesy, route_match)
-        self._navigate(route, pagesy, use_route_change, use_reload)
+        self._navigate(route, pagesy, use_route_change, use_reload, page_reload)
         return True
 
     def _navigate(
-        self, route: str, pagesy: Pagesy, use_route_change: bool, use_reload: bool
+        self,
+        route: str,
+        pagesy: Pagesy,
+        use_route_change: bool,
+        use_reload: bool,
+        page_reload: bool = False,
     ) -> None:
         """Unified navigation handler"""
 
         if use_route_change:
             self._view_append(route, pagesy)
         else:
+            if page_reload:
+                return self.__page_reload(route, pagesy)
+
             if self.__page.route != route or use_reload:
                 self.__pagesy = pagesy
             self.__page.go(route)
@@ -503,9 +519,9 @@ class FletEasyX:
 
     def __page_reload(self, route: str, pagesy: Pagesy) -> None:
         """Use this method to reload the page"""
-        self.__reload_datasy(pagesy)
 
         if pagesy.cache:
+            self._data.history_routes.pop()
             self.__history_pages.pop(route)
 
         self._view_append(route, pagesy)
