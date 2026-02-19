@@ -60,6 +60,8 @@ theme:
       quote: octicons/quote-16
   features:
     - navigation.instant
+    - navigation.tabs
+    - navigation.tabs.sticky
     - navigation.instant.prefetch
     - navigation.instant.progress
     - navigation.instant.preview
@@ -67,6 +69,8 @@ theme:
     - navigation.path
     - navigation.indexes
     - navigation.top
+    - navigation.sections
+    - navigation.expand
     - search.suggest
     - search.highlight
     - search.share
@@ -86,6 +90,24 @@ plugins:
         - stemmer
         - stopWordFilter
         - trimmer
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            docstring_style: google
+            show_source: true
+            show_root_heading: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+  - minify:
+      minify_html: true
+      minify_js: true
+      minify_css: true
+      htmlmin_opts:
+        remove_comments: true
+        remove_empty_space: true
+      cache_safe: true
 
 extra_css:
   - stylesheets/extra.css
@@ -101,12 +123,49 @@ extra:
       link: https://github.com/Daxexs/flet-easy
       name: Repository
   generator: false
+  analytics:
+    provider: google
+    property: G-04BJVP28P7
+    feedback:
+      title: Was this page helpful?
+      ratings:
+        - icon: material/thumb-up-outline
+          name: This page was helpful
+          data: 1
+          note: >-
+            Thanks for your feedback!
+        - icon: material/thumb-down-outline
+          name: This page could be improved
+          data: 0
+          note: >-
+            Thanks for your feedback! Help us improve this page by
+            using our <a href="..." target="_blank" rel="noopener">feedback form</a>.
   seo:
     meta:
       - name: description
-        content: "Flet-Easy is a user-friendly add-on package for Flet with customizable features like JWT, routers, and more."
+        content: "Flet-Easy: A comprehensive Python framework for building modern Flet applications with advanced routing, JWT authentication, middleware, and responsive design capabilities."
       - name: keywords
-        content: "Flet, flet-easy, flet easy, decorators, CLI, middleware, routing, responsive design, jwt"
+        content: "Flet, flet-easy, Python GUI, web framework, desktop apps, mobile apps, JWT authentication, routing, middleware, decorators, responsive design, MVC pattern, CLI tools"
+      - name: author
+        content: "Daxexs"
+      - name: robots
+        content: "index, follow"
+      - property: "og:type"
+        content: "website"
+      - property: "og:title"
+        content: "Flet-Easy Documentation - Modern Python GUI Framework"
+      - property: "og:description"
+        content: "Complete guide to Flet-Easy: Build beautiful desktop, web, and mobile apps with Python using advanced routing, authentication, and responsive design."
+      - property: "og:url"
+        content: "https://daxexs.github.io/flet-easy/"
+      - property: "og:image"
+        content: "https://daxexs.github.io/flet-easy/assets/images/logo.png"
+      - name: "twitter:card"
+        content: "summary_large_image"
+      - name: "twitter:title"
+        content: "Flet-Easy Documentation - Modern Python GUI Framework"
+      - name: "twitter:description"
+        content: "Complete guide to Flet-Easy: Build beautiful desktop, web, and mobile apps with Python using advanced routing, authentication, and responsive design."
 
 markdown_extensions:
   - admonition
@@ -120,39 +179,63 @@ markdown_extensions:
       pygments_lang_class: true
   - pymdownx.inlinehilite
   - pymdownx.snippets
-  - attr_list
-  - md_in_html
   - toc:
       permalink: true
 
 nav:
-  - index.md
-  - installation.md
-  - begin.md
-  - how-to-use.md
-  - run-the-app.md
-  - cli-to-create-app.md
-  - dynamic-routes.md
-  - data-sharing-between-pages.md
-  - Add pages:
-      - Through decorators: add-pages/through-decorators.md
-      - By means of functions: add-pages/by-means-of-functions.md
-      - Through classes: add-pages/through-classes.md
-      - In automatic: add-pages/in-automatic.md
-  - Customized app:
-      - Route protection: customized-app/route-protection.md
-      - General settings: customized-app/general-settings.md
-      - control view configuration: customized-app/control-view-configuration.md
-      - Page 404: customized-app/page-404.md
-      - events: customized-app/events.md
-  - Events:
-      - On keyboard event: events/keyboard-event.md
-      - On resize: events/on-resize.md
-  - middleware.md
-  - basic-jwt.md
-  - ref.md
-  - responsiveControlsy.md
-  - working-with-other-apps.md
+  - Home:
+      - Home: index.md
+      - Documentation Structure: documentation-structure/index.md
+  - Getting Started:
+      - Installation: started/installation.md
+      - Quick Start: started/begin.md
+      - Basic Usage: started/how-to-use.md
+      - Running Your App: started/run-the-app.md
+  - User Guide:
+      - Core Framework:
+          - FletEasy Class: guide/core/fletEasy.md
+          - Datasy Object: guide/core/datasy.md
+          - Page Management: guide/core/pagesy.md
+          - View System: guide/core/viewsy.md
+
+      - Adding Pages:
+          - Through Decorators: guide/add-pages/through-decorators.md
+          - Using Functions: guide/add-pages/using-functions.md
+          - Using Classes: guide/add-pages/through-classes.md
+          - Automatic Routing: guide/add-pages/in-automatic.md
+      - Routing & Navigation:
+          - Dynamic Routes: guide/routing/dynamic-routes.md
+          - Navigation Methods: guide/routing/navigation.md
+
+  - Advanced Features:
+      - Route Protection: advanced/route-protection.md
+      - Data Sharing: advanced/data-sharing-between-pages.md
+      - Middleware System: advanced/middleware.md
+      - Page Caching: advanced/page-caching.md
+      - JWT Authentication: advanced/basic-jwt.md
+      - Responsive Controls: advanced/responsiveControlsy.md
+      - Reference System: advanced/ref.md
+      - Event Handling:
+          - Keyboard Events: advanced/events/keyboard-event.md
+          - Resize Events: advanced/events/on-resize.md
+          - Custom Events: advanced/events/handle.md
+      - Configuration:
+          - App Settings: advanced/configuration/general.md
+          - View Configuration: advanced/configuration/control-view.md
+          - Custom 404 Pages: advanced/configuration/page-404.md
+      - Integration:
+          - Working with Other Apps: advanced/integration/working-with-other-apps.md
+  - Examples:
+      - Examples Gallery: examples/gallery.md
+      - v0.3.0 Feature Showcase: examples/v0-3-0-showcase.md
+      - Migration Guide v0.2.0 to v0.3.0: examples/migration-v0.2.0-to-v0.3.0.md
+  - API Reference:
+      - Complete API Documentation: api/reference.md
+  - Development:
+      - CLI Tools:
+          - Project Creation: cli/create-app.md
+  - Changelog:
+      - Release Notes: changelog.md
 
 extra_javascript:
   - assets/js/dynamic-year.js
