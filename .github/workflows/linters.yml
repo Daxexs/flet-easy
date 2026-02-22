@@ -9,54 +9,61 @@ on:
       - "README.md"
       - "CHANGELOG.md"
       - "CONTRIBUTING.md"
-    branches:
-      - main
   pull_request:
-    types:
-      - opened
-      - synchronize
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "docs/**"
+      - "README.md"
+      - "CHANGELOG.md"
+      - "CONTRIBUTING.md"
+
+concurrency:
+  group: linters-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  linters:
+  ruff:
+    name: Ruff (check + format)
     runs-on: ubuntu-latest
     steps:
-        - name: Checkout Repository
-          uses: actions/checkout@v4
-  
-        - name: Set up Python
-          uses: actions/setup-python@v4
-          with:
-            python-version: "3.12"
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-        - name: Install the latest version of uv and enable caching and define a custom cache key suffix
-          id: setup-uv
-          uses: astral-sh/setup-uv@v5
-          with:
-            version: "latest"
-            enable-cache: true
-            cache-suffix: "optional-suffix"
-      
-  
-        - name: Install dependencies
-          run: uv sync --all-extras --all-groups 
-  
-        - name: Run Ruff - Mode Check
-          run: |
-              uv run ruff check
-              echo "Ruff check completed"
-  
-        - name: Run Ruff - Mode Format
-          run: |
-              uv run ruff format
-              echo "Ruff format check completed"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
-        - name: Markdown Lint install
-          uses: DavidAnson/markdownlint-cli2-action@v19
-          with:
-            config: .markdownlint.yaml
-            globs: |
-              README.md
-              CHANGELOG.md
-              CONTRIBUTING.md
-              docs/*.md
-              tests/*.md
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --all-extras --all-groups
+
+      - name: Ruff check
+        run: uv run ruff check --output-format=github
+
+      - name: Ruff format check
+        run: uv run ruff format --check
+
+  markdown:
+    name: Markdown Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Markdown Lint
+        uses: DavidAnson/markdownlint-cli2-action@v19
+        with:
+          config: .markdownlint.yaml
+          globs: |
+            README.md
+            CHANGELOG.md
+            CONTRIBUTING.md
+            docs/*.md
+            tests/*.md
