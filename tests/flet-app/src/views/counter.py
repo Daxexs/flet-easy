@@ -25,7 +25,7 @@ async def counter_page(data: fs.Datasy, id: str):
     return ft.View(
         controls=[
             Counter(data.on_resize, id=id),
-            Drawer(text="Show_drawer", drawer=view.drawer),
+            Drawer("Show_drawer", drawer=view.drawer),
         ],
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,

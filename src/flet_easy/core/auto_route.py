@@ -4,8 +4,9 @@ from os import listdir, path
 from sys import modules
 from typing import List, Optional
 
+from flet_easy.core.pages import AddPagesy
+from flet_easy.exceptions import ConfigurationError
 from flet_easy.logger import get_logger
-from flet_easy.pagesy import AddPagesy
 
 
 def automatic_routing(dir: str) -> Optional[List[AddPagesy]]:
@@ -58,7 +59,7 @@ def automatic_routing(dir: str) -> Optional[List[AddPagesy]]:
             continue
 
     if not pages:
-        raise ValueError(
+        raise ConfigurationError(
             "No instances of AddPagesy found. Check the assigned path of the 'path_views' parameter of the class (FletEasy)."
         )
 

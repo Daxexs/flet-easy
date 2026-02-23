@@ -3,7 +3,7 @@ from functools import wraps
 from types import FunctionType
 from typing import Any, Callable, Dict, List, Optional, Union
 
-from flet_easy.middleware import (
+from flet_easy.core.middleware import (
     Middleware,
     MiddlewareHandler,
     MiddlewareRequest,
@@ -103,7 +103,9 @@ class Pagesy:
                     self._process_middleware(m)
 
                 except (TypeError, AssertionError) as e:
-                    raise ValueError(f"Invalid middleware configuration: {str(e)}")
+                    from flet_easy.exceptions import ConfigurationError
+
+                    raise ConfigurationError(f"Invalid middleware configuration: {str(e)}")
         else:
             if not isinstance(self.middleware, list):
                 self.middleware = [self.middleware]
@@ -113,8 +115,7 @@ class Pagesy:
 
 
 class AddPagesy:
-    """
-    Creates an object to then add to the list of the `add_routes` method of the `FletEasy` class.
+    """Creates an object to then add to the list of the `add_routes` method of the `FletEasy` class.
     -> Requires the parameter:
     - **route_prefix:** text string that will bind to the url of the `page` decorator, example(`/users`) this will encompass all urls of this class. (optional)
     - **middleware:** list of middlewares to be added to the page. (optional)
@@ -124,40 +125,14 @@ class AddPagesy:
     ```python
     users = fs.AddPagesy(route_prefix="/user")
 
-    # -> Urls to be created:
-    # * '/user/task'
-    # * '/user/information'
-
 
     @users.page("/task")
     async def task_page(data: fs.Datasy):
         page = data.page
-
         page.title = "Task"
-
         return ft.View(
             route="/users/task",
-            controls=[
-                ft.Text("Task"),
-            ],
-            vertical_alignment=view.vertical_alignment,
-            horizontal_alignment=view.horizontal_alignment,
-        )
-
-
-    @users.page("/information")
-    async def information_page(data: fs.Datasy):
-        page = data.page
-
-        page.title = "Information"
-
-        return ft.View(
-            route="/users/information",
-            controls=[
-                ft.Text("Information"),
-            ],
-            vertical_alignment=view.vertical_alignment,
-            horizontal_alignment=view.horizontal_alignment,
+            controls=[ft.Text("Task")],
         )
     ```
 

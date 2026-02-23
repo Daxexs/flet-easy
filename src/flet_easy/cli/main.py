@@ -1,6 +1,7 @@
 import argparse
 import contextlib
 
+from flet_easy import __version__
 from flet_easy.exceptions import FletEasyError
 
 try:
@@ -8,8 +9,6 @@ try:
     from rich_argparse import RichHelpFormatter
 except ImportError:
     raise FletEasyError('To use the cli (fs) Install: "pip install flet-easy[all] --upgrade"')
-
-VERSION = "0.2.9"
 
 RichHelpFormatter.styles["argparse.text"] = "italic"
 RichHelpFormatter.styles["argparse.help"] = "light_sky_blue3"
@@ -30,10 +29,10 @@ def run():
         description="CLI for Flet-Easys.", formatter_class=RichHelpFormatter
     )
     parser.add_argument(
-        "--version", "-v", action="version", help=" Flet-Easy Version", version=VERSION
+        "--version", "-v", action="version", help=" Flet-Easy Version", version=__version__
     )
 
-    subparsers = parser.add_subparsers(dest="command", title="Comandos")
+    subparsers = parser.add_subparsers(dest="command", title="Commands")
 
     #  Subcommand 'init'
     subparsers.add_parser(

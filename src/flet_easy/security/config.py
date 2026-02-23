@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any, Dict, Union
 
-from flet_easy.exceptions import AlgorithmJwtError
+from flet_easy.exceptions import AlgorithmJwtError, SecretKeyError
 
 with contextlib.suppress(ImportError):
     from jwt import decode, encode
@@ -57,9 +57,10 @@ def encode_HS256(payload: Dict[str, Any], secret_key: str, time_expiry: timezone
 
 def encode_verified(secret_key: SecretKey, value: str, time_expiration) -> Union[str, None]:
     """Verify the possible encryption of the value sent."""
-    assert secret_key.algorithm is not None, (
-        "The secret_key algorithm is not supported, only (RS256, HS256) is accepted."
-    )
+    if secret_key.algorithm is None:
+        raise SecretKeyError(
+            "secret_key.algorithm is None. Set algorithm='HS256' or algorithm='RS256' in SecretKey()."
+        )
 
     if secret_key.algorithm == "RS256":
         return encode_RS256(
@@ -79,9 +80,11 @@ def encode_verified(secret_key: SecretKey, value: str, time_expiration) -> Union
 
 def _decode_payload(jwt: str, secret_key: str, algorithms: str) -> Dict[str, Any]:
     """Decodes the payload stored in the client storage."""
-    assert secret_key is not None, (
-        "The secret_key algorithm is not supported, only (RS256, HS256) is accepted."
-    )
+    if secret_key is None:
+        raise SecretKeyError(
+            "Cannot decode JWT: secret_key is None. "
+            "Ensure FletEasy(secret_key=SecretKey(...)) is configured."
+        )
 
     return decode(
         jwt=jwt,

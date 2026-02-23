@@ -20,14 +20,22 @@ from flet import (
     ViewPopEvent,
 )
 
-from flet_easy.datasy import Datasy
-from flet_easy.exceptions import LoginRequiredError, MidlewareError, RouteError
-from flet_easy.extra import TYPE_PATTERNS, Msg, Redirect
-from flet_easy.inheritance import Keyboardsy, Resizesy, Viewsy
+from flet_easy.core.data import Datasy
+from flet_easy.core.middleware import MiddlewareHandler, MiddlewareRequest
+from flet_easy.core.models import TYPE_PATTERNS, Msg, Redirect
+from flet_easy.core.pages import Pagesy
+from flet_easy.exceptions import (
+    ConfigurationError,
+    CustomParamsError,
+    LoginRequiredError,
+    MiddlewareError,
+    RouteError,
+    ViewError,
+)
 from flet_easy.logger import get_logger
-from flet_easy.middleware import MiddlewareHandler
-from flet_easy.pagesy import MiddlewareRequest, Pagesy
-from flet_easy.view_404 import page_404_fs
+from flet_easy.migration import go_page
+from flet_easy.ui.controls import Keyboardsy, Resizesy, Viewsy
+from flet_easy.ui.view_404 import page_404_fs
 
 
 class FletEasyX:
@@ -96,28 +104,25 @@ class FletEasyX:
         if self.__route_login is not None:
             self._data._create_login()
 
-        # Add view data
-        self._data.view = self.__check_async(view_data, self._data, result=True)
-
-        # Add view configuration
-        self.__check_async(view_config, self.__page)
-
-        # Add configuration event
-        self.__check_async(config_event, self._data)
+        # Store initial configuration callbacks for run()
+        self.__view_data_func = view_data
+        self.__view_config_func = view_config
+        self.__config_event_func = config_event
 
         # logger
         self._logger = get_logger("FletEasyX")
 
     # -------- ---------[Handling 'flet' event]----------
 
-    def __route_change(self, e: RouteChangeEvent) -> None:
+    async def __route_change(self, e: RouteChangeEvent) -> None:
         if self.__pagesy is None:
             if e.route == "/" and self.__route_init != "/":
-                return self.__page.go(self.__route_init)
+                go_page(self.__page, self.__route_init)
+                return
 
-            self._go(e.route, True)
+            await self._go(e.route, True)
         else:
-            self._view_append(e.route, self.__pagesy)
+            await self._view_append(e.route, self.__pagesy)
             self.__pagesy = None
 
     def __view_pop(self, e: ViewPopEvent) -> None:
@@ -151,14 +156,41 @@ class FletEasyX:
             return
 
         if iscoroutinefunction(func):
-            res = self.__page.run_task(func, *args, **kwargs)
+            import asyncio
 
             if result:
-                return res.result(5)
+                # Use Flet's primary event loop to avoid deadlocks with Flet internal futures
+                try:
+                    current_loop = asyncio.get_running_loop()
+                except RuntimeError:
+                    current_loop = None
+
+                if current_loop and current_loop is self.__page.loop:
+                    return func(*args, **kwargs)
+                else:
+                    future = asyncio.run_coroutine_threadsafe(
+                        func(*args, **kwargs), self.__page.loop
+                    )
+                    return future.result()
             else:
-                return res
+                self.__page.run_task(func, *args, **kwargs)
+                return None
         else:
             return func(*args, **kwargs)
+
+    async def _await_func(self, func: Callable, *args, **kwargs) -> Any:
+        if func is None:
+            return None
+        from inspect import iscoroutinefunction
+
+        if iscoroutinefunction(func):
+            return await func(*args, **kwargs)
+        else:
+            import asyncio
+            from functools import partial
+
+            loop = asyncio.get_running_loop()
+            return await loop.run_in_executor(None, partial(func, *args, **kwargs))
 
     def run(self):
         """configure the route init"""
@@ -169,7 +201,7 @@ class FletEasyX:
         """ Executing charter events """
         self.__page.on_route_change = self.__route_change
         self.__page.on_view_pop = self.__view_pop
-        self.__page.on_error = lambda e: print("Page error:", e)
+        self.__page.on_error = lambda e: self._logger.error(f"Page error: {e}")
         self.__page.on_disconnect = self.__disconnect
 
         """ activation of charter events """
@@ -178,12 +210,27 @@ class FletEasyX:
         if self.__on_keyboard:
             self.__page.on_keyboard_event = self.__on_keyboard_event
 
-        self._go(self.__page.route, use_reload=True)
+        async def _init_and_go():
+            # Add view data
+            self._data.view = await self._await_func(self.__view_data_func, self._data)
+
+            # Add view configuration
+            await self._await_func(self.__view_config_func, self.__page)
+
+            # Add configuration event
+            await self._await_func(self.__config_event_func, self._data)
+
+            # Start routing
+            await self._go(self.__page.route, use_reload=True)
+
+        self.__page.run_task(_init_and_go)
 
     # ---------------------------[Route controller]-------------------------------------
 
-    def _view_append(self, route: str, pagesy: Pagesy) -> None:
+    async def _view_append(self, route: str, pagesy: Pagesy) -> None:
         """Add a new page and update it."""
+
+        self._logger.debug(f"Building view: {route}")
 
         page = self.__page
         page_views = page.views
@@ -194,15 +241,19 @@ class FletEasyX:
             pv = pagesy.view
 
             if isinstance(pv, FunctionType):
-                view = self.__check_async(pv, self._data, **self._data.url_params, result=True)
+                view = await self._await_func(pv, self._data, **self._data.url_params)
             elif isinstance(pv, type):
                 view_instance = pv(self._data, **self._data.url_params)
-                view = self.__check_async(view_instance.build, result=True)
+                view = await self._await_func(view_instance.build)
             else:
-                raise ValueError("View must be a callable or a class:", pv)
+                raise ViewError(
+                    f"Page view for route '{pagesy.route}' must be a function or a class with build(), "
+                    f"got {type(pv).__name__}: {pv}"
+                )
 
             if isinstance(view, Redirect):
-                return self._go(view.route)
+                await self._go(view.route)
+                return
 
             view.route = route
 
@@ -218,11 +269,14 @@ class FletEasyX:
             if pagesy.cache:
                 self.__history_pages[route] = view
 
+        # Clean the previous views safely before adding the new one
+        self.__clean_page_views(route)
+
         # Run dynamic control if present
         dyn = self._data._dynamic_control.get(route)
         if dyn:
             for control, func_update in dyn:
-                self.__check_async(func_update, control, result=True)
+                await self._await_func(func_update, control)
 
         # add view to the page and update it
         self.__manage_dynamic_appbar(
@@ -238,12 +292,12 @@ class FletEasyX:
         if self.__middlewares_after:
             for i, middleware in enumerate(self.__middlewares_after):
                 self.__verify_instance_middleware(self.__middlewares_after, middleware, i)
-                self.__check_async(self.__middlewares_after[i].after_request)
+                await self._await_func(self.__middlewares_after[i].after_request)
 
         if pagesy._valid_middlewares_request():
             for i, middleware in enumerate(pagesy._middlewares_request):
                 self.__verify_instance_middleware(pagesy._middlewares_request, middleware, i)
-                self.__check_async(pagesy._middlewares_request[i].after_request)
+                await self._await_func(pagesy._middlewares_request[i].after_request)
 
     def __manage_dynamic_navigationBar(self, navigation_bar: NavigationBar, index: int) -> None:
         """Manage the navigation bar selected index"""
@@ -289,14 +343,9 @@ class FletEasyX:
 
     def __pop_supported(self, route: str) -> Union[View, None]:
         """Pop the view from the page if it is supported"""
-
         view = None
 
-        if route == self.__route_init:
-            self._data.history_routes.clear()
-
         if self.__can_pop_supported:
-            self.__page.views.clear()
             view = self.__history_pages.get(route)
         else:
             # support for flet < v0.28.0
@@ -305,7 +354,19 @@ class FletEasyX:
             if plat not in (PagePlatform.ANDROID, PagePlatform.IOS):
                 # cache is available
                 view = self.__history_pages.get(route)
-            elif route == self.__route_init:
+
+        return view
+
+    def __clean_page_views(self, route: str) -> None:
+        """Clear page views safely before adding the new view"""
+        if route == self.__route_init:
+            self._data.history_routes.clear()
+
+        if self.__can_pop_supported:
+            self.__page.views.clear()
+        else:
+            plat = self.__page.platform
+            if plat in (PagePlatform.ANDROID, PagePlatform.IOS) and route == self.__route_init:
                 # cache not available
                 self.__page.views.clear()
 
@@ -313,9 +374,7 @@ class FletEasyX:
             if len(self.__page.views) > 1:
                 self.__page.views.pop()
 
-        return view
-
-    def __reload_datasy(
+    async def __reload_datasy(
         self,
         pagesy: Pagesy,
         url_params: Dict[str, Any] = dict(),
@@ -325,7 +384,7 @@ class FletEasyX:
         self.__page.title = pagesy.title
 
         if not pagesy.share_data:
-            self._data.share.clear()
+            await self._await_func(self._data.share.clear)
         if self.__on_keyboard:
             self._data.on_keyboard_event.clear()
 
@@ -343,9 +402,12 @@ class FletEasyX:
                 self._logger.debug(f"Middleware instantiated: {middleware}")
 
         except Exception as e:
-            raise MidlewareError("Failed to instantiate middleware: ", e)
+            raise MiddlewareError(
+                f"Failed to instantiate middleware class '{type(middleware).__name__}' at index {index}.",
+                detail=e,
+            )
 
-    def __execute_middleware(
+    async def __execute_middleware(
         self,
         pagesy: Pagesy,
         url_params: Dict[str, Any],
@@ -356,7 +418,7 @@ class FletEasyX:
         if not middleware_list:
             return False
 
-        self.__reload_datasy(pagesy, url_params)
+        await self.__reload_datasy(pagesy, url_params)
 
         try:
             for i, middleware in enumerate(middleware_list):
@@ -366,33 +428,37 @@ class FletEasyX:
                 self._logger.debug(
                     f"Execute middleware: index: {i} | {m} == {middleware} | {middleware_list is self.__middlewares}"
                 )
-                res = (
-                    self.__check_async(m.before_request, result=True)
-                    if isinstance(m, MiddlewareRequest)
-                    else self.__check_async(m, self._data, result=True)
-                )
 
-                if self._handle_middleware_result(res):
+                if isinstance(m, MiddlewareRequest):
+                    res = await self._await_func(m.before_request)
+                else:
+                    res = await self._await_func(m, self._data)
+
+                if await self._handle_middleware_result(res):
                     return True
 
             return False
 
         except Exception as e:
-            raise MidlewareError(e)
+            raise MiddlewareError(
+                f"Middleware execution failed for route '{pagesy.route}'. "
+                f"Check that all middlewares return None, False, or Redirect.",
+                detail=e,
+            )
 
-    def _handle_middleware_result(self, result: Union[bool, Redirect]) -> bool:
+    async def _handle_middleware_result(self, result: Union[bool, Redirect]) -> bool:
         """Helper method to handle middleware results"""
 
         if not result:
             return False
 
         if isinstance(result, Redirect):
-            self._go(result.route)
+            await self._go(result.route)
             return True
 
         return False
 
-    def _go(
+    async def _go(
         self,
         route: Union[str, int],
         use_route_change: bool = False,
@@ -415,7 +481,7 @@ class FletEasyX:
                 continue
 
             if page_reload:
-                return self.__run_middlewares_optimized(
+                return await self.__run_middlewares_optimized(
                     route, route_match, page, use_route_change, use_reload, page_reload
                 )
 
@@ -423,46 +489,53 @@ class FletEasyX:
 
             try:
                 if page.protected_route:
-                    if not self.__check_protected_route_optimized(
+                    if not await self.__check_protected_route_optimized(
                         page, route, route_match, use_route_change, use_reload
                     ):
                         return
                     break
 
-                if self.__run_middlewares_optimized(
+                if await self.__run_middlewares_optimized(
                     route, route_match, page, use_route_change, use_reload
                 ):
                     break
 
             except Exception as e:
-                raise RouteError(e)
+                raise RouteError(
+                    detail=f"Error processing route '{route}' (page: {page.route}): {e}"
+                )
 
         if pg_404:
-            self._handle_404_case(route, use_route_change, use_reload)
+            await self._handle_404_case(route, use_route_change, use_reload)
 
-    def __check_protected_route_optimized(
+    async def __check_protected_route_optimized(
         self, pagesy: Pagesy, route: str, route_match: str, use_route_change: bool, use_reload: bool
     ) -> bool:
         """Optimized protected route checker"""
 
         if self.__route_login is None:
-            raise AssertionError("Configure the route of the login page in Flet-Easy class")
+            raise ConfigurationError(
+                "Cannot check protected route: 'route_login' is not set in FletEasy(). "
+                "Add route_login='/your-login-route' to the FletEasy constructor."
+            )
 
         try:
-            auth = self.__check_async(self.__config_login, self._data, result=True)
+            auth = await self._await_func(self.__config_login, self._data)
             if not auth:
-                self._go(self.__route_login)
+                await self._go(self.__route_login)
                 return False
 
-            self.__reload_datasy(pagesy, route_match)
-            self._navigate(route, pagesy, use_route_change, use_reload)
+            await self.__reload_datasy(pagesy, route_match)
+            await self._navigate(route, pagesy, use_route_change, use_reload)
             return True
         except Exception as e:
             raise LoginRequiredError(
-                "use async methods in the function decorated by 'login', to avoid conflicts.", e
+                f"Protected route '{route}' authentication check failed. "
+                f"Ensure the 'login' config function is async and returns bool.",
+                detail=e,
             )
 
-    def __run_middlewares_optimized(
+    async def __run_middlewares_optimized(
         self,
         route: str,
         route_match: str,
@@ -475,19 +548,21 @@ class FletEasyX:
         self._logger.debug(f"Middlewares: {self.__middlewares}")
         self._logger.debug(f"Middleware Pagesy: {pagesy.middleware}")
 
-        if self.__middlewares and self.__execute_middleware(
+        if self.__middlewares and await self.__execute_middleware(
             pagesy, route_match, self.__middlewares
         ):
             return True
 
-        if pagesy.middleware and self.__execute_middleware(pagesy, route_match, pagesy.middleware):
+        if pagesy.middleware and await self.__execute_middleware(
+            pagesy, route_match, pagesy.middleware
+        ):
             return True
 
-        self.__reload_datasy(pagesy, route_match)
-        self._navigate(route, pagesy, use_route_change, use_reload, page_reload)
+        await self.__reload_datasy(pagesy, route_match)
+        await self._navigate(route, pagesy, use_route_change, use_reload, page_reload)
         return True
 
-    def _navigate(
+    async def _navigate(
         self,
         route: str,
         pagesy: Pagesy,
@@ -498,33 +573,41 @@ class FletEasyX:
         """Unified navigation handler"""
 
         if use_route_change:
-            self._view_append(route, pagesy)
+            await self._view_append(route, pagesy)
         else:
             if page_reload:
-                return self.__page_reload(route, pagesy)
+                return await self.__page_reload(route, pagesy)
 
-            if self.__page.route != route or use_reload:
+            if self.__page.route != route:
                 self.__pagesy = pagesy
-            self.__page.go(route)
+                self._logger.debug(f"Navigating to: {route}")
+                go_page(self.__page, route)
+            else:
+                await self._view_append(route, pagesy)
 
-    def _handle_404_case(self, route: str, use_route_change: bool, use_reload: bool) -> None:
+    async def _handle_404_case(self, route: str, use_route_change: bool, use_reload: bool) -> None:
         """Optimized 404 handler"""
 
         page = self.__page_404 or Pagesy(route, self.__view_404, "Flet-Easy 404")
         if page.route is None:
             page.route = route
 
-        self.__reload_datasy(page)
-        self._navigate(page.route, page, use_route_change, use_reload)
+        await self.__reload_datasy(page)
+        await self._navigate(page.route, page, use_route_change, use_reload)
 
-    def __page_reload(self, route: str, pagesy: Pagesy) -> None:
+    async def __page_reload(self, route: str, pagesy: Pagesy) -> None:
         """Use this method to reload the page"""
 
         if pagesy.cache:
-            self._data.history_routes.pop()
-            self.__history_pages.pop(route)
+            try:
+                self._data.history_routes.pop()
+                self.__history_pages.pop(route)
+            except (IndexError, KeyError):
+                self._logger.warning(
+                    f"Page reload for '{route}': cache entry not found, rebuilding from scratch."
+                )
 
-        self._view_append(route, pagesy)
+        await self._view_append(route, pagesy)
 
     @classmethod
     def __compile_pattern(cls, pattern_parts: list[str]) -> Pattern[str]:
@@ -565,10 +648,17 @@ class FletEasyX:
                 else:
                     pattern_parts.append(escape(segment))
             except KeyError as e:
-                raise ValueError(f"Unrecognized data type: {e}")
+                raise CustomParamsError(
+                    f"Unrecognized URL parameter type '{e}' in route '{url_pattern}'. "
+                    f"Built-in types: d (int), l (str), f (float). "
+                    f"Register custom types via 'custom_params' parameter."
+                )
 
         if custom_types and type_ not in custom_types:
-            raise ValueError(f"A custom data type is not being used: {custom_types.keys()}")
+            raise CustomParamsError(
+                f"Route '{url_pattern}' declares custom_params {list(custom_types.keys())} "
+                f"but none are used in the route pattern. Remove custom_params or use them in the route."
+            )
 
         pattern = cls.__compile_pattern(pattern_parts)
         match = pattern.fullmatch(url)

@@ -37,7 +37,7 @@ async def index_page(data: fs.Datasy):
         controls=[
             ft.Text("Home page"),
             ft.FilledButton("Go keyboard", on_click=data.go("/counter/use-keyboard/10")),
-            Drawer(text="Show_drawer", drawer=view.drawer),
+            Drawer("Show_drawer", drawer=view.drawer),
         ],
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,

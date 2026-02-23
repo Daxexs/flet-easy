@@ -24,8 +24,6 @@ class Login(ft.Container):
                 ft.TextField(
                     ref=self.login.time_logout,
                     value="10",
-                    prefix_icon=ft.Icons.TIMER,
-                    helper_text="Seconds to logout automatically",
                 ),
                 ft.FilledButton("Login", on_click=self.login.check),
                 ft.TextButton("Register", on_click=data.go("/register")),

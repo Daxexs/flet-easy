@@ -1,6 +1,6 @@
 [project]
 name = "flet-easy"
-version = "0.3.0.dev19"
+version = "0.3.0.dev21"
 description = "⚡Flet-Easy is a user-friendly add-on package for Flet, offering a cleaner code structure with numerous customizable features like JWT, routers, decorators, middleware and more."
 authors = [{ name = "Daxexs", email = "Daxexsdev@gmail.com" }]
 
@@ -27,11 +27,12 @@ keywords = [
 ]
 classifiers = [
     "Topic :: Software Development :: Build Tools",
-    "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
 
 [project.optional-dependencies]
@@ -40,10 +41,10 @@ all = [
     "rsa>=4.9",
     "cookiecutter>=2.6.0",
     "rich-argparse>=1.4.0",
-    "flet[all]==0.28.3",
+    "flet[all]>=0.27.0",
 ]
 JWT = ["pyJWT>=2.0.0", "rsa>=4.9"]
-cli = ["cookiecutter>=2.6.0", "rich-argparse>=1.4.0", "flet[all]==0.28.3"]
+cli = ["cookiecutter>=2.6.0", "rich-argparse>=1.4.0", "flet[all]>=0.27.0"]
 
 [project.urls]
 Homepage = "https://github.com/Daxexs"
@@ -62,7 +63,6 @@ fs = "flet_easy.cli.main:run"
 [dependency-groups]
 test = [
     "ruff>=0.3.4",
-    "flet[all]==0.28.3",
     "tortoise-orm>=0.22.2",
     "pytest>=8.3.4",
     "pyjwt>=2.0.0",
@@ -76,3 +76,46 @@ docs = [
     "mkdocstrings[python]>=0.30.0",
     "mkdocs-minify-plugin>=0.8.0",
 ]
+dev = ["taskipy>=1.14.1"]
+
+[tool.taskipy.settings]
+use_vars = true
+
+[tool.taskipy.variables]
+path = "tests/cache-pages"
+path_src = "src"
+path_tests = "tests"
+
+[tool.taskipy.tasks]
+# docs
+docs = { cmd = "mkdocs serve", help = "runs docs" }
+
+# apps - Flet-easy
+app-v27 = { cmd = "uv run --with flet[all]==0.27.* {path_tests}/flet-app/src/main.py", help = "runs app flet==0.27.*" }
+app-v28 = { cmd = "uv run --with flet[all]==0.28.* {path_tests}/flet-app/src/main.py", help = "runs app flet==0.28.*" }
+app-v80 = { cmd = "uv run --with flet[all]==0.80.* {path_tests}/flet-app/src/main.py", help = "build flet-easy" }
+
+# apps - Flet-easy with cache
+app-cache-v27 = { cmd = "uv run --with flet[all]==0.27.3 {path}/witch-main.py", help = "runs app flet==0.27.3" }
+app-cache-v28 = { cmd = "uv run --with flet[all]==0.28.* {path}/witch-main.py", help = "runs app flet==0.28.*" }
+app-cache-v80 = { cmd = "uv run --with flet[all]==0.80.* {path}/witch-main.py", help = "runs app flet==0.80.*" }
+
+# apps - Flet-easy without cache
+app-without-cache-v27 = { cmd = "uv run --with flet[all]==0.27.3 {path}/without-main.py", help = "runs app flet==0.27.3" }
+app-without-cache-v28 = { cmd = "uv run --with flet[all]==0.28.* {path}/without-main.py", help = "runs app flet==0.28.*" }
+app-without-cache-v80 = { cmd = "uv run --with flet[all]==0.80.* {path}/without-main.py", help = "runs app flet==0.80.*" }
+
+# tests
+shared-preferences-v80 = { cmd = "uv run --with flet[all]==0.80.* {path_tests}/shared_preferences.py", help = "runs app flet==0.80.*" }
+shared-preferences-v28 = { cmd = "uv run --with flet[all]==0.28.* {path_tests}/shared_preferences.py", help = "runs app flet==0.28.*" }
+
+test-routing = { cmd = "pytest {path_tests}/routing.py", help = "runs tests routing" }
+
+# format and check
+check-src = { cmd = "ruff check {path_src}", help = "check code src" }
+format-src = { cmd = "ruff format {path_src}", help = "format code src" }
+check-tests = { cmd = "ruff check {path_tests}", help = "check code tests" }
+format-tests = { cmd = "ruff format {path_tests}", help = "format code tests" }
+check-all = { cmd = "ruff check", help = "check code all" }
+format-all = { cmd = "ruff format", help = "format code all" }
+linter-all = { cmd = "ruff check --fix && ruff format --check", help = "lint code all" }

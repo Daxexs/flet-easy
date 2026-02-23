@@ -2,8 +2,8 @@ from typing import Callable, List, Optional, Union
 
 from flet import View
 
-from flet_easy.datasy import Datasy
-from flet_easy.extra import Redirect
+from flet_easy.core.data import Datasy
+from flet_easy.core.models import Redirect
 
 
 class MiddlewareRequest:

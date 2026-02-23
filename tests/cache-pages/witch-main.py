@@ -105,7 +105,11 @@ def index_page(data: fs.Datasy):
 
     data.dynamic_control(control=appbar, func_update=update_appbar_title)
 
-    page.client_storage.set("counter", 5)
+    if hasattr(page, "client_storage"):
+        page.client_storage.set("counter", 5)
+    else:
+        # support shared_preferences flet v0.80.*
+        page.run_task(ft.SharedPreferences().set, "counter", 5)
 
     return ft.View(
         controls=[
@@ -120,12 +124,17 @@ def index_page(data: fs.Datasy):
 
 
 @app.page("/test2", title="Test 2", index=1)
-def test_page(data: fs.Datasy):
+async def test_page(data: fs.Datasy):
     page = data.page
     appbar = data.view.appbar
 
     appbar.title = ft.Text("Test 2")
-    counter = page.client_storage.get("counter")
+
+    if hasattr(page, "client_storage"):
+        counter = await page.client_storage.get_async("counter")
+    else:
+        # support shared_preferences flet v0.80.*
+        counter = await ft.SharedPreferences().get("counter")
 
     return ft.View(
         controls=[
@@ -152,10 +161,16 @@ async def test2_page(data: fs.Datasy):
 
     data.dynamic_control(control=appbar, func_update=update_appbar_title)
 
+    if hasattr(page, "client_storage"):
+        counter = await page.client_storage.get_async("counter")
+    else:
+        # support shared_preferences flet v0.80.*
+        counter = await ft.SharedPreferences().get("counter")
+
     return ft.View(
         controls=[
             ft.Text("Counter 3", size=50),
-            ft.Text(f"client_storage: {await page.client_storage.get_async('counter')}", size=50),
+            ft.Text(f"client_storage: {counter}", size=50),
             Counter(page.update, ft.Colors.GREEN),
         ],
         appbar=appbar,

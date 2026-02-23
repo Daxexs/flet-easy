@@ -3,7 +3,7 @@ from uuid import UUID
 
 import pytest
 
-from flet_easy.route import FletEasyX
+from flet_easy.core.router import FletEasyX
 
 
 def custom_bool(value: str) -> Optional[bool]:

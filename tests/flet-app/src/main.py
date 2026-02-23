@@ -34,6 +34,8 @@ async def starting_page_two(data: fs.Datasy):
         "/register",
         "/home",
         "/share/send-data",
+        "/share/data",
+        "/share/info",
         "/dashboard",
         "/counter/test/{id:int}",
         "/counter/use-keyboard/{id:int}",

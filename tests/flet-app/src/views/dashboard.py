@@ -14,7 +14,7 @@ async def dasboard_page(data: fs.Datasy):
     return ft.View(
         controls=[
             ft.Text("DASHBOARD", size=30),
-            Drawer(text="Show_drawer", drawer=data.view.drawer),
+            Drawer("Show_drawer", drawer=data.view.drawer),
         ],
         vertical_alignment="center",
         horizontal_alignment="center",

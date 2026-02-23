@@ -8,7 +8,7 @@ from flet import (
     View,
 )
 
-from flet_easy.datasy import Datasy
+from flet_easy.core.data import Datasy
 
 
 def page_404_fs(data: Datasy) -> View:

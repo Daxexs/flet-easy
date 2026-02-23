@@ -22,7 +22,7 @@ class OnlyMyLogsFilter(logging.Filter):
 class LoggingFletEasy:
     """Logger for Flet Easy"""
 
-    _logger_activado = False
+    _logger_activated = False
 
     @classmethod
     def enable(cls, level: int = logging.INFO) -> None:
@@ -31,7 +31,7 @@ class LoggingFletEasy:
         - With rich: uses its own format.
         - Without rich: forces the exact format of the image.
         """
-        if cls._logger_activado:
+        if cls._logger_activated:
             return
 
         root = logging.getLogger()
@@ -62,7 +62,7 @@ class LoggingFletEasy:
 
         console.addFilter(OnlyMyLogsFilter())
         root.addHandler(console)
-        cls._logger_activado = True
+        cls._logger_activated = True
 
 
 def get_logger(name: str) -> logging.Logger:

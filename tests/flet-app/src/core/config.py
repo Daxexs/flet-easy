@@ -26,28 +26,28 @@ class ConfigApp:
                                 ft.Text("Navigation", size=25),
                                 ft.Divider(thickness=2),
                                 ft.FilledButton(
-                                    text="Home",
+                                    "Home",
                                     on_click=data.go(data.route_init),
                                 ),
                                 ft.FilledButton(
-                                    text="Counter",
+                                    "Counter",
                                     on_click=data.go("/counter/test/10"),
                                 ),
                                 ft.FilledButton(
-                                    text="Share Data",
+                                    "Share Data",
                                     on_click=data.go("/share/send-data"),
                                 ),
                                 ft.FilledButton(
-                                    text="Login",
+                                    "Login",
                                     on_click=data.go("/login"),
                                 ),
                                 ft.FilledButton(
-                                    text="Dashboard",
+                                    "Dashboard",
                                     on_click=data.go("/dashboard"),
                                 ),
                                 ft.FilledButton("Go back", on_click=data.go_back),
                                 ft.FilledButton(
-                                    text="Logout",
+                                    "Logout",
                                     on_click=lambda e: data.logout("login"),
                                 ),
                             ],

@@ -1,3 +1,5 @@
+import base64
+import pickle
 from inspect import iscoroutinefunction
 from typing import Any, Callable, Dict, List, TypeVar, Union
 
@@ -10,16 +12,22 @@ from flet import (
     View,
 )
 from flet.canvas import Canvas
-from flet.core import alignment
-from flet.core.control import Control
-from flet.core.session_storage import SessionStorage
 
-from flet_easy.exceptions import KeyBoardEventError
+from flet_easy.exceptions import KeyBoardEventError, StorageSerializationError
+from flet_easy.logger import get_logger
+from flet_easy.migration import (
+    NEW_FLET_VERSION,
+    Control,
+    SessionStorage,
+    SharedPreferences,
+    alignment,
+)
 
 T = TypeVar("T")
+logger = get_logger("controls")
 
 
-class SessionStorageEdit(SessionStorage):
+class SessionStorageEdit(SharedPreferences if NEW_FLET_VERSION else SessionStorage):
     def __init__(self, page):
         super().__init__(page)
 
@@ -33,19 +41,103 @@ class SessionStorageEdit(SessionStorage):
         return self._SessionStorage__store
 
 
-class Keyboardsy:
-    """
-    Class that manages the input of values by keyboard, contains the following methods:
+class SharedPreferencesEdit(SharedPreferences if NEW_FLET_VERSION else SessionStorage):
+    def __init__(self, prefix: str = ""):
+        super().__init__()
+        self._prefix = prefix
 
-    ```python
-    add_control(function: Callable) # Add a controller configuration (method of a class or function), which is executed with the 'on_keyboard_event' event.
-    key() # returns the value entered by keyboard.
-    shift() # returns the value entered by keyboard.
-    ctrl() # returns the value entered by keyboard.
-    alt() # returns the keyboard input.
-    meta() # returns keyboard input.
-    test() #returns a message of all keyboard input values (key, Shift, Control, Alt, Meta).
-    ```
+    def _prefixed_key(self, key: str) -> str:
+        """Add prefix to the key for namespace isolation."""
+        return f"{self._prefix}{key}" if self._prefix else key
+
+    def _strip_prefix(self, key: str) -> str:
+        """Remove prefix from the key."""
+        if self._prefix and key.startswith(self._prefix):
+            return key[len(self._prefix) :]
+        return key
+
+    async def set(self, key: str, value: Any) -> None:
+        prefixed = self._prefixed_key(key)
+        if NEW_FLET_VERSION:
+            if isinstance(value, (int, float, bool, str)) or (
+                isinstance(value, list) and all(isinstance(i, str) for i in value)
+            ):
+                await super().set(prefixed, value)
+            else:
+                try:
+                    serialized = base64.b64encode(pickle.dumps(value)).decode("utf-8")
+                    await super().set(prefixed, f"fs-pickled:{serialized}")
+                except Exception as e:
+                    raise StorageSerializationError(
+                        "Failed to serialize value for SharedPreferences storage.",
+                        value_type=type(value).__name__,
+                        detail=e,
+                    )
+        else:
+            super().set(prefixed, value)
+
+    async def get(self, key: str) -> Any:
+        prefixed = self._prefixed_key(key)
+        if NEW_FLET_VERSION:
+            val = await super().get(prefixed)
+            if isinstance(val, str) and val.startswith("fs-pickled:"):
+                try:
+                    return pickle.loads(base64.b64decode(val[11:]))
+                except Exception:
+                    return val
+            return val
+        else:
+            return super().get(prefixed)
+
+    async def remove(self, key: str) -> None:
+        prefixed = self._prefixed_key(key)
+        if NEW_FLET_VERSION:
+            await super().remove(prefixed)
+        else:
+            super().remove(prefixed)
+
+    async def contains(self) -> bool:
+        keys = await self.get_keys("")
+        return len(keys) != 0
+
+    async def get_values(self) -> List[Any]:
+        keys = await self.get_keys("")
+        return [await self.get(k) for k in keys]
+
+    async def get_all(self) -> Dict[str, Any]:
+        keys = await self.get_keys("")
+        result = {}
+        for key in keys:
+            value = await self.get(key)
+            result[key] = value
+        return result
+
+    async def get_keys(self, key_prefix: str = "") -> List[str]:
+        prefixed = self._prefixed_key(key_prefix)
+        all_keys = await super().get_keys(prefixed)
+        return [self._strip_prefix(k) for k in all_keys]
+
+    async def clear(self) -> None:
+        """Clear only keys in this namespace (prefix). Does NOT wipe all SharedPreferences."""
+        if self._prefix:
+            keys = await super().get_keys(self._prefix)
+            for key in keys:
+                await super().remove(key)
+        else:
+            await super().clear()
+
+
+class Keyboardsy:
+    """Class that manages keyboard input values.
+
+    Methods:
+        add_control(function) - Add functions to be executed on key press (supports async).
+        key() - Returns the key value.
+        shift() - Returns the shift state.
+        ctrl() - Returns the ctrl state.
+        alt() - Returns the alt state.
+        meta() - Returns the meta state.
+        test() - Returns a message of all keyboard input values.
     """
 
     def __init__(self, call=None) -> None:
@@ -106,20 +198,17 @@ class Keyboardsy:
 
 
 class Resizesy:
-    """
-    For the manipulation of the `on_resize` event of flet, it contains the following methods:
+    """For the manipulation of the `on_resize` event of flet.
 
-    ---
-    * `e` : Returns `ControlEvent` event, each time the height and width changes.
-    * `page` : Returns `ControlEvent` event, each time the height and width changes.
-    * `height` : Returns its updated value.
-    * `width` : Returns its updated value.
-    * `heightX()` :This method allows to obtain the values of the height of the page, which requires as parameter to enter an integer value from 1 to 100 (100 = 100%).
-    * `widthx()` : This method is similar to the previous one in terms of page width.
-    * `margin_y` : Requires an integer value on the y-axis.
-    * `margin_x` : Requires an integer value on the x-axis.
-
-    ```
+    Attributes:
+        e - Returns `ControlEvent` event, each time the height and width changes.
+        page - Returns the `Page` instance.
+        height - Returns the updated height value.
+        width - Returns the updated width value.
+        heightX(pct) - Calculate percentage of page height (1-100).
+        widthX(pct) - Calculate percentage of page width (1-100).
+        margin_y - Y-axis margin value.
+        margin_x - X-axis margin value.
     """
 
     def __init__(self, page: Page) -> None:
@@ -151,13 +240,7 @@ class Resizesy:
 
     @margin_y.setter
     def margin_y(self, value: int):
-        """
-        Enter a value that subtracts the margin of the page, so that 100% of the page can be occupied.
-
-        For example:
-        * If the `appBar` is activated, it would be a value of 28 and the margin of the `View` control would be 0.
-        * If the `appBar` is deactivated, the margin of the `View` control must be 0 and the value of the margin of `on_resize` should not be changed.
-        """
+        """Enter a value that subtracts the margin of the page, so that 100% of the page can be occupied."""
         self.__margin_y = value * 2
 
     @property
@@ -166,8 +249,7 @@ class Resizesy:
 
     @margin_x.setter
     def margin_x(self, value: int):
-        """
-        Enter a value that subtracts the margin of the page, so that 100% of the page can be occupied."""
+        """Enter a value that subtracts the margin of the page, so that 100% of the page can be occupied."""
         self.__margin_x = value * 2
 
     @property
@@ -198,34 +280,15 @@ class Viewsy(View):
 
 
 class ResponsiveControlsy(Canvas):
-    """Allows the controls to adapt to the size of the app (responsive). It is suitable for use in applications, in web it is not recommended.
+    """Allows the controls to adapt to the size of the app (responsive).
 
-    ### Note: Avoid activating scroll outside `ResponseControl`.
-
-    This class contains the following parameters:
-    * `content: Control` -> Contains a control of flet.
-    * `expand: int` -> To specify the space that will contain the `content` controller in the app, 1 equals the whole app.
-    * `resize_interval: int` -> To specify the response time (optional).
-    * `on_resize: callable` -> Custom function to be executed when the app is resized (optional).
-    * `show_resize: bool` -> To observe the size of the controller (width x height). is disabled when sending an `on_resize` function. (optional)
-    * `show_resize_terminal: bool` -> To see the size of the controller (width x height) in the terminal. (optional)
-
-    Example:
-    ```python
-    import flet_easy as fs
-
-    fs.ResponsiveControlsy(
-        content=ft.Container(
-            content=ft.Text("on_resize"),
-            bgcolor=ft.colors.RED,
-            alignment=ft.alignment.center,
-            height=100,
-        ),
-        expand=1,
-        show_resize=True,
-    )
-    ```
-
+    Parameters:
+        content (Control) - Contains a flet control.
+        expand (int) - Space that will contain the `content` controller in the app.
+        resize_interval (int) - Response time (optional).
+        on_resize (callable) - Custom function executed on app resize (optional).
+        show_resize (bool) - Observe the size of the controller (optional).
+        show_resize_terminal (bool) - See the size in the terminal (optional).
     """
 
     def __init__(
@@ -268,7 +331,8 @@ class ResponsiveControlsy(Canvas):
 
 
 class Ref(Ref[T]):
-    """Get the reference of the control used by flet, it is linked to the created component. It is similar to flet, but more reduced by getting the value of the control with (c)."""
+    """Get the reference of the control used by flet, linked to the created component.
+    Similar to flet, but more reduced by getting the value of the control with (c)."""
 
     @property
     def c(self) -> T:

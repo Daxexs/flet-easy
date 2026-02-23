@@ -4,50 +4,52 @@ from typing import Any, Callable, Dict, List, Tuple, Union
 
 from flet import Control, ControlEvent, Page, View, ViewPopEvent
 
-from flet_easy.exceptions import LoginError
-from flet_easy.extra import Msg, Redirect
-from flet_easy.extrasJwt import (
+from flet_easy.core.job import Job
+from flet_easy.core.models import Msg, Redirect
+from flet_easy.exceptions import ConfigurationError, LoginError, SecretKeyError
+from flet_easy.logger import get_logger
+from flet_easy.migration import NEW_FLET_VERSION, go_page
+from flet_easy.security.config import (
     SecretKey,
     _decode_payload,
     encode_verified,
 )
-from flet_easy.inheritance import Keyboardsy, Resizesy, SessionStorageEdit, Viewsy
-from flet_easy.job import Job
+from flet_easy.ui.controls import (
+    Keyboardsy,
+    Resizesy,
+    SessionStorageEdit,
+    SharedPreferencesEdit,
+    Viewsy,
+)
+
+_logger = get_logger("Datasy")
 
 
 class Datasy:
-    """
-    The decorated function will always receive a parameter which is `data` (can be any name), which will make an object of type `Datasy` of `Flet-Easy`.
+    """The decorated function will always receive a parameter which is `data` (can be any name), which will make an object of type `Datasy` of `Flet-Easy`.
 
     This class has the following attributes, in order to access its data:
 
-    * `page` : We get the values of the page provided by `Flet` (https://flet.dev/docs/controls/page) .
+    * `page` : We get the values of the page provided by `Flet`.
     * `url_params` : We obtain a dictionary with the values passed through the url.
-    * `view` : Get a `View` object from `Flet` (https://flet.dev/docs/controls/view), previously configured with the `view` decorator of `Flet-Easy`.
+    * `view` : Get a `View` object from `Flet`, previously configured with the `view` decorator of `Flet-Easy`.
     * `route_prefix` : Value entered in the `FletEasy` class parameters to create the app object.
     * `route_init` : Value entered in the `FletEasy` class parameters to create the app object.
     * `route_login` : Value entered in the `FletEasy` class parameters to create the app object.
     ---
-    * `share` : It is used to be able to store and to obtain values in the client session, the utility is to be able to have greater control in the pages in which it is wanted to share, for it the parameter `share_data` of the `page` decorator must be used. The methods to use are similar `page.session` (https://flet.dev/docs/guides/python/session-storage).
-
-    Besides that you get some extra methods:
-
-        * `contains` : Returns a boolean, it is useful to know if there is shared data.
-        * `get_values` : Get a list of all shared values.
-        * `get_all` : Get the dictionary of all shared values.
-    ----
+    * `share` : It is used to be able to store and to obtain values in the client session.
     * `on_keyboard_event` : get event values to use in the page.
     * `on_resize` : get event values to use in the page.
-    * `logout` : method to close sessions of all sections in the browser (client storage), requires as parameter the key or the control (the parameter key of the control must have the value to delete), this is to avoid creating an extra function.
-    * `login` : method to create sessions of all sections in the browser (client storage), requires as parameters the key and the value, the same used in the `page.client_storage.set` method.
-    * `go` - `go_route`: Method to change the application path, supports url redirections.
+    * `logout` : method to close sessions of all sections in the browser (client storage).
+    * `login` : method to create sessions of all sections in the browser (client storage).
+    * `go` / `go_route`: Method to change the application path.
     * `go_back` : Method to go back to the previous route.
-    * `go_navigation_bar` : Handles navigation bar changes. Use this method in the on_change event of 'ft.NavigationBar' or 'ft.CupertinoNavigationBar' controls.
+    * `go_navigation_bar` : Handles navigation bar changes.
     * `history_routes` : Get the history of the routes.
-    * `route` : route provided by the route event, it is useful when using middlewares to check if the route is assecible.
+    * `route` : Route provided by the route event.
     * `redirect` : To redirect to a path before the page loads, it is used in middleware.
-    * `page_reload` : Use this method to reload the page, restores the default values of the page.
-    * `dynamic_control` : Adds dynamic control to the page, allowing real-time updates when caching is enabled on the page.
+    * `page_reload` : Use this method to reload the page.
+    * `dynamic_control` : Adds dynamic control to the page.
     * `confirm_pop` : Confirm pop view.
     """
 
@@ -69,7 +71,11 @@ class Datasy:
         self.__route_prefix = route_prefix
         self.__route_init = route_init
         self.__route_login = route_login
-        self.__share = SessionStorageEdit(page)
+        self.__share = (
+            SharedPreferencesEdit(prefix="fs-share:")
+            if NEW_FLET_VERSION
+            else SessionStorageEdit(page)
+        )
         self.__on_keyboard_event = page_on_keyboard
         self.__on_resize: Resizesy = page_on_resize
         self.__route: str = None
@@ -82,6 +88,15 @@ class Datasy:
         self.__sleep: int = 1
         self._key_login: str = None
         self._login_done: bool = False
+        self._shared_preferences = (
+            SharedPreferencesEdit() if NEW_FLET_VERSION else SessionStorageEdit(page)
+        )
+
+        _logger.info(
+            "Using SharedPreferences (Flet >= 0.80)"
+            if NEW_FLET_VERSION
+            else "Using SessionStorage (Flet < 0.80)"
+        )
 
     @property
     def page(self) -> Page:
@@ -136,7 +151,7 @@ class Datasy:
         self.__route_login = route_login
 
     @property
-    def share(self) -> SessionStorageEdit:
+    def share(self) -> Union[SessionStorageEdit, SharedPreferencesEdit]:
         return self.__share
 
     # events
@@ -176,6 +191,44 @@ class Datasy:
     def route(self, route: str):
         self.__route = route
 
+    """--------- Storage Compatibility Helpers -------"""
+
+    def _storage_set(self, key: str, value: Any) -> None:
+        if hasattr(self.page, "client_storage"):
+            self.page.client_storage.set(key, value)
+        else:
+            self.page.run_task(self._shared_preferences.set, key, str(value))
+
+    async def _storage_set_async(self, key: str, value: Any) -> None:
+        if hasattr(self.page, "client_storage"):
+            await self.page.client_storage.set_async(key, value)
+        else:
+            await self._shared_preferences.set(key, str(value))
+
+    def _storage_get(self, key: str) -> Any:
+        if hasattr(self.page, "client_storage"):
+            return self.page.client_storage.get(key)
+        else:
+            self.page.run_task(self._shared_preferences.get, key)
+
+    async def _storage_get_async(self, key: str) -> Any:
+        if hasattr(self.page, "client_storage"):
+            return await self.page.client_storage.get_async(key)
+
+        return await self._shared_preferences.get(key)
+
+    def _storage_remove(self, key: str) -> None:
+        if hasattr(self.page, "client_storage"):
+            self.page.client_storage.remove(key)
+        else:
+            self.page.run_task(self._shared_preferences.remove, key)
+
+    async def _storage_remove_async(self, key: str) -> None:
+        if hasattr(self.page, "client_storage"):
+            await self.page.client_storage.remove_async(key)
+        else:
+            await self._shared_preferences.remove(key)
+
     """--------- login authentication : asynchronously | synchronously -------"""
 
     def _login_done_evaluate(self) -> bool:
@@ -201,9 +254,6 @@ class Datasy:
 
         ### Example:
         ```python
-        import flet as ft
-        import flet_easy as fs
-
         @app.page('/Dashboard', title='Dashboard', protected_route=True)
         def dashboard(data:fs.Datasy)
             return ft.View(
@@ -213,9 +263,11 @@ class Datasy:
         ```
         """
 
-        assert self.route_login is not None or next_route is not None, (
-            "Adds a login path in the FletEasy Class"
-        )
+        if self.route_login is None and next_route is None:
+            raise ConfigurationError(
+                "Cannot logout: no route to redirect to. "
+                "Set 'route_login' in FletEasy() or pass 'next_route' to logout()."
+            )
 
         if self.page.web:
             self.page.pubsub.send_all_on_topic(
@@ -223,28 +275,32 @@ class Datasy:
                 Msg("logout", key, {"next_route": next_route}),
             )
         else:
-            self.page.run_task(self.page.client_storage.remove_async, key)
-            self.page.go(next_route or self.route_login)
+            self.page.run_task(self._storage_remove_async, key)
+            go_page(self.page, next_route or self.route_login)
 
-    async def __logaut_init(self, topic, msg: Msg) -> None:
+    async def __logout_init(self, topic, msg: Msg) -> None:
         if msg.method == "login":
-            await self.page.client_storage.set_async(msg.key, msg.value.get("value"))
+            await self._storage_set_async(msg.key, msg.value.get("value"))
             if self.page.route == self.route_login:
-                self.page.go(msg.value.get("next_route"))
+                go_page(self.page, msg.value.get("next_route"))
 
         elif msg.method == "logout":
             self._login_done = False
-            await self.page.client_storage.remove_async(msg.key)
-            self.page.go(msg.value.get("next_route") or self.route_login)
+            await self._storage_remove_async(msg.key)
+            go_page(self.page, msg.value.get("next_route") or self.route_login)
 
         elif msg.method == "updateLogin":
             self._login_done = msg.value
 
         elif msg.method == "updateLoginSessions":
             self._login_done = msg.value
+            try:
+                jwt = await self._storage_get_async(self.key_login)
+            except Exception:
+                jwt = None
             self._create_task_login_update(
                 decode=_decode_payload(
-                    jwt=await self.page.client_storage.get_async(self.key_login),
+                    jwt=jwt,
                     secret_key=(
                         self.secret_key.secret
                         if self.secret_key.secret is not None
@@ -254,13 +310,16 @@ class Datasy:
                 )
             )
         else:
-            raise ValueError("Method not implemented in logout_init method.")
+            raise ConfigurationError(
+                f"Unknown pubsub method '{msg.method}' received in session handler. "
+                f"Expected: 'login', 'logout', 'updateLogin', or 'updateLoginSessions'."
+            )
 
     def _create_login(self) -> None:
         """Create the connection between sessions."""
         if self.page.web:
             self.page.pubsub.subscribe_topic(
-                self.page.client_ip + self.page.client_user_agent, self.__logaut_init
+                self.page.client_ip + self.page.client_user_agent, self.__logout_init
             )
 
     def _create_tasks(self, time_expiry: timedelta, key: str, sleep: int) -> None:
@@ -284,12 +343,16 @@ class Datasy:
         sleep: int = 1,
     ) -> Union[str, None]:
         if time_expiry:
-            assert isinstance(value, Dict), (
-                "Use a dict in login method values or don't use time_expiry."
-            )
-            assert self.__secret_key is not None, (
-                "Set the secret_key in the FletEasy class parameter or don't use time_expiry."
-            )
+            if not isinstance(value, Dict):
+                raise ConfigurationError(
+                    f"login() 'value' must be a dict when 'time_expiry' is set, "
+                    f"got {type(value).__name__}. Use a dict for JWT payload or remove time_expiry."
+                )
+            if self.__secret_key is None:
+                raise SecretKeyError(
+                    "login() requires 'secret_key' in FletEasy() when 'time_expiry' is used. "
+                    "Example: FletEasy(secret_key=SecretKey(secret='your-secret', algorithm='HS256'))"
+                )
 
         if self.__secret_key:
             evaluate_secret_key(self)
@@ -330,13 +393,14 @@ class Datasy:
         value = self.__login(key, value, next_route, time_expiry, sleep)
 
         try:
-            self.page.client_storage.set(key, value)
+            self._storage_set(key, value)
         except TimeoutError:
+            self.page.run_task(self._storage_set_async, key, value)
             raise LoginError(
                 "The operation has timed out. Please use 'login_async()' instead of 'login()'."
             )
-
-        self.__go(next_route)
+        finally:
+            self.page.run_task(self.__go, next_route)
 
     async def login_async(
         self,
@@ -359,23 +423,33 @@ class Datasy:
         """
 
         value = self.__login(key, value, next_route, time_expiry, sleep)
-        await self.page.client_storage.set_async(key, value)
-        self.page.run_thread(self.__go, next_route)
+        await self._storage_set_async(key, value)
+        await self.__go(next_route)
 
     """ Page go  """
 
     def go(self, route: str) -> Callable[[ControlEvent], None]:
         """To change the application path, it is important for better validation to avoid using `page.go()`."""
-        return lambda _=None: self.__go(route)
+
+        return lambda _=None: self.go_route(route)
 
     def go_route(self, route: Union[str, int]) -> None:
         """To change the application path, it is important for better validation to avoid using `page.go()`."""
-        self.__go(route)
+
+        async def _go_route():
+            await self.__go(route)
+
+        self.page.run_task(_go_route)
 
     def go_navigation_bar(self, e: ControlEvent) -> None:
         """Handles navigation bar changes. Use this method in the on_change event of
         'ft.NavigationBar' or 'ft.CupertinoNavigationBar' controls."""
-        self.__go(e.control.selected_index)
+
+        async def _go_nav():
+            route = e.control.selected_index
+            await self.__go(route)
+
+        self.page.run_task(_go_nav)
 
     def redirect(self, route: str) -> Redirect:
         """Useful if you do not want to access a route that has already been sent."""
@@ -391,7 +465,10 @@ class Datasy:
             if index is not None:
                 self.view.navigation_bar.selected_index = index
 
-            self.__go(route)
+            async def _go_back():
+                await self.__go(route)
+
+            self.page.run_task(_go_back)
         else:
             print("-> I can't go back! there is no history. ")
 
@@ -413,9 +490,17 @@ class Datasy:
 
 
 def evaluate_secret_key(data: Datasy) -> None:
-    assert (
+    valid = (
         data.secret_key.secret is None
         and data.secret_key.algorithm == "RS256"
         or data.secret_key.pem_key is None
         and data.secret_key.algorithm == "HS256"
-    ), "The algorithm is not set correctly in the 'secret_key' parameter of the 'FletEasy' class."
+    )
+    if not valid:
+        raise SecretKeyError(
+            f"Algorithm '{data.secret_key.algorithm}' mismatch: "
+            f"HS256 requires 'secret' (pem_key must be None), "
+            f"RS256 requires 'pem_key' (secret must be None). "
+            f"Got secret={'set' if data.secret_key.secret else 'None'}, "
+            f"pem_key={'set' if data.secret_key.pem_key else 'None'}."
+        )

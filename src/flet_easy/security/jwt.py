@@ -8,10 +8,10 @@ with contextlib.suppress(ImportError):
 with contextlib.suppress(ImportError):
     from rsa import newkeys
 
-from flet_easy.datasy import Datasy, evaluate_secret_key
-from flet_easy.exceptions import LoginError, LogoutError
-from flet_easy.extra import Msg
-from flet_easy.extrasJwt import _decode_payload
+from flet_easy.core.data import Datasy, evaluate_secret_key
+from flet_easy.core.models import Msg
+from flet_easy.exceptions import LoginError, LogoutError, SecretKeyError
+from flet_easy.security.config import _decode_payload
 
 
 class EasyKey:
@@ -70,11 +70,9 @@ def _handle_decode_errors(jwt: str, data: Datasy, key_login: str) -> Union[Dict[
             ),
             algorithms=data.secret_key.algorithm,
         )
-
         """ It checks if there is a logout time, if there is a logout task running and finally if the user wants to create a logout task. """
         if decode.get("exp") and not data._login_done and data.auto_logout:
             data._create_task_login_update(decode)
-
         return decode
 
     except ExpiredSignatureError:
@@ -86,7 +84,7 @@ def _handle_decode_errors(jwt: str, data: Datasy, key_login: str) -> Union[Dict[
     except DecodeError as e:
         data.logout(key_login)
         raise LogoutError(
-            "Decoding error, possibly there is a double use of the 'client_storage' 'key', Secret key invalid! or ",
+            "Decoding error, possibly there is a double use of the storage 'key', Secret key invalid! or ",
             e,
         )
     except Exception as e:
@@ -101,10 +99,14 @@ def decode(key_login: str, data: Datasy) -> Union[Dict[str, Any], bool]:
     * `key_login` : key used to store data in the client, also used in the `login` method of `Datasy`.
     * `data` : Instance object of the `Datasy` class.
     """
-    assert data.secret_key is not None, "set the 'secret_key' in the class parameter (FletEasy)."
+    if data.secret_key is None:
+        raise SecretKeyError(
+            "decode() requires 'secret_key' in FletEasy(). "
+            "Example: FletEasy(secret_key=SecretKey(secret='your-secret', algorithm='HS256'))"
+        )
     try:
         return _handle_decode_errors(
-            jwt=data.page.client_storage.get(key_login), data=data, key_login=key_login
+            jwt=data._storage_get(key_login), data=data, key_login=key_login
         )
     except TimeoutError as e:
         raise LoginError("Use the 'decode_async' method instead of 'decode'. | More details:", e)
@@ -117,11 +119,16 @@ async def decode_async(key_login: str, data: Datasy) -> Union[Dict[str, Any], bo
     * `key_login` : key used to store data in the client, also used in the `login` method of `Datasy`.
     * `data` : Instance object of the `Datasy` class.
     """
-    assert data.secret_key is not None, "set the 'secret_key' in the class parameter (FletEasy)."
+    if data.secret_key is None:
+        raise SecretKeyError(
+            "decode_async() requires 'secret_key' in FletEasy(). "
+            "Example: FletEasy(secret_key=SecretKey(secret='your-secret', algorithm='HS256'))"
+        )
 
     try:
-        return _handle_decode_errors(
-            jwt=await data.page.client_storage.get_async(key_login), data=data, key_login=key_login
+        x = _handle_decode_errors(
+            jwt=await data._storage_get_async(key_login), data=data, key_login=key_login
         )
+        return x
     except TimeoutError as e:
         raise LoginError("Use the 'decode' method instead of 'decode_async'. | More details:", e)
