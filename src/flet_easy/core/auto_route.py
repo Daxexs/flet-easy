@@ -34,7 +34,7 @@ def automatic_routing(dir: str) -> Optional[List[AddPagesy]]:
 
     for file in python_files:
         file_path = path.join(dir, file)
-        module_name = path.splitext(file)[0]
+        module_name = f"flet_easy_auto_{path.splitext(file)[0]}"
 
         try:
             if not isinstance(file_path, str):

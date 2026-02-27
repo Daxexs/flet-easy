@@ -79,7 +79,7 @@ data.route           # Current route path
 
 ## Navigation Methods
 
-### `go(route)`
+### `go (route)`
 
 Navigate to a specific route.
 
@@ -128,7 +128,7 @@ def details_page(data: fs.Datasy):
     )
 ```
 
-### `go_navigation_bar(e)`
+### `go_navigation_bar (e)`
 
 !!! Note "New in v0.3.0"
 
@@ -164,7 +164,7 @@ def main_view(data: fs.Datasy):
     )
 ```
 
-### `go_route(route)`
+### `go_route (route)`
 
 !!! Note "New in v0.3.0"
 
@@ -184,6 +184,25 @@ def dashboard_page(data: fs.Datasy):
             # Compare with lambda approach
             ft.ElevatedButton("Lambda Settings", on_click=data.go("/settings"))
         ]
+    )
+```
+
+### `redirect (route)`
+
+!!! Note "Enhanced in v0.3.0"
+
+Redirect to a specific route immediately. This method is executed directly, and importantly, it is now available not just for middlewares, but also directly in page functions to force a quick redirection.
+
+```python
+@app.page("/old-route")
+def old_page(data: fs.Datasy):
+    # Determine if we should redirect automatically instead of rendering
+    if not user_has_feature_enabled():
+        # Executes directly and prevents rendering the current view
+        return data.redirect("/new-route")
+
+    return ft.View(
+        controls=[ft.Text("Old Route Content")]
     )
 ```
 

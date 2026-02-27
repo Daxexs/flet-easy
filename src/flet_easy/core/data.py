@@ -53,6 +53,28 @@ class Datasy:
     * `confirm_pop` : Confirm pop view.
     """
 
+    __slots__ = (
+        "__page",
+        "__url_params",
+        "__view",
+        "__route_prefix",
+        "__route_init",
+        "__route_login",
+        "__share",
+        "__on_keyboard_event",
+        "__on_resize",
+        "__route",
+        "__go",
+        "__history_routes",
+        "_dynamic_control",
+        "__secret_key",
+        "__auto_logout",
+        "__sleep",
+        "_key_login",
+        "_login_done",
+        "_shared_preferences",
+    )
+
     def __init__(
         self,
         page: Page,

@@ -1,6 +1,6 @@
 [project]
 name = "flet-easy"
-version = "0.3.0.dev21"
+version = "0.3.0.dev22"
 description = "⚡Flet-Easy is a user-friendly add-on package for Flet, offering a cleaner code structure with numerous customizable features like JWT, routers, decorators, middleware and more."
 authors = [{ name = "Daxexs", email = "Daxexsdev@gmail.com" }]
 
@@ -108,8 +108,11 @@ app-without-cache-v80 = { cmd = "uv run --with flet[all]==0.80.* {path}/without-
 # tests
 shared-preferences-v80 = { cmd = "uv run --with flet[all]==0.80.* {path_tests}/shared_preferences.py", help = "runs app flet==0.80.*" }
 shared-preferences-v28 = { cmd = "uv run --with flet[all]==0.28.* {path_tests}/shared_preferences.py", help = "runs app flet==0.28.*" }
+shared-preferences-v27 = { cmd = "uv run --with flet[all]==0.27.* {path_tests}/shared_preferences.py", help = "runs app flet==0.27.*" }
 
 test-routing = { cmd = "pytest {path_tests}/routing.py", help = "runs tests routing" }
+
+test-render-page = { cmd = "flet run {path_tests}/render-page.py", help = "runs tests render page" }
 
 # format and check
 check-src = { cmd = "ruff check {path_src}", help = "check code src" }

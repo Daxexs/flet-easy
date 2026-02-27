@@ -157,6 +157,159 @@ class TestPage:
         )
 ```
 
+### Using Declarative Components (`@ft.component`)
+
+!!! warning "Available since version 0.3.0"
+    - flet >= 0.80.0 [GitHub](https://github.com/flet-dev/flet/releases/tag/v0.80.0)
+
+You can now use Flet's declarative UI components (like `@ft.component`) natively as route handlers. Flet-Easy seamlessly delivers `Datasy`, your custom URL parameters, and integrates perfectly with `ft.use_state()` or other Flet hooks.
+
+**Note on Cache**: The `cache` property works only in **imperative** mode and is currently not supported for pages using `@ft.component`.
+
+#### Declarative Component Example
+
+This example demonstrates how to build a full app with state management (`@dataclass`, `@ft.observable`), Flet hooks (`ft.use_state`), and different components linked with Flet-Easy routers (`AddPagesy` and `@app.page`).
+
+```python title="main.py" hl_lines="11 26 28 55 66 95 105 108"
+import asyncio
+from dataclasses import dataclass
+
+import flet as ft
+import flet_easy as fs
+
+app = fs.FletEasy()
+
+# 1. State Management for the Counter
+@dataclass
+@ft.observable
+class CounterState:
+    count: int = 0
+
+    def add(self):
+        self.count += 1
+
+    def remove(self):
+        self.count -= 1
+
+    def reset(self):
+        self.count = 0
+
+
+# 2. A Reusable Declarative Sub-Component (No Route)
+@ft.component
+def counter():
+    state, _ = ft.use_state(CounterState())
+
+    return ft.Column(
+        controls=[
+            ft.Text(value=f"{state.count}", size=30),
+            ft.Row(
+                controls=[
+                    ft.Button("Add", on_click=state.add),
+                    ft.Button("Remove", on_click=state.remove),
+                    ft.Button("Reset", on_click=state.reset),
+                ],
+                alignment="center",
+            ),
+        ],
+        alignment="center",
+        horizontal_alignment="center",
+    )
+
+
+# 3. Simple Middleware Example
+def middleware_home(data: fs.Datasy):
+    data.page.show_dialog(
+        ft.SnackBar(ft.Text(f"route: {data.route} - Hello from middleware!"))
+    )
+
+
+# 4. Declarative App Page with `@ft.component`
+@ft.component
+@app.page(route="/", title="Home", middleware=middleware_home)
+def App(data: fs.Datasy):
+    
+    # You can navigate natively using context...
+    async def go_test():
+        await ft.context.page.push_route("/test")
+
+    # ...or use the traditional fs.Datasy go() method.
+    return ft.View(
+        controls=[
+            counter(),  # Insert the sub-component statefully
+            ft.Button("Go test (Native Context)", on_click=go_test),
+            ft.Button("Go progress-bar (Flet-Easy Data)", on_click=data.go("/add-pagesy/progress-bar")),
+        ],
+        vertical_alignment="center",
+        horizontal_alignment="center",
+    )
+
+
+# 5. Standard Imperative Function Route
+@app.page(route="/test", title="Test")
+def test(data: fs.Datasy):
+    return ft.View(
+        controls=[
+            ft.Text("Test Page", size=30),
+            ft.Button("Go Back", on_click=data.go("/")),
+        ],
+        vertical_alignment="center",
+        horizontal_alignment="center",
+    )
+
+
+# 6. Another AddPagesy Group using Declarative Components
+app2 = fs.AddPagesy(
+    route_prefix="/add-pagesy",
+    middleware=middleware_home,
+)
+
+@dataclass
+@ft.observable
+class AppState:
+    counter: float
+
+    async def start_counter(self):
+        self.counter = 0
+        for _ in range(0, 10):
+            self.counter += 0.1
+            await asyncio.sleep(0.5)
+
+@ft.component
+@app2.page(route="/progress-bar", title="Progress Bar")
+def progress_bar(data: fs.Datasy):
+    state, _ = ft.use_state(AppState(counter=0))
+
+    async def go_back():
+        await ft.context.page.push_route("/")
+
+    return ft.View(
+        controls=[
+            ft.Text("Async Progress Bar Demo", size=24),
+            ft.ProgressBar(state.counter, width=300),
+            ft.Button("Run Progress!", on_click=state.start_counter),
+            ft.Button("Go Back", on_click=go_back),
+        ],
+        vertical_alignment="center",
+        horizontal_alignment="center",
+    )
+
+app.add_pages([app2])
+app.run()
+```
+
+#### Key Takeaways
+
+1. **State Independence**: Notice how the `counter()` component maintains its own isolated state using `ft.use_state()` while being inside the larger `App` page view component.
+2. **Context vs `Datasy` Navigation**: Flet-Easy ensures that native `ft.context.page.push_route()` commands and `data.go()` calls stay perfectly synchronized and both are valid ways to navigate.
+3. **Combined Architecture**: As shown in the `/test` route, you are fully supported to mix standard imperative functions alongside declarative component classes within your Flet-Easy application.
+
+### 🎬 Demo
+
+<video controls>
+  <source src="../../../assets/guide/add-pages/declarative-component.webm" type="video/webm" alt="Flet-Easy - Add Pages Through Decorators Using Declarative Components">
+</video>
+
 ### Adding Pages to Main App
 
 Import and register page groups using `add_pages()`.

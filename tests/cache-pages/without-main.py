@@ -84,14 +84,11 @@ class Counter(ft.Container):
 
 
 class Middleware(fs.MiddlewareRequest):
-    """def __init__(self):
-    super().__init__()"""
-
     def before_request(self):
-        print("Middleware before_request:", self.data.page.views)
+        print("Middleware before_request:", self.data.route)
 
     def after_request(self):
-        print("Middleware after_request:", self.data.page.views)
+        print("Middleware after_request:", self.data.route)
 
 
 app.add_middleware(Middleware)

@@ -114,6 +114,13 @@ class FletEasy:
 
     def __pre_config(self, page: Page) -> None:
         """Configure and start the routing engine."""
+
+        # Add automatic routing pages before initializing FletEasyX
+        # so they are included in the exact_routes_map
+        if self.__pagesys:
+            self.add_pages(self.__pagesys)
+            self.__pagesys = None
+
         fsx = FletEasyX(
             page=page,
             route_prefix=self.__route_prefix,
@@ -132,9 +139,6 @@ class FletEasy:
             secret_key=self.__secret_key,
             auto_logout=self.__auto_logout,
         )
-
-        if self.__pagesys:
-            self.add_pages(self.__pagesys)
 
         fsx.run()
 
@@ -242,20 +246,23 @@ class FletEasy:
         self = cls.__self
 
         def decorator(func: Callable) -> Callable:
-            self.__pages.append(
-                Pagesy(
-                    route=self._build_route(route),
-                    view=func,
-                    title=title,
-                    index=index,
-                    clear=page_clear,
-                    share_data=share_data,
-                    protected_route=protected_route,
-                    custom_params=custom_params,
-                    middleware=middleware,
-                    cache=cache,
-                )
+            pagesy = Pagesy(
+                route=self._build_route(route),
+                view=func,
+                title=title,
+                index=index,
+                clear=page_clear,
+                share_data=share_data,
+                protected_route=protected_route,
+                custom_params=custom_params,
+                middleware=middleware,
+                cache=cache,
             )
+            self.__pages.append(pagesy)
+
+            # Back-reference for reverse decorator order (@ft.component on top)
+            func.__flet_easy_pagesy__ = pagesy
+
             self._logger.debug(f"Adding page: {self.__pages[-1]}")
             return func
 

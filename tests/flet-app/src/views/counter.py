@@ -50,7 +50,7 @@ class PageTs(Custom):
 
 
 # add a third page - Using a class
-@counter.page("/use-keyboard/{id:int}", title="Use Keyboard - Use Class")
+@counter.page("/use-keyboard/{id:int}", title="Use Keyboard - Use Class", cache=True)
 class PageUseKeyboard(Custom):
     def __init__(self, data: fs.Datasy, id: int):
         self.data = data

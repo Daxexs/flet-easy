@@ -97,6 +97,8 @@ if __name__ == "__main__":
 - `view`: Stores the page function.
 - `title` : Define the title of the page.
 - `clear`: Removes the pages from the `page.views` list of flet. (optional)
+- `index`: Define the index of the page, use in controls like `ft.NavigationBar` and `ft.CupertinoNavigationBar`. (optional)
+- `cache`: Boolean that preserves page state when navigating. Controls retain their values instead of resetting. Works in **imperative** mode, but not in **declarative** (`@ft.component`). (optional)
 - `share_data` : It is a boolean value, which is useful if you want to share data between pages, in a morerestricted way. (optional) [[`See more`](../../../advanced/data-sharing-between-pages/)]
 - `protected_route`: Protects the route of the page, according to the configuration of the `login` decoratorof the `FletEasy` class. (optional) [[`See more`](../../../advanced/route-protection/)]
 - `custom_params`: To add validation of parameters in the custom url using a dictionary, where the key is the nameof the parameter validation and the value is the custom function that must report a boolean value. [[`See more`](../../../guide/routing/dynamic-routes/#custom-validation)]

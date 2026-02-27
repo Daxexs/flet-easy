@@ -1,6 +1,5 @@
-import re
 from collections import deque
-from inspect import iscoroutinefunction
+from inspect import iscoroutinefunction, signature
 from re import Pattern, compile, escape
 from types import FunctionType
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
@@ -19,6 +18,13 @@ from flet import (
     View,
     ViewPopEvent,
 )
+
+try:
+    # support component decorator in flet 0.80.*
+    from flet import component as ft_component
+except ImportError:
+    ft_component = None
+
 
 from flet_easy.core.data import Datasy
 from flet_easy.core.middleware import MiddlewareHandler, MiddlewareRequest
@@ -39,7 +45,36 @@ from flet_easy.ui.view_404 import page_404_fs
 
 
 class FletEasyX:
-    __compiled_patterns_cache: Dict[str, re.Pattern[str]] = {}
+    __compiled_patterns_cache: Dict[str, Tuple[Pattern[str], List[Tuple[str, Callable]]]] = {}
+
+    __slots__ = (
+        "__page_on_keyboard",
+        "__route_prefix",
+        "__route_init",
+        "__route_login",
+        "__on_resize",
+        "__on_keyboard",
+        "__pages",
+        "__history_pages",
+        "__view_404",
+        "__automatically_imply_leading",
+        "__can_pop_supported",
+        "__page",
+        "__page_404",
+        "__config_login",
+        "__middlewares_after",
+        "__pagesy",
+        "__middlewares",
+        "__auto_logout",
+        "__secret_key",
+        "__page_on_resize",
+        "_data",
+        "__view_data_func",
+        "__view_config_func",
+        "__config_event_func",
+        "_logger",
+        "__exact_routes_map",
+    )
 
     def __init__(
         self,
@@ -84,6 +119,13 @@ class FletEasyX:
 
         self.__auto_logout = auto_logout
         self.__secret_key = secret_key
+
+        # Fast lookup for routes without parameters
+        self.__exact_routes_map: Dict[str, Pagesy] = {}
+        for p in self.__pages:
+            if "{" not in p.route:
+                self.__exact_routes_map[p.route] = p
+
         self.__page_on_resize = Resizesy(self.__page)
         self._data: Datasy = Datasy(
             page=self.__page,
@@ -99,6 +141,10 @@ class FletEasyX:
 
         # Add data to middleware request
         MiddlewareRequest._data = self._data
+
+        # Normalize page-level middleware for all pages
+        for p in self.__pages:
+            p._check_middleware(middlewares)
 
         # Add login
         if self.__route_login is not None:
@@ -192,8 +238,50 @@ class FletEasyX:
             loop = asyncio.get_running_loop()
             return await loop.run_in_executor(None, partial(func, *args, **kwargs))
 
+    def _resolve_components(self) -> None:
+        """Scan modules for @ft.component-wrapped page functions (reverse decorator order).
+
+        When @ft.component is applied AFTER @app.page (i.e. on top), the Pagesy stores
+        the raw function without __is_component__. This method finds the component wrapper
+        by scanning loaded modules for functions whose __wrapped__ has __flet_easy_pagesy__.
+        """
+        import sys
+
+        unresolved = [p for p in self.__pages if not p._is_component]
+        if not unresolved:
+            return
+
+        # Build lookup: id(raw_func) -> pagesy
+        lookup = {}
+        for p in unresolved:
+            if hasattr(p.view, "__flet_easy_pagesy__"):
+                lookup[id(p.view)] = p
+
+        if not lookup:
+            return
+
+        # Scan module globals for component wrappers
+        for module in list(sys.modules.values()):
+            if module is None:
+                continue
+            for attr in vars(module).values():
+                if (
+                    callable(attr)
+                    and getattr(attr, "__is_component__", False)
+                    and hasattr(attr, "__wrapped__")
+                    and id(attr.__wrapped__) in lookup
+                ):
+                    pagesy = lookup.pop(id(attr.__wrapped__))
+                    pagesy.view = attr
+                    pagesy._is_component = True
+                    if not lookup:
+                        return
+
     def run(self):
         """configure the route init"""
+
+        # Resolve any @ft.component decorators applied after @app.page
+        self._resolve_components()
 
         if self.__route_init != "/" and self.__page.route == "/":
             self.__page.route = self.__route_init
@@ -229,11 +317,54 @@ class FletEasyX:
 
     async def _view_append(self, route: str, pagesy: Pagesy) -> None:
         """Add a new page and update it."""
-
         self._logger.debug(f"Building view: {route}")
 
+        if pagesy._is_component:
+            await self.__render_declarative_component(route, pagesy)
+        else:
+            await self.__render_imperative_view(route, pagesy)
+
+    async def __render_declarative_component(self, route: str, pagesy: Pagesy) -> None:
+        """Handle rendering of declarative (@ft.component) pages."""
         page = self.__page
-        page_views = page.views
+        _render = getattr(page, "render_views", None) or getattr(page, "render", None)
+        if _render is None:
+            raise ViewError(
+                f"Flet version does not support page.render() or page.render_views(). "
+                f"Cannot render declarative component for route '{pagesy.route}'."
+            )
+
+        # Resolve render target, using cache when available
+        render_target = self.__history_pages.get(route) if pagesy.cache else None
+
+        if render_target is None:
+            component_fn = pagesy.view
+
+            # Wrap to inject data/url_params if the component expects parameters
+            if signature(component_fn).parameters:
+                data = self._data
+                url_params = self._data.url_params or {}
+
+                @ft_component
+                def _root():
+                    return component_fn(data, **url_params)
+
+                render_target = _root
+            else:
+                render_target = component_fn
+
+            if pagesy.cache:
+                self.__history_pages[route] = render_target
+
+        _render(render_target)
+        self.__page.update()
+        self._data.history_routes.append((route, pagesy.index))
+
+        await self.__run_after_request_middlewares(pagesy)
+
+    async def __render_imperative_view(self, route: str, pagesy: Pagesy) -> None:
+        """Handle rendering of standard imperative Flet views."""
+        page = self.__page
         view = self.__pop_supported(route)
 
         # Build if not cached
@@ -284,16 +415,15 @@ class FletEasyX:
         )
         self.__manage_dynamic_navigationBar(view.navigation_bar, pagesy.index)
 
-        page_views.append(view)
+        # Re-capture page.views after clean (render_views may have replaced it)
+        page.views.append(view)
         self._data.history_routes.append((route, pagesy.index))
         page.update()
 
-        # After-request middlewares
-        if self.__middlewares_after:
-            for i, middleware in enumerate(self.__middlewares_after):
-                self.__verify_instance_middleware(self.__middlewares_after, middleware, i)
-                await self._await_func(self.__middlewares_after[i].after_request)
+        await self.__run_after_request_middlewares(pagesy)
 
+    async def __run_after_request_middlewares(self, pagesy: Pagesy) -> None:
+        """Execute all post-request middlewares."""
         if pagesy._valid_middlewares_request():
             for i, middleware in enumerate(pagesy._middlewares_request):
                 self.__verify_instance_middleware(pagesy._middlewares_request, middleware, i)
@@ -362,6 +492,13 @@ class FletEasyX:
         if route == self.__route_init:
             self._data.history_routes.clear()
 
+        # After render_views(), page.views may be a Component instead of a list.
+        # Reset to a list so the imperative view pipeline works.
+        # We check for .append to be sure it's a list-like object.
+        if not hasattr(self.__page.views, "append"):
+            self.__page.views = []
+            return
+
         if self.__can_pop_supported:
             self.__page.views.clear()
         else:
@@ -371,8 +508,12 @@ class FletEasyX:
                 self.__page.views.clear()
 
             # Keep only last view on stack
-            if len(self.__page.views) > 1:
-                self.__page.views.pop()
+            try:
+                if len(self.__page.views) > 1:
+                    self.__page.views.pop()
+            except TypeError:
+                # Fallback if len() fails on some proxy objects
+                self.__page.views = []
 
     async def __reload_datasy(
         self,
@@ -386,7 +527,9 @@ class FletEasyX:
         if not pagesy.share_data:
             await self._await_func(self._data.share.clear)
         if self.__on_keyboard:
-            self._data.on_keyboard_event.clear()
+            self._data.on_keyboard_event.current_route = pagesy.route
+            if not pagesy.cache:
+                self._data.on_keyboard_event.clear()
 
         self._data.url_params = url_params
         self._data.route = pagesy.route
@@ -467,16 +610,46 @@ class FletEasyX:
     ) -> None:
         """Method to go to the route, if the route is not found, it will return a 404 page."""
 
-        pg_404 = True
+        # 1. Handle integer routes (index lookup)
+        if isinstance(route, int):
+            for page in self.__pages:
+                if page.index == route:
+                    route = page.route
+                    break
+            else:
+                await self._handle_404_case(route, use_route_change, use_reload)
+                return
 
+        # 2. Fast lookup for exact routes
+        page = self.__exact_routes_map.get(route)
+        if page:
+            route_match = {}
+            if page_reload:
+                return await self.__run_middlewares_optimized(
+                    route, route_match, page, use_route_change, use_reload, page_reload
+                )
+
+            try:
+                if page.protected_route and not await self.__check_protected_route_optimized(
+                    page, route, route_match, use_route_change, use_reload
+                ):
+                    return
+
+                if await self.__run_middlewares_optimized(
+                    route, route_match, page, use_route_change, use_reload
+                ):
+                    return
+            except Exception as e:
+                raise RouteError(
+                    detail=f"Error processing route '{route}' (page: {page.route}): {e}"
+                )
+
+        # 3. Fallback to regex matching for dynamic routes
         for page in self.__pages:
-            if isinstance(route, int):
-                if page.index != route:
-                    continue
-                route = page.route
+            if "{" not in page.route:
+                continue
 
             route_match = self._verify_url(page.route, route, page.custom_params)
-
             if route_match is None:
                 continue
 
@@ -484,8 +657,6 @@ class FletEasyX:
                 return await self.__run_middlewares_optimized(
                     route, route_match, page, use_route_change, use_reload, page_reload
                 )
-
-            pg_404 = False
 
             try:
                 if page.protected_route:
@@ -504,8 +675,10 @@ class FletEasyX:
                 raise RouteError(
                     detail=f"Error processing route '{route}' (page: {page.route}): {e}"
                 )
+            return
 
-        if pg_404:
+        # 4. Handle 404
+        if page is None:
             await self._handle_404_case(route, use_route_change, use_reload)
 
     async def __check_protected_route_optimized(
@@ -547,11 +720,6 @@ class FletEasyX:
         """Optimized middleware runner"""
         self._logger.debug(f"Middlewares: {self.__middlewares}")
         self._logger.debug(f"Middleware Pagesy: {pagesy.middleware}")
-
-        if self.__middlewares and await self.__execute_middleware(
-            pagesy, route_match, self.__middlewares
-        ):
-            return True
 
         if pagesy.middleware and await self.__execute_middleware(
             pagesy, route_match, pagesy.middleware
@@ -610,19 +778,15 @@ class FletEasyX:
         await self._view_append(route, pagesy)
 
     @classmethod
-    def __compile_pattern(cls, pattern_parts: list[str]) -> Pattern[str]:
-        pattern_key = "/".join(pattern_parts)
-        if pattern_key not in cls.__compiled_patterns_cache:
-            cls.__compiled_patterns_cache[pattern_key] = compile(f"^/{pattern_key}/?$")
-        return cls.__compiled_patterns_cache[pattern_key]
-
-    @classmethod
-    def _verify_url(
+    def _get_compiled_pattern_and_segments(
         cls,
         url_pattern: str,
-        url: str,
         custom_types: Optional[Dict[str, Callable[[str], Optional[bool]]]] = None,
-    ) -> Optional[Dict[str, Optional[bool]]]:
+    ) -> Tuple[Pattern[str], List[Tuple[str, Callable[[str], Optional[bool]]]]]:
+
+        if url_pattern in cls.__compiled_patterns_cache:
+            return cls.__compiled_patterns_cache[url_pattern]
+
         combined_patterns = {
             **TYPE_PATTERNS,
             **{k: (compile(r"[^/]+"), v) for k, v in (custom_types or {}).items()},
@@ -633,34 +797,50 @@ class FletEasyX:
         type_patterns: list[str] = []
 
         for segment in url_pattern.strip("/").split("/"):
-            try:
-                if segment == "":
-                    continue
+            if segment == "":
+                continue
 
-                if segment[0] in "<{" and segment[-1] in ">}":
-                    name, type_ = (
-                        segment[1:-1].split(":", 1) if ":" in segment else (segment[1:-1], "str")
-                    )
-                    type_patterns.append(type_)
-                    regex_part, parser = combined_patterns[type_]
-                    pattern_parts.append(f"({regex_part.pattern})")
-                    segments.append((name, parser))
-                else:
-                    pattern_parts.append(escape(segment))
-            except KeyError as e:
-                raise CustomParamsError(
-                    f"Unrecognized URL parameter type '{e}' in route '{url_pattern}'. "
-                    f"Built-in types: d (int), l (str), f (float). "
-                    f"Register custom types via 'custom_params' parameter."
+            if segment[0] in "<{" and segment[-1] in ">}":
+                name, type_ = (
+                    segment[1:-1].split(":", 1) if ":" in segment else (segment[1:-1], "str")
                 )
+                type_patterns.append(type_)
+                try:
+                    regex_part, parser = combined_patterns[type_]
+                except KeyError:
+                    raise CustomParamsError(
+                        f"Unrecognized URL parameter type '{type_}' in route '{url_pattern}'. "
+                        f"Built-in types: d (int), l (str), f (float). "
+                        f"Register custom types via 'custom_params' parameter."
+                    )
+                pattern_parts.append(f"({regex_part.pattern})")
+                segments.append((name, parser))
+            else:
+                pattern_parts.append(escape(segment))
 
-        if custom_types and type_ not in custom_types:
-            raise CustomParamsError(
-                f"Route '{url_pattern}' declares custom_params {list(custom_types.keys())} "
-                f"but none are used in the route pattern. Remove custom_params or use them in the route."
-            )
+        if custom_types:
+            for type_ in custom_types:
+                if type_ not in type_patterns:
+                    raise CustomParamsError(
+                        f"Route '{url_pattern}' declares custom_params {list(custom_types.keys())} "
+                        f"but none are used in the route pattern. Remove custom_params or use them in the route."
+                    )
 
-        pattern = cls.__compile_pattern(pattern_parts)
+        pattern_key = "/".join(pattern_parts)
+        pattern = compile(f"^/{pattern_key}/?$")
+
+        cls.__compiled_patterns_cache[url_pattern] = (pattern, segments)
+        return pattern, segments
+
+    @classmethod
+    def _verify_url(
+        cls,
+        url_pattern: str,
+        url: str,
+        custom_types: Optional[Dict[str, Callable[[str], Optional[bool]]]] = None,
+    ) -> Optional[Dict[str, Optional[bool]]]:
+
+        pattern, segments = cls._get_compiled_pattern_and_segments(url_pattern, custom_types)
         match = pattern.fullmatch(url)
         if not match:
             return None

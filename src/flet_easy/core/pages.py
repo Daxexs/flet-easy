@@ -1,5 +1,4 @@
 from collections import deque
-from functools import wraps
 from types import FunctionType
 from typing import Any, Callable, Dict, List, Optional, Union
 
@@ -30,6 +29,21 @@ class Pagesy:
     ```
     """
 
+    __slots__ = (
+        "route",
+        "view",
+        "title",
+        "index",
+        "clear",
+        "share_data",
+        "protected_route",
+        "custom_params",
+        "middleware",
+        "cache",
+        "_is_component",
+        "_middlewares_request",
+    )
+
     def __init__(
         self,
         route: str,
@@ -59,69 +73,69 @@ class Pagesy:
         self.custom_params = custom_params
         self.middleware = middleware
         self.cache: bool = cache
+        self._is_component: bool = getattr(view, "__is_component__", False)
         self._middlewares_request: deque[MiddlewareRequest] = deque()
 
     def _valid_middlewares_request(self) -> bool:
-        if len(self._middlewares_request) != 0:
-            return True
+        return bool(self._middlewares_request)
 
     def _process_middleware(self, middleware: Union[MiddlewareRequest, MiddlewareHandler]) -> None:
         """Process and validate middleware handlers."""
 
         if isinstance(middleware, FunctionType):
             self.middleware.append(middleware)
-        elif issubclass(middleware, MiddlewareRequest):
+        elif isinstance(middleware, MiddlewareRequest) or (
+            isinstance(middleware, type) and issubclass(middleware, MiddlewareRequest)
+        ):
             self._middlewares_request.append(middleware)
             self.middleware.append(middleware)
         else:
             raise TypeError(
-                f"Class '{middleware.__name__}' must inherit from MiddlewareRequest class or be a function",
+                f"Class '{getattr(middleware, '__name__', type(middleware).__name__)}' must inherit from MiddlewareRequest class or be a function",
             )
 
     def _check_middleware(self, middleware: Middleware) -> None:
         if middleware is None and self.middleware is None:
             return
 
-        if middleware:
-            _middleware = deque()
-
-            if self.middleware is not None:
-                if isinstance(self.middleware, list):
-                    _middleware.extend(self.middleware)
-                    self.middleware.clear()
-                else:
-                    _middleware.append(self.middleware)
-                    self.middleware = deque()
-
+        # Collect page-level items first, then global ones
+        page_items = []
+        if self.middleware is not None:
+            if isinstance(self.middleware, (list, tuple, set, deque)):
+                page_items.extend(self.middleware)
             else:
-                self.middleware = deque()
+                page_items.append(self.middleware)
 
-            _middleware.extend(middleware if isinstance(middleware, list) else [middleware])
+        global_items = []
+        if middleware is not None:
+            if isinstance(middleware, (list, tuple, set, deque)):
+                global_items.extend(middleware)
+            else:
+                global_items.append(middleware)
 
-            for m in _middleware:
-                try:
-                    self._process_middleware(m)
+        self.middleware = deque()
+        self._middlewares_request = deque()
 
-                except (TypeError, AssertionError) as e:
-                    from flet_easy.exceptions import ConfigurationError
+        for m in page_items + global_items:
+            try:
+                self._process_middleware(m)
+            except (TypeError, AssertionError) as e:
+                from flet_easy.exceptions import ConfigurationError
 
-                    raise ConfigurationError(f"Invalid middleware configuration: {str(e)}")
-        else:
-            if not isinstance(self.middleware, list):
-                self.middleware = [self.middleware]
+                raise ConfigurationError(f"Invalid middleware configuration: {str(e)}")
 
     def __repr__(self):
         return f"Pagesy(route={self.route}, view={self.view}, title={self.title}, index={self.index}, clear={self.clear}, share_data={self.share_data}, protected_route={self.protected_route}, custom_params={self.custom_params}, middleware={self.middleware}, cache={self.cache})"
 
 
 class AddPagesy:
-    """Creates an object to then add to the list of the `add_routes` method of the `FletEasy` class.
-    -> Requires the parameter:
-    - **route_prefix:** text string that will bind to the url of the `page` decorator, example(`/users`) this will encompass all urls of this class. (optional)
-    - **middleware:** list of middlewares to be added to the page. (optional)
+    """This class allows you to add pages from other files to the main `Flet-Easy` class.
 
-    **Example:**
+    Requiere los parámetros:
+    - **route_prefix:** cadena de texto que se unira a la url del decorator `page`, ejemplo(`/users`) esto englobara todas las urls de esta clase. (opcional)
+    - **middleware:** lista de middlewares que se agregaran a la página. (opcional)
 
+    **Ejemplo:**
     ```python
     users = fs.AddPagesy(route_prefix="/user")
 
@@ -135,8 +149,9 @@ class AddPagesy:
             controls=[ft.Text("Task")],
         )
     ```
-
     """
+
+    __slots__ = ("route_prefix", "middleware", "__pages")
 
     def __init__(
         self,
@@ -182,25 +197,24 @@ class AddPagesy:
         """Decorator for adding pages with configuration."""
 
         def decorator(func: Callable) -> Callable:
-            @wraps(func)
-            def wrapper(*args, **kwargs):
-                return func(*args, **kwargs)
-
-            self.__pages.append(
-                Pagesy(
-                    route=self.__build_route(route),
-                    view=func,
-                    title=title,
-                    index=index,
-                    clear=page_clear,
-                    share_data=share_data,
-                    protected_route=protected_route,
-                    custom_params=custom_params,
-                    middleware=middleware,
-                    cache=cache,
-                )
+            pagesy = Pagesy(
+                route=self.__build_route(route),
+                view=func,
+                title=title,
+                index=index,
+                clear=page_clear,
+                share_data=share_data,
+                protected_route=protected_route,
+                custom_params=custom_params,
+                middleware=middleware,
+                cache=cache,
             )
-            return wrapper
+            self.__pages.append(pagesy)
+
+            # Back-reference for reverse decorator order (@ft.component on top)
+            func.__flet_easy_pagesy__ = pagesy
+
+            return func
 
         return decorator
 

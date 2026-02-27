@@ -58,7 +58,7 @@ To create a new page you use a decorator that provides the object created by the
 ???+ warning "Available since version 0.3.0"
 
     * `index` : Define the index of the page, use in controls like `ft.NavigationBar` and `ft.CupertinoNavigationBar`.
-    * `cache` : Boolean that preserves page state when navigating. Controls retain their values instead of resetting. (Optional)
+    * `cache` : Boolean that preserves page state when navigating. Controls retain their values instead of resetting. Works in **imperative** mode, but not in **declarative** (`@ft.component`). (Optional)
 
 To add pages, the following parameters are required:
 
@@ -70,7 +70,7 @@ To add pages, the following parameters are required:
 * `custom_params`: To add parameter validation in the custom url using a dictionary. [[`See more`](../guide/routing/dynamic-routes.md#custom-validation)]
 * `middleware` : Acts as an intermediary between different software components. It can be used in the app in general, as well as in each of the pages (optional). [[`See more`](../advanced/middleware.md#for-each-page)]
 * `index` : Define the index of the page, use in controls like `ft.NavigationBar` and `ft.CupertinoNavigationBar`.
-* `cache`: Boolean that preserves page state when navigating. Controls retain their values instead of resetting. (Optional)
+* `cache`: Boolean that preserves page state when navigating. Controls retain their values instead of resetting. Works in **imperative** mode, but not in **declarative** (`@ft.component`). (Optional)
 
 ### **Example**
 
@@ -167,7 +167,7 @@ Besides that you get some extra methods:
 * `logout()` : method to close sessions. [[`See more`](../advanced/route-protection.md#logout)]
 * `login()` : Method to create sessions. [[`See more`](../advanced/route-protection.md#login)]
 * `go()` : Method to change the application path (recommended to use this instead of `page.go` to avoid path errors).
-* `redirect()` : To redirect to a path before the page is loaded, it is used in middleware.
+* `redirect()` : To redirect to a specific route directly. It can be used in middlewares or inside `page` functions.
 * `go_back()` : Method to go back to the previous route.
 * `page_reload()` : Use this method to reload the page, restores the default values of the page.
 * `dynamic_control()` : Adds dynamic control to the page, allowing real-time updates when caching is enabled on the page.

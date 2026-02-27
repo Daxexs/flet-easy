@@ -140,9 +140,24 @@ class Keyboardsy:
         test() - Returns a message of all keyboard input values.
     """
 
+    __slots__ = ("__call", "__controls", "__current_route", "__current_controls")
+
     def __init__(self, call=None) -> None:
         self.__call: KeyboardEvent = call
-        self.__controls: list = []
+        self.__controls: Dict[str, list] = {}
+        self.__current_route: str = None
+        self.__current_controls: list = []
+
+    @property
+    def current_route(self) -> str:
+        return self.__current_route
+
+    @current_route.setter
+    def current_route(self, value: str):
+        self.__current_route = value
+        if value not in self.__controls:
+            self.__controls[value] = []
+        self.__current_controls = self.__controls[value]
 
     @property
     def call(self):
@@ -153,21 +168,21 @@ class Keyboardsy:
         self.__call = call
 
     def _controls(self) -> bool:
-        return len(self.__controls) != 0
+        return len(self.__current_controls) != 0
 
     def clear(self):
-        self.__controls.clear()
+        self.__current_controls.clear()
 
     def add_control(self, function: Callable):
         """Method to add functions to be executed by pressing a key `(supports async, if the app is one)`."""
-        self.__controls.append(function)
+        self.__current_controls.append(function)
 
     async def _run_controls(self):
         """Execute all registered keyboard control functions."""
-        if not self.__controls:
+        if not self.__current_controls:
             return
 
-        for control_func in self.__controls:
+        for control_func in self.__current_controls:
             try:
                 if iscoroutinefunction(control_func):
                     await control_func()
@@ -210,6 +225,8 @@ class Resizesy:
         margin_y - Y-axis margin value.
         margin_x - X-axis margin value.
     """
+
+    __slots__ = ("__page", "__height", "__width", "__margin_y", "__margin_x", "__e")
 
     def __init__(self, page: Page) -> None:
         self.__page = page

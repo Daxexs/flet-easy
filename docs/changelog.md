@@ -1,37 +1,67 @@
 # Flet-Easy changelog
 
-## v0.3.0 (27/09/25)
+## v0.3.0 (01/03/26)
+
+* **Package Reorganization:** Restructured the `flet-easy` package into logical subpackages (`core/`, `security/`, `ui/`) to improve maintainability, while preserving 100% backward compatibility for existing imports.
+
+* **Core Refactoring:** Refactored `fletEasy.py` into `core/app.py`, extracting route-building logic, removing duplicate execution paths, and simplifying middleware handling.
+* compatibility with `flet >= 0.27.*` (see [flet-easy/issues/51](https://github.com/Daxexs/flet-easy/issues/51))
+
+* compatibility with `flet >= 0.80.*` witch change the api. (see [flet-easy/issues/51](https://github.com/Daxexs/flet-easy/issues/51))
 
 * Optimize routes loading and middleware execution ([#40](https://github.com/Daxexs/flet-easy/issues/40))
+
 * Fix for compatibility with Python 3.9 ([#47](https://github.com/Daxexs/flet-easy/issues/47))
 
 ### New features
 
-* Add Middlewares to `AddPagesy` ([#37](https://github.com/Daxexs/flet-easy/issues/37))
-* Add support for the middleware class in the add_middleware method of `FletEasy`. ([#38](https://github.com/Daxexs/flet-easy/issues/38))
-* Implement optional use of per-page cache ([#39](https://github.com/Daxexs/flet-easy/issues/39))
+* Support for rendering new Flet Declarative UI Components (`@ft.component`) as native routes, bridging URL parameters and `Datasy` seamlessly into declarative objects. (see [flet-easy/issues/51](https://github.com/Daxexs/flet-easy/issues/51)) [[Docs](https://daxexs.github.io/flet-easy/dev/guide/add-pages/through-decorators/#using-declarative-components-ftcomponent)]
 
-* Add routing using `NavigationBar` ([#41](https://github.com/Daxexs/flet-easy/issues/41))
+* Add Middlewares to `AddPagesy` ([#37](https://github.com/Daxexs/flet-easy/issues/37)) [[Docs](https://daxexs.github.io/flet-easy/dev/guide/add-pages/through-decorators/#middleware)]
+
+* Add support for the middleware class in the add_middleware method of `FletEasy`. ([#38](https://github.com/Daxexs/flet-easy/issues/38)) [[Docs](https://daxexs.github.io/flet-easy/dev/advanced/middleware/#class-based-middleware)]
+
+* Add support for the middleware class in the add_middleware method of `AddPagesy`. ([#38](https://github.com/Daxexs/flet-easy/issues/38)) [[Docs](https://daxexs.github.io/flet-easy/dev/advanced/middleware/#for-each-page)]
+
+* Implement optional use of per-page cache ([#39](https://github.com/Daxexs/flet-easy/issues/39)) [[Docs](https://daxexs.github.io/flet-easy/dev/advanced/page-caching)]
+
+* Add routing using `NavigationBar` ([#41](https://github.com/Daxexs/flet-easy/issues/41)) [[Docs](https://daxexs.github.io/flet-easy/dev/guide/routing/navigation/)]
 
 ### Pagesy
 
-* `index` : Define the index of the page, use in controls like `ft.NavigationBar` and `ft.CupertinoNavigationBar`. ([#41](https://github.com/Daxexs/flet-easy/issues/41))
-* `cache` : Boolean that preserves page state when navigating. Controls retain their values instead of resetting. (Optional) ([#39](https://github.com/Daxexs/flet-easy/issues/39))
+* `index` : Define the index of the page, use in controls like `ft.NavigationBar` and `ft.CupertinoNavigationBar`. ([#41](https://github.com/Daxexs/flet-easy/issues/41)) [[Docs](https://daxexs.github.io/flet-easy/dev/guide/core/pagesy/#index)]
+
+* `cache` : Boolean that preserves page state when navigating. Controls retain their values instead of resetting. (Optional) ([#39](https://github.com/Daxexs/flet-easy/issues/39)) [[Docs](https://daxexs.github.io/flet-easy/dev/guide/core/pagesy/#cache)]
 
 ### Datasy (data)
 
 #### New methods
 
-* `page_reload()` : Use this method to reload the page, restores the default values of the page. ([#49](https://github.com/Daxexs/flet-easy/issues/49))
-* `dynamic_control()` : Adds dynamic control to the page, allowing real-time updates when caching is enabled on the page. ([#41](https://github.com/Daxexs/flet-easy/issues/41))
-* `go_navigation_bar()` : Handles navigation bar changes. Use this method in the on_change event of 'ft.NavigationBar' or 'ft.CupertinoNavigationBar' controls. ([#41](https://github.com/Daxexs/flet-easy/issues/41))
-* `go_route(route: str)` : Use this method to navigate to a specific route. It executes directly, unlike the `data.go()` method, which returns a lambda function. ([#50](https://github.com/Daxexs/flet-easy/issues/50))
+* `page_reload()` : Use this method to reload the page, restores the default values of the page. ([#49](https://github.com/Daxexs/flet-easy/issues/49)) [[Docs](https://daxexs.github.io/flet-easy/dev/guide/core/datasy/#page_reload)]
+
+* `dynamic_control()` : Adds dynamic control to the page, allowing real-time updates when caching is enabled on the page. ([#41](https://github.com/Daxexs/flet-easy/issues/41)) [[Docs](https://daxexs.github.io/flet-easy/dev/guide/core/datasy/#dynamic_controlcontrol-func_update)]
+
+* `go_navigation_bar()` : Handles navigation bar changes. Use this method in the on_change event of 'ft.NavigationBar' or 'ft.CupertinoNavigationBar' controls. ([#41](https://github.com/Daxexs/flet-easy/issues/41)) [[Docs](https://daxexs.github.io/flet-easy/dev/guide/core/datasy/#go_navigation_bar-e)]
+
+* `go_route(route: str)` : Use this method to navigate to a specific route. It executes directly, unlike the `data.go()` method, which returns a lambda function. ([#50](https://github.com/Daxexs/flet-easy/issues/50)) [[Docs](https://daxexs.github.io/flet-easy/dev/guide/core/datasy/#go_route-route)]
 
 #### Changes in the api
 
-* `go_back()`: Use this method to return to the previous path. The method is executed directly without returning a lambda function. ([#50](https://github.com/Daxexs/flet-easy/issues/50))
-* `logout(key: str, next_route: str = None)`: Use this method to close all sessions on all devices or on the device currently in use, which was previously configured with the `login` method. The method executes directly without returning a lambda function. A new parameter, `next_route`, has also been included to redirect to a router other than the login router. ([#50](https://github.com/Daxexs/flet-easy/issues/50))
-* `data.redirect(route: str)`: Use this method to redirect to a specific route. It executes directly, unlike the `data.go()` method. Method added available in functions decorated with `@page(...)`. ([#50](https://github.com/Daxexs/flet-easy/issues/50))
+* `go_back()`: Use this method to return to the previous path. The method is executed directly without returning a lambda function. ([#50](https://github.com/Daxexs/flet-easy/issues/50)) [[Docs](https://daxexs.github.io/flet-easy/dev/guide/core/datasy/#go_back)]
+
+* `logout(key: str, next_route: str = None)`: Use this method to close all sessions on all devices or on the device currently in use, which was previously configured with the `login` method. The method executes directly without returning a lambda function. A new parameter, `next_route`, has also been included to redirect to a router other than the login router. ([#50](https://github.com/Daxexs/flet-easy/issues/50)) [[Docs](https://daxexs.github.io/flet-easy/dev/guide/core/datasy/#logoutkey-next_route)]
+
+* `data.redirect(route: str)`: Use this method to redirect to a specific route. It executes directly, unlike the `data.go()` method. Method added available in functions decorated with `@page(...)`. ([#50](https://github.com/Daxexs/flet-easy/issues/50)) [[Docs](https://daxexs.github.io/flet-easy/dev/guide/core/datasy/#redirect-route)]
+
+---
+
+* `go(route: str)`: Use this method to navigate to a specific route. It returns an asynchronous lambda function, unlike `go_route()`, which executes directly. This method is available in functions decorated with `@page(...)`. ([#50](https://github.com/Daxexs/flet-easy/issues/500)) [[Docs](https://daxexs.github.io/flet-easy/dev/guide/core/datasy/#go_route-route)]
+
+* `data.share.set()`: Starting from version `0.80.*`, the `await` keyword is required as it now utilizes `SharedPreferences` by default.
+
+* `cache`: Currently supported in imperative routing; declarative routing support is not yet available.
+
+---
 
 ## v0.2.9 (25/01/25)
 

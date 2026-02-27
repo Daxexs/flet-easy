@@ -85,17 +85,18 @@ class Counter(ft.Container):
 
 class Middleware(fs.MiddlewareRequest):
     def before_request(self):
-        print("Middleware before_request:", self.data.page.views)
+        print("Middleware before_request:", self.data.route)
 
-    def after_request(self):
-        print("Middleware after_request:", self.data.page.views)
+    async def after_request(self):
+        print("Middleware after_request:", self.data.route)
+        print("counter", await ft.SharedPreferences().get("counter"))
 
 
 app.add_middleware(Middleware)
 
 
 @app.page("/", title="Test 1", index=0, cache=True)
-def index_page(data: fs.Datasy):
+async def index_page(data: fs.Datasy):
     page = data.page
     appbar = data.view.appbar
 
@@ -106,10 +107,10 @@ def index_page(data: fs.Datasy):
     data.dynamic_control(control=appbar, func_update=update_appbar_title)
 
     if hasattr(page, "client_storage"):
-        page.client_storage.set("counter", 5)
+        await page.client_storage.set_async("counter", 5)
     else:
         # support shared_preferences flet v0.80.*
-        page.run_task(ft.SharedPreferences().set, "counter", 5)
+        await ft.SharedPreferences().set("counter", "5")
 
     return ft.View(
         controls=[
