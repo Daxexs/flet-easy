@@ -1,17 +1,37 @@
-import contextlib
 from secrets import token_bytes
 from typing import Any, Dict, Union
 
-with contextlib.suppress(ImportError):
-    from jwt import DecodeError, ExpiredSignatureError, InvalidKeyError
-
-with contextlib.suppress(ImportError):
-    from rsa import newkeys
-
 from flet_easy.core.data import Datasy, evaluate_secret_key
 from flet_easy.core.models import Msg
-from flet_easy.exceptions import LoginError, LogoutError, SecretKeyError
+from flet_easy.exceptions import (
+    FletEasyError,
+    LoginError,
+    LogoutError,
+    RsaMissingError,
+    SecretKeyError,
+)
 from flet_easy.security.config import _decode_payload
+
+try:
+    from jwt import DecodeError, ExpiredSignatureError, InvalidKeyError
+except ImportError:
+
+    class DecodeError(Exception):
+        pass
+
+    class ExpiredSignatureError(Exception):
+        pass
+
+    class InvalidKeyError(Exception):
+        pass
+
+
+try:
+    from rsa import newkeys
+except ImportError:
+
+    def newkeys(*args, **kwargs):
+        raise RsaMissingError()
 
 
 class EasyKey:
@@ -87,6 +107,8 @@ def _handle_decode_errors(jwt: str, data: Datasy, key_login: str) -> Union[Dict[
             "Decoding error, possibly there is a double use of the storage 'key', Secret key invalid! or ",
             e,
         )
+    except FletEasyError:
+        raise
     except Exception as e:
         data.logout(key_login)
         raise LogoutError("Login error:", e)

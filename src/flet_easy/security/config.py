@@ -1,12 +1,18 @@
-import contextlib
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any, Dict, Union
 
-from flet_easy.exceptions import AlgorithmJwtError, SecretKeyError
+from flet_easy.exceptions import AlgorithmJwtError, JwtMissingError, SecretKeyError
 
-with contextlib.suppress(ImportError):
+try:
     from jwt import decode, encode
+except ImportError:
+
+    def decode(*args, **kwargs):
+        raise JwtMissingError()
+
+    def encode(*args, **kwargs):
+        raise JwtMissingError()
 
 
 @dataclass

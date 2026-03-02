@@ -189,3 +189,35 @@ class StorageSerializationError(FletEasyError):
         if detail:
             parts.append(f"Detail: {detail}")
         super().__init__(" | ".join(parts))
+
+
+class JwtMissingError(FletEasyError):
+    """Raised when JWT operations are used but the 'PyJWT' library is not installed.
+
+    Common causes:
+    - Calling `decode` or `encode` without `PyJWT` installed.
+
+    Fix: Install the required package: `pip install flet-easy[jwt]`
+    """
+
+    def __init__(
+        self,
+        message: str = "PyJWT library is not installed. Please install it using 'pip install flet-easy[jwt]'",
+    ):
+        super().__init__(f"[JwtMissingError] {message}")
+
+
+class RsaMissingError(FletEasyError):
+    """Raised when RSA operations are used but the 'rsa' library is not installed.
+
+    Common causes:
+    - Creating an `EasyKey` without `rsa` installed.
+
+    Fix: Install the required package: `pip install flet-easy[jwt]`
+    """
+
+    def __init__(
+        self,
+        message: str = "rsa library is not installed. Please install it using 'pip install flet-easy[jwt]'",
+    ):
+        super().__init__(f"[RsaMissingError] {message}")
