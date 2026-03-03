@@ -4,7 +4,7 @@ version = "0.1.0"
 license = "MIT"
 dependencies = [
     "flet==0.80.*",
-    "flet-easy==0.3.0.dev21",
+    "flet-easy[jwt]==0.3.0.dev22",
     "tortoise-orm==0.22.2",
 ]
 
@@ -13,19 +13,29 @@ name = "Daxexs"
 email = "Daxexs@test.com"
 
 [tool.flet]
-# org name in reverse domain name notation, e.g. "com.mycompany".
-# Combined with project.name to build bundle ID for iOS and Android apps
-org = "com.mycompany"
-
-# project display name that is used as an app title on Android and iOS home screens,
-# shown in window titles and about app dialogs on desktop.
-product = "flet-app"
-
-# company name to display in about app dialogs
-company = "Flet"
-
-# copyright text to display in about app dialogs
-copyright = "Copyright (C) 2024 by Flet"
+org = "com.mycompany"                         # --org
+product = "flet-easy"                         # --product
+company = "My Company"                        # --company
+copyright = "Copyright (C) 2026 by MyCompany" # --copyright
+build_number = 1                              # --build-number
+BUILD_VERSION = "0.2.0"
 
 [tool.flet.app]
 path = "src"
+
+[tool.flet.compile]
+app = true
+packages = true
+
+[tool.flet.splash]
+color = ""      # --splash-color
+dark_color = "" # --splash-dark-color
+web = false     # --no-web-splash
+ios = false     # --no-ios-splash
+android = true  # --no-android-splash
+
+[tool.flet.cleanup] # or [tool.flet.<PLATFORM>.cleanup]
+app = true
+packages = true
+app_files = ["**/*.c", "**/*.h"]
+package_files = ["**/*.pyi"]

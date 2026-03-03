@@ -3,13 +3,7 @@ from typing import Any, Dict, Union
 
 from flet_easy.core.data import Datasy, evaluate_secret_key
 from flet_easy.core.models import Msg
-from flet_easy.exceptions import (
-    FletEasyError,
-    LoginError,
-    LogoutError,
-    RsaMissingError,
-    SecretKeyError,
-)
+from flet_easy.exceptions import FletEasyError, LoginError, LogoutError, RsaMissingError
 from flet_easy.security.config import _decode_payload
 
 try:
@@ -121,17 +115,10 @@ def decode(key_login: str, data: Datasy) -> Union[Dict[str, Any], bool]:
     * `key_login` : key used to store data in the client, also used in the `login` method of `Datasy`.
     * `data` : Instance object of the `Datasy` class.
     """
-    if data.secret_key is None:
-        raise SecretKeyError(
-            "decode() requires 'secret_key' in FletEasy(). "
-            "Example: FletEasy(secret_key=SecretKey(secret='your-secret', algorithm='HS256'))"
-        )
     try:
-        return _handle_decode_errors(
-            jwt=data._storage_get(key_login), data=data, key_login=key_login
-        )
+        return data.page.run_task(decode_async, key_login, data).result(timeout=5)
     except TimeoutError as e:
-        raise LoginError("Use the 'decode_async' method instead of 'decode'. | More details:", e)
+        raise LoginError("Decode error, using decode_async:", e)
 
 
 async def decode_async(key_login: str, data: Datasy) -> Union[Dict[str, Any], bool]:
@@ -141,16 +128,6 @@ async def decode_async(key_login: str, data: Datasy) -> Union[Dict[str, Any], bo
     * `key_login` : key used to store data in the client, also used in the `login` method of `Datasy`.
     * `data` : Instance object of the `Datasy` class.
     """
-    if data.secret_key is None:
-        raise SecretKeyError(
-            "decode_async() requires 'secret_key' in FletEasy(). "
-            "Example: FletEasy(secret_key=SecretKey(secret='your-secret', algorithm='HS256'))"
-        )
-
-    try:
-        x = _handle_decode_errors(
-            jwt=await data._storage_get_async(key_login), data=data, key_login=key_login
-        )
-        return x
-    except TimeoutError as e:
-        raise LoginError("Use the 'decode' method instead of 'decode_async'. | More details:", e)
+    return _handle_decode_errors(
+        jwt=await data._storage_get_async(key_login), data=data, key_login=key_login
+    )

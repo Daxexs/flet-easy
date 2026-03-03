@@ -14,6 +14,12 @@ class LoginC:
         self.password = fs.Ref[ft.TextField]()
         self.time_logout = fs.Ref[ft.TextField]()
 
+    def show_snack_bar(self, text: str):
+        if hasattr(self.data.page, "open"):
+            self.data.page.open(ft.SnackBar(content=ft.Text(text)))
+        else:
+            self.data.page.show_dialog(ft.SnackBar(content=ft.Text(text)))
+
     async def check(self, e):
         username = (
             self.username.c.value
@@ -29,9 +35,7 @@ class LoginC:
 
         if username and password:
             if not await check_user(User(username=username, password=password)):
-                self.data.page.snack_bar = ft.SnackBar(
-                    content=ft.Text("User does not exist"), action="Alright!", open=True
-                )
+                self.show_snack_bar("User does not exist")
             else:
                 await self.data.login_async(
                     key="login",
@@ -40,7 +44,4 @@ class LoginC:
                     next_route="/dashboard",
                 )
         else:
-            self.data.page.snack_bar = ft.SnackBar(
-                content=ft.Text("Enter the data"), action="Alright!", open=True
-            )
-        self.data.page.update()
+            self.show_snack_bar("Enter the data")

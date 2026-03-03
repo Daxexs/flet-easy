@@ -3,7 +3,7 @@ name = "flet-app"
 version = "0.1.0"
 license = "MIT"
 requires-python = ">=3.9"
-dependencies = ["flet==0.80.*", "flet-easy==0.3.0.dev21"]
+dependencies = ["flet==0.80.*", "flet-easy==0.3.0.dev22"]
 
 [[project.authors]]
 name = "Daxexs"

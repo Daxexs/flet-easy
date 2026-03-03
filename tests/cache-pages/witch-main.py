@@ -89,7 +89,6 @@ class Middleware(fs.MiddlewareRequest):
 
     async def after_request(self):
         print("Middleware after_request:", self.data.route)
-        print("counter", await ft.SharedPreferences().get("counter"))
 
 
 app.add_middleware(Middleware)

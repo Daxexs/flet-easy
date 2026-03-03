@@ -215,35 +215,21 @@ class Datasy:
 
     """--------- Storage Compatibility Helpers -------"""
 
-    def _storage_set(self, key: str, value: Any) -> None:
-        if hasattr(self.page, "client_storage"):
-            self.page.client_storage.set(key, value)
-        else:
-            self.page.run_task(self._shared_preferences.set, key, str(value))
-
     async def _storage_set_async(self, key: str, value: Any) -> None:
         if hasattr(self.page, "client_storage"):
             await self.page.client_storage.set_async(key, value)
         else:
             await self._shared_preferences.set(key, str(value))
 
-    def _storage_get(self, key: str) -> Any:
-        if hasattr(self.page, "client_storage"):
-            return self.page.client_storage.get(key)
-        else:
-            self.page.run_task(self._shared_preferences.get, key)
-
     async def _storage_get_async(self, key: str) -> Any:
-        if hasattr(self.page, "client_storage"):
-            return await self.page.client_storage.get_async(key)
+        try:
+            if hasattr(self.page, "client_storage"):
+                return await self.page.client_storage.get_async(key)
 
-        return await self._shared_preferences.get(key)
-
-    def _storage_remove(self, key: str) -> None:
-        if hasattr(self.page, "client_storage"):
-            self.page.client_storage.remove(key)
-        else:
-            self.page.run_task(self._shared_preferences.remove, key)
+            return await self._shared_preferences.get(key)
+        except Exception:
+            await self._storage_remove_async(key)
+            return None
 
     async def _storage_remove_async(self, key: str) -> None:
         if hasattr(self.page, "client_storage"):
@@ -412,17 +398,12 @@ class Datasy:
         * `time_expiry` : Time to expire the session, use the `timedelta` class  to configure. (Optional)
         * `sleep` : Time to do login checks, default is 1s. (Optional)
         """
-        value = self.__login(key, value, next_route, time_expiry, sleep)
-
         try:
-            self._storage_set(key, value)
-        except TimeoutError:
-            self.page.run_task(self._storage_set_async, key, value)
-            raise LoginError(
-                "The operation has timed out. Please use 'login_async()' instead of 'login()'."
+            self.page.run_task(self.login_async, key, value, next_route, time_expiry, sleep).result(
+                timeout=5
             )
-        finally:
-            self.page.run_task(self.__go, next_route)
+        except TimeoutError as e:
+            raise LoginError("Login error, using login_async() instead.", e)
 
     async def login_async(
         self,
@@ -443,7 +424,6 @@ class Datasy:
         * `time_expiry` : Time to expire the session, use the `timedelta` class  to configure. (Optional)
         * `sleep` : Time to do login checks, default is 1s. (Optional)
         """
-
         value = self.__login(key, value, next_route, time_expiry, sleep)
         await self._storage_set_async(key, value)
         await self.__go(next_route)
