@@ -33,9 +33,9 @@ except ImportError:
     SessionStorage = None  # Not available in new Flet
 
 
-def go_page(page: Page, route: str) -> None:
+async def go_page(page: Page, route: str) -> None:
     """Navigate to a route using the appropriate method based on Flet version. `page.go()` deprecated in Flet 0.90 replaced by `page.push_route()`."""
     if hasattr(page, "go"):
         page.go(route)
     else:
-        page.push_route(route)
+        await page.push_route(route)

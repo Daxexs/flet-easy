@@ -163,7 +163,7 @@ class FletEasyX:
     async def __route_change(self, e: RouteChangeEvent) -> None:
         if self.__pagesy is None:
             if e.route == "/" and self.__route_init != "/":
-                go_page(self.__page, self.__route_init)
+                await go_page(self.__page, self.__route_init)
                 return
 
             await self._go(e.route, True)
@@ -749,7 +749,7 @@ class FletEasyX:
             if self.__page.route != route:
                 self.__pagesy = pagesy
                 self._logger.debug(f"Navigating to: {route}")
-                go_page(self.__page, route)
+                await go_page(self.__page, route)
             else:
                 await self._view_append(route, pagesy)
 

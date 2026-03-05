@@ -576,6 +576,37 @@ if __name__ == "__main__":
     app.run()
 ```
 
+### JWT Authentication with `decode_jwt`
+
+!!! note "Replaced `fs.decode` and `fs.decode_async`"
+
+* **`data.decode_jwt(key)`**: Decode JWT synchronously from `Datasy`
+* **`data.decode_jwt_async(key)`**: Decode JWT asynchronously — preferred in `async` login decorators
+
+```python
+import flet_easy as fs
+
+app = fs.FletEasy(
+    route_init="/home",
+    route_login="/login",
+    secret_key=fs.SecretKey(
+        algorithm=fs.Algorithm.HS256,
+        secret="your-secret-key",
+    ),
+    auto_logout=True,
+)
+
+# Decode JWT in the login decorator (recommended: async)
+@app.login
+async def login_required(data: fs.Datasy) -> bool:
+    return await data.decode_jwt_async(key_login="auth_token")
+
+# Equivalent sync version (uses run_task internally)
+@app.login
+def login_required_sync(data: fs.Datasy) -> bool:
+    return data.decode_jwt(key_login="auth_token")
+```
+
 ### 🎬 Demo
 
 <video controls>
@@ -622,7 +653,7 @@ if __name__ == "__main__":
 
 * **`go_route()`**: Immediate navigation without lambda wrappers
 * **`go_back()`**: Direct execution instead of returning functions
-* **`logout()`**: Immediate logout action
+* **`logout()`**: Immediate logout action with optional `next_route`
 * **`page_reload()`**: Instant page refresh and state reset
 
 ### Python 3.9 Support

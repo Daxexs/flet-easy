@@ -98,3 +98,4 @@ Closes the sessions of all browser tabs or the device used, which has been previ
 **Parameters [`data.logout`](../started/how-to-use.md#methods_1):**
 
 * `key` : It is the identifier to store the value in the client storage.
+* `next_route` : Route to redirect to after logout. If not provided, uses the `route_login` configured in `FletEasy`. (Optional)

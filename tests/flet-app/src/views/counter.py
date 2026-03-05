@@ -13,7 +13,7 @@ counter = fs.AddPagesy(route_prefix="/counter", middleware=[message_counter])
 
 async def check_params(data: fs.Datasy):
     print("+ Params Counter id:", data.url_params.get("id"))
-    if data.url_params.get("id") == 10 and not await fs.decode_async("login", data):
+    if data.url_params.get("id") == 10 and not await data.decode_jwt_async("login"):
         return data.redirect("/share/send-data")
 
 

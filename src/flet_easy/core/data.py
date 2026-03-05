@@ -1,19 +1,13 @@
 from collections import deque
-from datetime import datetime, timedelta, timezone
 from typing import Any, Callable, Dict, List, Tuple, Union
 
 from flet import Control, ControlEvent, Page, View, ViewPopEvent
 
-from flet_easy.core.job import Job
-from flet_easy.core.models import Msg, Redirect
-from flet_easy.exceptions import ConfigurationError, LoginError, SecretKeyError
+from flet_easy.core.models import Redirect
 from flet_easy.logger import get_logger
-from flet_easy.migration import NEW_FLET_VERSION, go_page
-from flet_easy.security.config import (
-    SecretKey,
-    _decode_payload,
-    encode_verified,
-)
+from flet_easy.migration import NEW_FLET_VERSION
+from flet_easy.security.auth import AuthMixin
+from flet_easy.security.config import SecretKey
 from flet_easy.ui.controls import (
     Keyboardsy,
     Resizesy,
@@ -25,7 +19,7 @@ from flet_easy.ui.controls import (
 _logger = get_logger("Datasy")
 
 
-class Datasy:
+class Datasy(AuthMixin):
     """The decorated function will always receive a parameter which is `data` (can be any name), which will make an object of type `Datasy` of `Flet-Easy`.
 
     This class has the following attributes, in order to access its data:
@@ -64,7 +58,7 @@ class Datasy:
         "__on_keyboard_event",
         "__on_resize",
         "__route",
-        "__go",
+        "_run_go",
         "__history_routes",
         "_dynamic_control",
         "__secret_key",
@@ -101,13 +95,13 @@ class Datasy:
         self.__on_keyboard_event = page_on_keyboard
         self.__on_resize: Resizesy = page_on_resize
         self.__route: str = None
-        self.__go = go
+        self._run_go = go
         self.__history_routes: deque[Tuple[str, int]] = deque()
         self._dynamic_control: Dict[str, List[Tuple[Control, Callable[[Control]], None]]] = {}
 
         self.__secret_key: SecretKey = secret_key
         self.__auto_logout: bool = auto_logout
-        self.__sleep: int = 1
+        self._sleep_auth: int = 1
         self._key_login: str = None
         self._login_done: bool = False
         self._shared_preferences = (
@@ -213,221 +207,6 @@ class Datasy:
     def route(self, route: str):
         self.__route = route
 
-    """--------- Storage Compatibility Helpers -------"""
-
-    async def _storage_set_async(self, key: str, value: Any) -> None:
-        if hasattr(self.page, "client_storage"):
-            await self.page.client_storage.set_async(key, value)
-        else:
-            await self._shared_preferences.set(key, str(value))
-
-    async def _storage_get_async(self, key: str) -> Any:
-        try:
-            if hasattr(self.page, "client_storage"):
-                return await self.page.client_storage.get_async(key)
-
-            return await self._shared_preferences.get(key)
-        except Exception:
-            await self._storage_remove_async(key)
-            return None
-
-    async def _storage_remove_async(self, key: str) -> None:
-        if hasattr(self.page, "client_storage"):
-            await self.page.client_storage.remove_async(key)
-        else:
-            await self._shared_preferences.remove(key)
-
-    """--------- login authentication : asynchronously | synchronously -------"""
-
-    def _login_done_evaluate(self) -> bool:
-        return self._login_done
-
-    def _create_task_login_update(self, decode: Dict[str, Any]) -> None:
-        """Updates the login status, in case it does not exist it creates a new task that checks the user's login status."""
-        time_exp = datetime.fromtimestamp(float(decode.get("exp")), tz=timezone.utc)
-        time_now = datetime.now(tz=timezone.utc)
-        time_res = time_exp - time_now
-        self._login_done = True
-        Job(
-            func=self.logout,
-            key=self.key_login,
-            every=time_res,
-            page=self.page,
-            login_done=self._login_done_evaluate,
-            sleep_time=self.__sleep,
-        ).start()
-
-    def logout(self, key: str, next_route: str = None) -> None:
-        """Closes the sessions of all browser tabs or the device used, which has been previously configured with the `login` method.
-
-        ### Example:
-        ```python
-        @app.page('/Dashboard', title='Dashboard', protected_route=True)
-        def dashboard(data:fs.Datasy)
-            return ft.View(
-                controls=[
-                    ft.FilledButton('Logout', onclick=lambda e: data.logout('key-login')),
-            )
-        ```
-        """
-
-        if self.route_login is None and next_route is None:
-            raise ConfigurationError(
-                "Cannot logout: no route to redirect to. "
-                "Set 'route_login' in FletEasy() or pass 'next_route' to logout()."
-            )
-
-        if self.page.web:
-            self.page.pubsub.send_all_on_topic(
-                self.page.client_ip + self.page.client_user_agent,
-                Msg("logout", key, {"next_route": next_route}),
-            )
-        else:
-            self.page.run_task(self._storage_remove_async, key)
-            go_page(self.page, next_route or self.route_login)
-
-    async def __logout_init(self, topic, msg: Msg) -> None:
-        if msg.method == "login":
-            await self._storage_set_async(msg.key, msg.value.get("value"))
-            if self.page.route == self.route_login:
-                go_page(self.page, msg.value.get("next_route"))
-
-        elif msg.method == "logout":
-            self._login_done = False
-            await self._storage_remove_async(msg.key)
-            go_page(self.page, msg.value.get("next_route") or self.route_login)
-
-        elif msg.method == "updateLogin":
-            self._login_done = msg.value
-
-        elif msg.method == "updateLoginSessions":
-            self._login_done = msg.value
-            try:
-                jwt = await self._storage_get_async(self.key_login)
-            except Exception:
-                jwt = None
-            self._create_task_login_update(
-                decode=_decode_payload(
-                    jwt=jwt,
-                    secret_key=(
-                        self.secret_key.secret
-                        if self.secret_key.secret is not None
-                        else self.secret_key.pem_key.public
-                    ),
-                    algorithms=self.secret_key.algorithm,
-                )
-            )
-        else:
-            raise ConfigurationError(
-                f"Unknown pubsub method '{msg.method}' received in session handler. "
-                f"Expected: 'login', 'logout', 'updateLogin', or 'updateLoginSessions'."
-            )
-
-    def _create_login(self) -> None:
-        """Create the connection between sessions."""
-        if self.page.web:
-            self.page.pubsub.subscribe_topic(
-                self.page.client_ip + self.page.client_user_agent, self.__logout_init
-            )
-
-    def _create_tasks(self, time_expiry: timedelta, key: str, sleep: int) -> None:
-        """Creates the logout task when logging in."""
-        if time_expiry is not None:
-            Job(
-                func=self.logout,
-                key=key,
-                every=time_expiry,
-                page=self.page,
-                login_done=self._login_done_evaluate,
-                sleep_time=sleep,
-            ).start()
-
-    def __login(
-        self,
-        key: str,
-        value: Union[Dict[str, Any], Any],
-        next_route: str,
-        time_expiry: timedelta = None,
-        sleep: int = 1,
-    ) -> Union[str, None]:
-        if time_expiry:
-            if not isinstance(value, Dict):
-                raise ConfigurationError(
-                    f"login() 'value' must be a dict when 'time_expiry' is set, "
-                    f"got {type(value).__name__}. Use a dict for JWT payload or remove time_expiry."
-                )
-            if self.__secret_key is None:
-                raise SecretKeyError(
-                    "login() requires 'secret_key' in FletEasy() when 'time_expiry' is used. "
-                    "Example: FletEasy(secret_key=SecretKey(secret='your-secret', algorithm='HS256'))"
-                )
-
-        if self.__secret_key:
-            evaluate_secret_key(self)
-            self._key_login = key
-            self.__sleep = sleep
-            value = encode_verified(self.secret_key, value, time_expiry)
-            self._login_done = True
-
-        if self.__auto_logout:
-            self._create_tasks(time_expiry, key, sleep)
-
-        if self.page.web:
-            self.page.pubsub.send_others_on_topic(
-                self.page.client_ip + self.page.client_user_agent,
-                Msg("login", key, {"value": value, "next_route": next_route}),
-            )
-
-        return value
-
-    def login(
-        self,
-        key: str,
-        value: Union[Dict[str, Any], Any],
-        next_route: str,
-        time_expiry: timedelta = None,
-        sleep: int = 1,
-    ) -> None:
-        """Registering in the client's storage the key and value in all browser sessions.
-
-        ### Parameters to use:
-
-        * `key` : It is the identifier to store the value in the client storage.
-        * `value` : Recommend to use a dict if you use JWT.
-        * `next_route` : Redirect to next route after creating login.
-        * `time_expiry` : Time to expire the session, use the `timedelta` class  to configure. (Optional)
-        * `sleep` : Time to do login checks, default is 1s. (Optional)
-        """
-        try:
-            self.page.run_task(self.login_async, key, value, next_route, time_expiry, sleep).result(
-                timeout=5
-            )
-        except TimeoutError as e:
-            raise LoginError("Login error, using login_async() instead.", e)
-
-    async def login_async(
-        self,
-        key: str,
-        value: Union[Dict[str, Any], Any],
-        next_route: str,
-        time_expiry: timedelta = None,
-        sleep: int = 1,
-    ) -> None:
-        """Registering in the client's storage the key and value in all browser sessions.
-        * This method is asynchronous.
-
-        ### Parameters to use:
-
-        * `key` : It is the identifier to store the value in the client storage.
-        * `value` : Recommend to use a dict if you use JWT.
-        * `next_route` : Redirect to next route after creating login.
-        * `time_expiry` : Time to expire the session, use the `timedelta` class  to configure. (Optional)
-        * `sleep` : Time to do login checks, default is 1s. (Optional)
-        """
-        value = self.__login(key, value, next_route, time_expiry, sleep)
-        await self._storage_set_async(key, value)
-        await self.__go(next_route)
-
     """ Page go  """
 
     def go(self, route: str) -> Callable[[ControlEvent], None]:
@@ -439,7 +218,7 @@ class Datasy:
         """To change the application path, it is important for better validation to avoid using `page.go()`."""
 
         async def _go_route():
-            await self.__go(route)
+            await self._run_go(route)
 
         self.page.run_task(_go_route)
 
@@ -449,7 +228,7 @@ class Datasy:
 
         async def _go_nav():
             route = e.control.selected_index
-            await self.__go(route)
+            await self._run_go(route)
 
         self.page.run_task(_go_nav)
 
@@ -468,7 +247,7 @@ class Datasy:
                 self.view.navigation_bar.selected_index = index
 
             async def _go_back():
-                await self.__go(route)
+                await self._run_go(route)
 
             self.page.run_task(_go_back)
         else:
@@ -476,7 +255,7 @@ class Datasy:
 
     def page_reload(self):
         """Use this method to reload the page, restores the default values of the page"""
-        self.__go(self.page.route, page_reload=True)
+        self._run_go(self.page.route, page_reload=True)
 
     def dynamic_control(self, control: Control, func_update: Callable[[Control], None]) -> None:
         """Adds dynamic control to the page, allowing real-time updates when caching is enabled on the page."""
@@ -489,20 +268,3 @@ class Datasy:
         """Confirm pop view"""
         self.go_back()
         e.control.confirm_pop(False)
-
-
-def evaluate_secret_key(data: Datasy) -> None:
-    valid = (
-        data.secret_key.secret is None
-        and data.secret_key.algorithm == "RS256"
-        or data.secret_key.pem_key is None
-        and data.secret_key.algorithm == "HS256"
-    )
-    if not valid:
-        raise SecretKeyError(
-            f"Algorithm '{data.secret_key.algorithm}' mismatch: "
-            f"HS256 requires 'secret' (pem_key must be None), "
-            f"RS256 requires 'pem_key' (secret must be None). "
-            f"Got secret={'set' if data.secret_key.secret else 'None'}, "
-            f"pem_key={'set' if data.secret_key.pem_key else 'None'}."
-        )

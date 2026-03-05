@@ -11,6 +11,8 @@ This guide helps you migrate your Flet-Easy applications from version 0.2.x to 0
 * 🆕 **Direct Method Execution**: Simplified API for common operations
 * 🆕 **Python 3.9 Support**: Extended compatibility
 * ⚡ **Performance Improvements**: Optimized routing and middleware execution
+* 🆕 **`decode_jwt` / `decode_jwt_async`** methods added to `Datasy`, replacing the standalone `fs.decode()` / `fs.decode_async()` functions.
+* ⚠️ **`fs.decode` and `fs.decode_async` are deprecated** — they still work but emit a `FutureWarning` and will be removed in a future version.
 
 ## Breaking Changes
 
@@ -256,12 +258,36 @@ class MyMiddleware(fs.MiddlewareRequest):
     def before_request(self):
         # Your existing middleware logic here
         pass
-    
+
     def after_request(self):
         # New: Add post-processing logic
         pass
 
 app.add_middleware(MyMiddleware)
+```
+
+### Migrate JWT Decoding (v0.3.0+)
+
+Replace the deprecated standalone functions with the new `Datasy` methods:
+
+```python
+# Before (deprecated — emits FutureWarning)
+@app.login
+def login_required(data: fs.Datasy):
+    return fs.decode(key_login="login", data=data)
+
+@app.login
+async def login_required(data: fs.Datasy):
+    return await fs.decode_async(key_login="login", data=data)
+
+# After (v0.3.0+)
+@app.login
+def login_required(data: fs.Datasy) -> bool:
+    return data.decode_jwt(key_login="login")
+
+@app.login
+async def login_required(data: fs.Datasy) -> bool:
+    return await data.decode_jwt_async(key_login="login")
 ```
 
 ## Compatibility Notes
@@ -315,6 +341,23 @@ on_click=lambda _: data.go_back()
 
 ```python
 @app.page("/form", cache=True)  # Enable caching
+```
+
+### Issue: `FutureWarning` about `fs.decode` or `fs.decode_async`
+
+**Problem**: Using the deprecated standalone functions.
+
+```python
+# Deprecated
+value = fs.decode(key_login="login", data=data)
+```
+
+**Solution**: Use the `Datasy` methods instead.
+
+```python
+# Correct (v0.4.0+)
+value = data.decode_jwt(key_login="login")           # sync
+value = await data.decode_jwt_async(key_login="login")  # async
 ```
 
 ## Performance Benefits

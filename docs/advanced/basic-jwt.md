@@ -115,7 +115,7 @@ Kzuz8LYM/PJmIWIBTo2mqDwp/Iv2EbMKw0Jjn0cgnZINs9UciQqhxX4R49I3
 -----END RSA PRIVATE KEY-----"""
 ```
 
-In this example we are going to do very similar with the [`Route-protection`](route-protection.md#example) example, we have only configured the `secret_key`, used the [`login`](route-protection.md#login) method `time_expiry` parameter and used the [`decode`](#decode) function of `FletEasy` to get the payload stored in the decoded client storage.
+In this example we are going to do very similar with the [`Route-protection`](route-protection.md#example) example, we have only configured the `secret_key`, used the [`login`](route-protection.md#login) method `time_expiry` parameter and used the [`decode_jwt`](#decode_jwt) method of `Datasy` to get the payload stored in the decoded client storage.
 
 ```python title="main.py"  hl_lines="12-15 22 42 65-70 78"
 from datetime import timedelta
@@ -137,9 +137,9 @@ app = fs.FletEasy(
 )
 
 @app.login
-def login_x(data: fs.Datasy):
-    # decode payload
-    value = fs.decode(key_login="login", data=data)
+async def login_x(data: fs.Datasy):
+    # decode payload using the new Datasy method
+    value = await data.decode_jwt(key_login="login")
 
     print("value:", value)
 
@@ -221,18 +221,26 @@ app.run()
   <source src="../../assets/advanced/basic-jwt-web.webm" type="video/webm" alt="Flet-Easy - basic-jwt-web">
 </video>
 
-## decode
+## decode_jwt
 
-Decode the jwt and update the browser sessions.
+Decodes the JWT stored in client storage and returns the payload. Method of `Datasy` (`data`).
 
-**Parameters to use:**
+**Parameters:**
 
-* `key_login` : key used to store the data in the client, also used in the [`login`](route-protection.md#login) method of [`Datasy`](../guide/core/datasy.md).
-* `data` : Object instance of the [`Datasy`](../guide/core/datasy.md) class.
+* `key_login` : key used to store the data in the client, also used in the [`login`](route-protection.md#login) method.
 
 !!! info
-    *Support async, example: `decode_async`.
-    * If the function to use is async it is recommended to use `decode_async` to avoid errors.
+    Supports async: use `await data.decode_jwt_async(key_login="...")` if the login function is async (recommended).
+
+```python title="config.py"
+@app.login
+async def login_required(data: fs.Datasy) -> bool:
+    return await data.decode_jwt_async(key_login="login")
+```
 
 !!! note
-    The `decode` and `decode_async` functions can be used in other parts of the code, for example: [Middleware](middleware.md)
+    The `decode_jwt` / `decode_jwt_async` methods can also be used in other parts of the code, for example in [Middleware](middleware.md).
+
+!!! warning "Deprecated"
+    `fs.decode()` and `fs.decode_async()` are **deprecated** since `v0.4.0` and will be removed in a future version.
+    Use `data.decode_jwt()` / `data.decode_jwt_async()` instead.

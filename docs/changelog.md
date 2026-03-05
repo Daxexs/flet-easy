@@ -1,6 +1,6 @@
 # Flet-Easy changelog
 
-## v0.3.0 (01/03/26)
+## v0.3.0 (../03/26)
 
 * **Package Reorganization:** Restructured the `flet-easy` package into logical subpackages (`core/`, `security/`, `ui/`) to improve maintainability, while preserving 100% backward compatibility for existing imports.
 
@@ -12,6 +12,10 @@
 * Optimize routes loading and middleware execution ([#40](https://github.com/Daxexs/flet-easy/issues/40))
 
 * Fix for compatibility with Python 3.9 ([#47](https://github.com/Daxexs/flet-easy/issues/47))
+
+* Improved and fixed error response when JWT libraries are not installed.
+
+* Improved error handling for `login`, `login_async`, `decode`, and `decode_async` methods in `Datasy`. ([#50](https://github.com/Daxexs/flet-easy/issues/50))
 
 ### New features
 
@@ -44,6 +48,10 @@
 * `go_navigation_bar()` : Handles navigation bar changes. Use this method in the on_change event of 'ft.NavigationBar' or 'ft.CupertinoNavigationBar' controls. ([#41](https://github.com/Daxexs/flet-easy/issues/41)) [[Docs](https://daxexs.github.io/flet-easy/dev/guide/core/datasy/#go_navigation_bar-e)]
 
 * `go_route(route: str)` : Use this method to navigate to a specific route. It executes directly, unlike the `data.go()` method, which returns a lambda function. ([#50](https://github.com/Daxexs/flet-easy/issues/50)) [[Docs](https://daxexs.github.io/flet-easy/dev/guide/core/datasy/#go_route-route)]
+
+* `decode_jwt(key)`: Decode JWT synchronously from `Datasy` (Replaces `fs.decode()`). ([#50](https://github.com/Daxexs/flet-easy/issues/50)) [[Docs](https://daxexs.github.io/flet-easy/dev/advanced/basic-jwt/#decode_jwt)]
+
+* `decode_jwt_async(key)`: Decode JWT asynchronously — preferred in `async` login decorators (Replaces `fs.decode_async()`). ([#50](https://github.com/Daxexs/flet-easy/issues/50)) [[Docs](https://daxexs.github.io/flet-easy/dev/advanced/basic-jwt/#decode_jwt_async)]
 
 #### Changes in the api
 

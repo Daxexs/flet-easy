@@ -10,9 +10,9 @@ class ConfigApp:
 
     def start(self):
         @self.app.login
-        async def login_required(data: ft.Page):
+        async def login_required(data: fs.Datasy) -> bool:
             # Using Jwt to authenticate user, which has been previously configured with the `data.login()` method.
-            return await fs.decode_async(key_login="login", data=data)
+            return await data.decode_jwt_async(key_login="login")
 
         @self.app.view
         async def view_config(data: fs.Datasy):

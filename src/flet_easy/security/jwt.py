@@ -1,10 +1,12 @@
-from secrets import token_bytes
-from typing import Any, Dict, Union
+from __future__ import annotations
 
-from flet_easy.core.data import Datasy, evaluate_secret_key
-from flet_easy.core.models import Msg
-from flet_easy.exceptions import FletEasyError, LoginError, LogoutError, RsaMissingError
-from flet_easy.security.config import _decode_payload
+from secrets import token_bytes
+from typing import TYPE_CHECKING, Any, Union
+
+if TYPE_CHECKING:
+    from flet_easy.core.data import Datasy
+from flet_easy.exceptions import RsaMissingError
+from flet_easy.utils import deprecated
 
 try:
     from jwt import DecodeError, ExpiredSignatureError, InvalidKeyError
@@ -61,73 +63,23 @@ class EasyKey:
         return token_bytes(64).hex().encode("utf-8")
 
 
-def _handle_decode_errors(jwt: str, data: Datasy, key_login: str) -> Union[Dict[str, Any], bool]:
-    """decodes the jwt and updates the browser sessions."""
-    try:
-        data._key_login = key_login
-        evaluate_secret_key(data)
-
-        if jwt is None:
-            return False
-
-        if data.auto_logout and not data._login_done:
-            data.page.pubsub.send_others_on_topic(
-                data.page.client_ip, Msg("updateLogin", value=data._login_done)
-            )
-
-        decode = _decode_payload(
-            jwt=jwt,
-            secret_key=(
-                data.secret_key.secret
-                if data.secret_key.secret is not None
-                else data.secret_key.pem_key.public
-            ),
-            algorithms=data.secret_key.algorithm,
-        )
-        """ It checks if there is a logout time, if there is a logout task running and finally if the user wants to create a logout task. """
-        if decode.get("exp") and not data._login_done and data.auto_logout:
-            data._create_task_login_update(decode)
-        return decode
-
-    except ExpiredSignatureError:
-        data.logout(key_login)
-        return False
-    except InvalidKeyError:
-        data.logout(key_login)
-        return False
-    except DecodeError as e:
-        data.logout(key_login)
-        raise LogoutError(
-            "Decoding error, possibly there is a double use of the storage 'key', Secret key invalid! or ",
-            e,
-        )
-    except FletEasyError:
-        raise
-    except Exception as e:
-        data.logout(key_login)
-        raise LogoutError("Login error:", e)
-
-
-def decode(key_login: str, data: Datasy) -> Union[Dict[str, Any], bool]:
+@deprecated("Use the 'data.decode_jwt' method instead.", version="0.4.0")
+def decode(key_login: str, data: Datasy) -> Union[dict[str, Any], bool]:  # noqa: UP007
     """decodes the jwt and updates the browser sessions.
 
     ### Parameters to use:
     * `key_login` : key used to store data in the client, also used in the `login` method of `Datasy`.
     * `data` : Instance object of the `Datasy` class.
     """
-    try:
-        return data.page.run_task(decode_async, key_login, data).result(timeout=5)
-    except TimeoutError as e:
-        raise LoginError("Decode error, using decode_async:", e)
+    return data.decode_jwt(key_login)
 
 
-async def decode_async(key_login: str, data: Datasy) -> Union[Dict[str, Any], bool]:
-    """decodes the jwt and updates the browser sessions.
+@deprecated("Use the 'data.decode_jwt_async' method instead.", version="0.4.0")
+async def decode_async(key_login: str, data: Datasy) -> Union[dict[str, Any], bool]:  # noqa: UP007
+    """ "decodes the jwt and updates the browser sessions.
 
     ### Parameters to use:
     * `key_login` : key used to store data in the client, also used in the `login` method of `Datasy`.
     * `data` : Instance object of the `Datasy` class.
     """
-    return _handle_decode_errors(
-        jwt=await data._storage_get_async(key_login), data=data, key_login=key_login
-    )
+    return await data.decode_jwt_async(key_login)

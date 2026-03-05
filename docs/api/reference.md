@@ -64,6 +64,8 @@ app.run()
         - history_routes
         - login
         - logout
+        - decode_jwt
+        - decode_jwt_async
         - route
         - redirect
 
@@ -74,15 +76,19 @@ def my_page(data: fs.Datasy):
     # Navigation
     data.go("/other-page")
     data.go_back()
-    
+
     # Authentication
     data.login("token", "jwt-value")
     data.logout("token", next_route="/login")
-    
+
+    # JWT decoding (replaces fs.decode / fs.decode_async)
+    decoded = data.decode_jwt("token")           # sync
+    # decoded = await data.decode_jwt_async("token")  # async
+
     # Data sharing
     data.share.set("key", "value")
     value = data.share.get("key")
-    
+
     # Page access
     data.page.title = "New Title"
     data.page.update()
@@ -190,6 +196,19 @@ app = fs.FletEasy(secret_key=SecretKey(secret))
 
 ### JWT Functions
 
+> [!warning] Deprecated since v0.4.0
+> `fs.decode()` and `fs.decode_async()` are deprecated. Use `data.decode_jwt()` / `data.decode_jwt_async()` (methods on [`Datasy`](#datasy)) instead.
+
+::: flet_easy.Datasy.decode_jwt
+    options:
+      show_root_heading: true
+      show_source: true
+
+::: flet_easy.Datasy.decode_jwt_async
+    options:
+      show_root_heading: true
+      show_source: true
+
 ::: flet_easy.decode
     options:
       show_root_heading: true
@@ -213,16 +232,16 @@ app = fs.FletEasy(secret_key=SecretKey(secret))
 __Quick Reference:__
 
 ```python
-from flet_easy import encode_HS256, decode, SecretKey
+from flet_easy import SecretKey
+import flet_easy as fs
 
-# Encode JWT
-secret = SecretKey("your-secret")
-payload = {"user_id": 123, "role": "admin"}
-token = encode_HS256(payload, secret)
+# --- New API (v0.4.0+) ---
+@app.login
+async def login_required(data: fs.Datasy) -> bool:
+    return await data.decode_jwt_async(key_login="login")
 
-# Decode JWT
-decoded = decode(token, secret)
-print(decoded["user_id"])  # 123
+# --- Deprecated (will be removed) ---
+# value = fs.decode(key_login="login", data=data)
 ```
 
 ## Event Handling
