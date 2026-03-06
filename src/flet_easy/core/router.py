@@ -1,5 +1,7 @@
+import asyncio
 from collections import deque
-from inspect import iscoroutinefunction, signature
+from functools import partial
+from inspect import getmodule, iscoroutinefunction, signature
 from re import Pattern, compile, escape
 from types import FunctionType
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
@@ -120,12 +122,7 @@ class FletEasyX:
         self.__auto_logout = auto_logout
         self.__secret_key = secret_key
 
-        # Fast lookup for routes without parameters
-        self.__exact_routes_map: Dict[str, Pagesy] = {}
-        for p in self.__pages:
-            if "{" not in p.route:
-                self.__exact_routes_map[p.route] = p
-
+        # Fast lookup for routes without parameters will be populated below
         self.__page_on_resize = Resizesy(self.__page)
         self._data: Datasy = Datasy(
             page=self.__page,
@@ -142,8 +139,11 @@ class FletEasyX:
         # Add data to middleware request
         MiddlewareRequest._data = self._data
 
-        # Normalize page-level middleware for all pages
+        # Normalize page-level middleware and build fast lookup for routes
+        self.__exact_routes_map: Dict[str, Pagesy] = {}
         for p in self.__pages:
+            if "{" not in p.route:
+                self.__exact_routes_map[p.route] = p
             p._check_middleware(middlewares)
 
         # Add login
@@ -202,8 +202,6 @@ class FletEasyX:
             return
 
         if iscoroutinefunction(func):
-            import asyncio
-
             if result:
                 # Use Flet's primary event loop to avoid deadlocks with Flet internal futures
                 try:
@@ -227,14 +225,10 @@ class FletEasyX:
     async def _await_func(self, func: Callable, *args, **kwargs) -> Any:
         if func is None:
             return None
-        from inspect import iscoroutinefunction
 
         if iscoroutinefunction(func):
             return await func(*args, **kwargs)
         else:
-            import asyncio
-            from functools import partial
-
             loop = asyncio.get_running_loop()
             return await loop.run_in_executor(None, partial(func, *args, **kwargs))
 
@@ -243,39 +237,32 @@ class FletEasyX:
 
         When @ft.component is applied AFTER @app.page (i.e. on top), the Pagesy stores
         the raw function without __is_component__. This method finds the component wrapper
-        by scanning loaded modules for functions whose __wrapped__ has __flet_easy_pagesy__.
+        by looking up the original module where the function was defined.
         """
-        import sys
 
         unresolved = [p for p in self.__pages if not p._is_component]
         if not unresolved:
             return
 
-        # Build lookup: id(raw_func) -> pagesy
-        lookup = {}
         for p in unresolved:
             if hasattr(p.view, "__flet_easy_pagesy__"):
-                lookup[id(p.view)] = p
+                # Fast precise lookup: Get the exact module where this function lives
+                module = getmodule(p.view)
+                if not module:
+                    continue
 
-        if not lookup:
-            return
+                # The decorated wrapper replaces the original function name in its module
+                func_name = p.view.__name__
+                current_func = getattr(module, func_name, None)
 
-        # Scan module globals for component wrappers
-        for module in list(sys.modules.values()):
-            if module is None:
-                continue
-            for attr in vars(module).values():
+                # Check if the current function in the module is our component wrapper
                 if (
-                    callable(attr)
-                    and getattr(attr, "__is_component__", False)
-                    and hasattr(attr, "__wrapped__")
-                    and id(attr.__wrapped__) in lookup
+                    callable(current_func)
+                    and getattr(current_func, "__is_component__", False)
+                    and getattr(current_func, "__wrapped__", None) is p.view
                 ):
-                    pagesy = lookup.pop(id(attr.__wrapped__))
-                    pagesy.view = attr
-                    pagesy._is_component = True
-                    if not lookup:
-                        return
+                    p.view = current_func
+                    p._is_component = True
 
     def run(self):
         """configure the route init"""
@@ -299,14 +286,13 @@ class FletEasyX:
             self.__page.on_keyboard_event = self.__on_keyboard_event
 
         async def _init_and_go():
-            # Add view data
-            self._data.view = await self._await_func(self.__view_data_func, self._data)
-
-            # Add view configuration
-            await self._await_func(self.__view_config_func, self.__page)
-
-            # Add configuration event
-            await self._await_func(self.__config_event_func, self._data)
+            # Execute configuration callbacks concurrently
+            view_result, _, _ = await asyncio.gather(
+                self._await_func(self.__view_data_func, self._data),
+                self._await_func(self.__view_config_func, self.__page),
+                self._await_func(self.__config_event_func, self._data),
+            )
+            self._data.view = view_result
 
             # Start routing
             await self._go(self.__page.route, use_reload=True)
@@ -524,7 +510,7 @@ class FletEasyX:
 
         self.__page.title = pagesy.title
 
-        if not pagesy.share_data:
+        if not pagesy.share_data and self._data.history_routes:
             await self._await_func(self._data.share.clear)
         if self.__on_keyboard:
             self._data.on_keyboard_event.current_route = pagesy.route

@@ -87,11 +87,13 @@ class Datasy(AuthMixin):
         self.__route_prefix = route_prefix
         self.__route_init = route_init
         self.__route_login = route_login
-        self.__share = (
-            SharedPreferencesEdit(prefix="fs-share:")
-            if NEW_FLET_VERSION
-            else SessionStorageEdit(page)
-        )
+        if NEW_FLET_VERSION:
+            self.__share = SharedPreferencesEdit(prefix="fs-share:")
+            self._shared_preferences = SharedPreferencesEdit()
+        else:
+            self.__share = SessionStorageEdit(page)
+            self._shared_preferences = SessionStorageEdit(page)
+
         self.__on_keyboard_event = page_on_keyboard
         self.__on_resize: Resizesy = page_on_resize
         self.__route: str = None
@@ -104,9 +106,6 @@ class Datasy(AuthMixin):
         self._sleep_auth: int = 1
         self._key_login: str = None
         self._login_done: bool = False
-        self._shared_preferences = (
-            SharedPreferencesEdit() if NEW_FLET_VERSION else SessionStorageEdit(page)
-        )
 
         _logger.info(
             "Using SharedPreferences (Flet >= 0.80)"

@@ -3,8 +3,8 @@ name = "flet-app"
 version = "0.1.0"
 license = "MIT"
 dependencies = [
-    "flet==0.80.*",
-    "flet-easy[jwt]==0.3.0.dev22",
+    "flet==0.82.*",
+    "flet-easy[jwt]==0.3.0.dev23",
     "tortoise-orm==0.22.2",
 ]
 
