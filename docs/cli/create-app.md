@@ -27,7 +27,7 @@ Which can be scaled to an app with higher requirements such as a design pattern 
 fs init
 ```
 
-### 🎬 **Demo**
+### **Demo**
 
 [![github](https://img.shields.io/badge/Template-000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Daxexs/fs-template-dxs)
 

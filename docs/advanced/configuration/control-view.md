@@ -81,7 +81,7 @@ def dasboard_page(data: fs.Datasy):
 app.run()
 ```
 
-### 🎬 **Demo**
+### **Demo**
 
 <video controls>
   <source src="../../../assets/advanced/configuration/viewsy-config.webm" type="video/mp4" alt="Viewsy Config">

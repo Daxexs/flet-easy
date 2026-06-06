@@ -204,6 +204,8 @@ nav:
           - Using Classes: guide/add-pages/through-classes.md
           - Automatic Routing: guide/add-pages/in-automatic.md
       - Routing & Navigation:
+          - Declarative Routing: guide/routing/declarative.md
+          - Imperative Routing: guide/routing/imperative.md
           - Dynamic Routes: guide/routing/dynamic-routes.md
           - Navigation Methods: guide/routing/navigation.md
 

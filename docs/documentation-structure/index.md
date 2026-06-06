@@ -1,15 +1,15 @@
-# 📖 Documentation Structure
+# Documentation Structure
 
 Navigate through our comprehensive documentation using the tabs above, or explore specific topics below:
 
-## 🚀 Getting Started
+## Getting Started
 
 - **[Installation](../started/installation.md)** - Setup and installation options
 - **[Quick Start](../started/begin.md)** - Your first Flet-Easy application
 - **[Basic Usage](../started/how-to-use.md)** - Core concepts and patterns
 - **[Running Your App](../started/run-the-app.md)** - Development and deployment
 
-## 📖 User Guide
+## User Guide
 
 ### Core Framework
 
@@ -52,16 +52,16 @@ Navigate through our comprehensive documentation using the tabs above, or explor
 - **[View Configuration](../advanced/configuration/control-view.md)** - UI customization
 - **[Custom 404 Pages](../advanced/configuration/page-404.md)** - Error handling
 
-## 💡 Examples & Resources
+## Examples & Resources
 
 - **[Examples Gallery](../examples/gallery.md)** - Practical code examples
 - **[v0.3.0 Feature Showcase](../examples/v0-3-0-showcase.md)** - 🆕 Latest features demo
 
-## 📚 API Reference
+## API Reference
 
 - **[Complete API Documentation](../api/reference.md)** - Detailed API reference
 
-## 🛠️ Development
+## ️ Development
 
 ### CLI Tools
 
@@ -72,7 +72,7 @@ Navigate through our comprehensive documentation using the tabs above, or explor
 - **[Working with Other Apps](../advanced/integration/working-with-other-apps.md)** - Integration patterns
 - **[Deployment Guide](https://flet.dev/docs/publish)** - Production deployment
 
-## 📝 Changelog
+## Changelog
 
 - **[Release Notes](../changelog.md)** - Complete version history and changes
 

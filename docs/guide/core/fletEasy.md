@@ -27,7 +27,8 @@ class FletEasy:
         secret_key: Optional[SecretKey] = None,
         auto_logout: bool = False,
         path_views: Optional[Path] = None,
-        logger: bool = False
+        logger: bool = False,
+        use_error_boundary: bool = True
     )
 ```
 
@@ -149,6 +150,15 @@ app = fs.FletEasy(path_views=Path("views"))
 - **Type**: `bool`
 - **Default**: `False`
 - **Description**: Enable detailed logging for debugging
+
+### `use_error_boundary`
+
+- **Type**: `bool`
+- **Default**: `True`
+- **Description**: Enable the visual Error Boundary screen when an error occurs during page rendering.
+
+!!! warning "Production Security Risk"
+    In production environments, it is **highly recommended** to set `use_error_boundary=False`. If left enabled (`True`), critical problems, source code paths, and stack traces could be exposed directly to end-users, posing a security risk. By setting it to `False`, the app will display a safe generic message to the user, while still logging the full traceback to your terminal.
 
 ## Core Methods
 
@@ -373,7 +383,7 @@ if __name__ == "__main__":
     app.run()
 ```
 
-### 🎬 Demo
+### Demo
 
 <video controls>
   <source src="../../../assets/guide/core/FletEasy-demo.webm" type="video/webm" alt="fletEasy demo protected routes">

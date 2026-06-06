@@ -68,7 +68,7 @@ def live_feed_page(data: fs.Datasy):
 app.run()
 ```
 
-### 🎬 Demo
+### Demo
 
 <video controls>
   <source src="../../assets/advanced/page-caching_basic-usage.webm" type="video/webm" alt="Flet-Easy - Page Caching - Basic Usage">
@@ -236,7 +236,7 @@ def counter3_page(data: fs.Datasy):
 app.run()
 ```
 
-### 🎬 Demo
+### Demo
 
 <video controls>
   <source src="../../assets/advanced/page-caching-counter.webm" type="video/webm" alt="Flet-Easy - Page Caching - Counter">

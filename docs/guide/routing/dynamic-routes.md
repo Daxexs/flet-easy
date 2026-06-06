@@ -34,7 +34,7 @@ def home_page(data: fs.Datasy, id, name):
 app.run(view=ft.AppView.WEB_BROWSER)
 ```
 
-### 🎬 Demo
+### Demo
 
 ![alt video](../../assets/guide/routing/route-simple.gif "Flet-Easy - Dynamic routes - Simple form")
 
@@ -97,7 +97,7 @@ app.run(view=ft.AppView.WEB_BROWSER)
 
 ```
 
-### **🎬 Demo**
+### ** Demo**
 
 ![alt video](../../assets/guide/routing/route-advanced.gif "Flet-Easy - Dynamic routes - Advanced form")
 
@@ -183,7 +183,7 @@ def home_page(data: fs.Datasy, id: int, name: str, uuid: str):
 app.run(view=ft.AppView.WEB_BROWSER)
 ```
 
-### 🎬 **Demo**
+### **Demo**
 
 ![alt video](../../assets/guide/routing/route-custom.gif "Flet-Easy - Dynamic routes - Custom validation")
   

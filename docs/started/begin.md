@@ -181,7 +181,7 @@ if __name__ == "__main__":
 * 🔧 **Enhanced Middleware**: Class-based middleware system
 * 📱 **Responsive Design**: Global view configuration with `Viewsy`
 
-### 🎬 Demo
+### Demo
 
 <video controls>
   <source src="../../assets/started/begin-example.webm" type="video/webm" alt="Begin Flet-Easy">

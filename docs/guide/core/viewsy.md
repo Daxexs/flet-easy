@@ -42,18 +42,18 @@ class Viewsy(ft.View):
 
 This example demonstrates how to create a **global view template** that applies consistent navigation and styling across all pages in your application.
 
-### 🎯 What You'll Learn
+### What You'll Learn
 
 - **Define a global view** using `@app.view` decorator
 - **Create consistent navigation** with AppBar and NavigationDrawer
 - **Reuse view components** across multiple pages
 - **Access global view properties** via `data.view`
 
-### 📋 How It Works
+### How It Works
 
 The `@app.view` decorator creates a **template** that defines common UI elements (AppBar, Drawer, background color, padding) that will be shared across all pages. Each page can then access these elements through `data.view`.
 
-### 💡 Key Concepts
+### Key Concepts
 
 **`@app.view`**: Decorator that defines a global view template for the entire application.
 
@@ -208,7 +208,7 @@ if __name__ == "__main__":
 
 **4. Flexibility**: Individual pages can still override or customize specific elements if needed.
 
-## 🎬 Demo
+## Demo
 
 <video controls>
   <source src="../../../assets/guide/core/Viewsy-Simple_Global_View.webm" type="video/mp4" alt="Flet-Easy - Viewsy Simple Global View">

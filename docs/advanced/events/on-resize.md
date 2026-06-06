@@ -71,6 +71,6 @@ def resize_page(data:fs.Datasy):
 app.run()
 ```
 
-## 📷 **Demo**
+## **Demo**
 
 ![on-resize](../../assets/advanced/events/img/on-resize.png "Flet Easy - On Resize")

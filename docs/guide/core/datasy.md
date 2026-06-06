@@ -274,7 +274,7 @@ def counter_page(data: fs.Datasy):
 app.run()
 ```
 
-#### 🎬 Demo
+#### Demo
 
 <video controls>
   <source src="../../../assets/guide/core/Datasy-page_reload.webm" type="video/mp4" alt="fletEasy -app use page_reload">

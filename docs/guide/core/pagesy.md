@@ -380,14 +380,14 @@ def reports_view(data: fs.Datasy):
 
 This example demonstrates how to create a **multi-step registration form** where data persists across different pages using `share_data=True`. This is ideal for wizards, checkout processes, or any workflow that requires multiple steps.
 
-#### 🎯 What You'll Learn
+#### What You'll Learn
 
 - **Share data between pages** using `data.share`
 - **Validate and persist form data** across navigation
 - **Implement navigation guards** to prevent skipping steps
 - **Handle back navigation** while preserving user input
 
-#### 📋 How It Works
+#### How It Works
 
 The form has 3 steps:
 
@@ -397,7 +397,7 @@ The form has 3 steps:
 
 All data is stored in `data.share` with the key `"registration_form"`, making it accessible across all pages.
 
-#### 💡 Key Concepts
+#### Key Concepts
 
 **`data.share.get(key)`**: Retrieves shared data by key. Returns `None` if not found.
 
@@ -635,7 +635,7 @@ def main(page: ft.Page):
 ft.app(target=main)
 ```
 
-#### 🎬 Demo
+#### Demo
 
 <video controls>
   <source src="../../../assets/guide/core/Pagesy-Data_sharing.webm" type="video/webm" alt="flet-easy - pagesy data sharing">

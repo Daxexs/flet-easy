@@ -110,6 +110,6 @@ async def info_page(data: fs.Datasy):
 app.run(view=ft.AppView.WEB_BROWSER)
 ```
 
-### 🎬 **Demo**
+### **Demo**
 
 ![alt video](../assets/advanced/share-data.gif "Flet-Easy - data sharing between pages")

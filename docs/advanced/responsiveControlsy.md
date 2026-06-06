@@ -102,7 +102,7 @@ def response_page(data: fs.Datasy):
 app.run()
 ```
 
-## 🎬 **Demo**
+## **Demo**
 
 <video controls>
   <source src="../../assets/advanced/responsiveControlsy.webm" type="video/webm" alt="ResponsiveControlsy">

@@ -59,7 +59,7 @@ app = fs.FletEasy(
 app.run()
 ```
 
-#### 🎬 Demo
+#### Demo
 
 <video controls>
   <source src="../../../assets/guide/add-pages/Through-decorators-using_functions.webm" type="video/webm" alt="FletEasy : Routing automatic">

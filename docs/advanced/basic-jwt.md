@@ -209,7 +209,7 @@ def login_page(data: fs.Datasy):
 app.run()
 ```
 
-### 🎬 **Demo**
+### **Demo**
 
 **APP**
 <video controls>

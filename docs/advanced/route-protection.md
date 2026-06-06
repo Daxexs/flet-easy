@@ -75,7 +75,7 @@ def login_page(data: fs.Datasy):
 app.run()
 ```
 
-## 🎬 **Demo**
+## **Demo**
 
 ![alt video](../assets/advanced/protected-route.gif "Flet-easy - Protected route")
 

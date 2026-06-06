@@ -5,30 +5,41 @@
 [![Downloads](https://static.pepy.tech/badge/flet-easy)](https://pepy.tech/project/flet-easy) [![Socket Badge](https://badge.socket.dev/pypi/package/flet-easy?artifact_id=tar-gz)](https://socket.dev/pypi/package/flet-easy)
 [![linting - Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
+![Python 3.9+](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python&logoColor=white)
+![Flet 0.27+](https://img.shields.io/badge/Flet-0.27%2B-orange?logo=flutter&logoColor=white)
 
 <div align="center">
     <img src="assets/images/logo.png" alt="logo" width="250">
 </div>
 
-**Flet-Easy** is a comprehensive Python framework that extends Flet with powerful features for building modern desktop, web, and mobile applications. It provides a clean, intuitive API with advanced routing, authentication, middleware, page caching, and responsive design capabilities.
+**Flet-Easy** is a comprehensive Python framework that extends Flet with powerful features for building modern desktop, web, and mobile applications. It provides a clean, intuitive API with advanced routing, authentication, middleware, page caching, and responsive design capabilities — all with **zero breaking changes** when upgrading Flet versions.
+
+!!! success "Broad Compatibility"
+    - 🐍 **Python 3.9+** — works with any modern Python version
+    - ⚡ **Flet 0.27+** — compatible across all Flet releases from `0.27.*` up to the latest `0.80+`
+    - 🖥️ **All platforms** — Desktop (Windows, macOS, Linux), Web, and Mobile
 
 !!! tip "Latest Release - v0.3.0 🎉"
-    **New features**: NavigationBar integration, page caching system, enhanced middleware, dynamic controls, and Python 3.9+ support. [See what's new →](changelog.md)
+    **New features**: NavigationBar integration, page caching system, enhanced middleware, declarative component routing, and multi-user concurrency safety. [See what's new →](changelog.md)
 
-## 🚀 Key Features
+## Key Features
 
-- **🛣️ Advanced Routing**: Dynamic routes with NavigationBar integration and parameter validation
-- **💾 Page Caching**: Optional state preservation across navigation for seamless user experience
-- **🔐 Built-in Authentication**: JWT support with automatic session management
-- **🔧 Enhanced Middleware**: Class-based middleware with page-specific application
-- **🎛️ Dynamic Controls**: Real-time UI updates with caching support
-- **📱 Responsive Design**: Adaptive layouts for desktop, tablet, and mobile
-- **⚡ High Performance**: Optimized routing engine with intelligent caching
-- **🎨 Modern UI Components**: Enhanced controls with responsive capabilities
-- **🛠️ Developer Tools**: CLI for project scaffolding and code generation
-- **📚 Comprehensive Documentation**: Step-by-step guides and practical examples
+- **🛣️ Advanced Routing**: Dynamic routes, NavigationBar integration, regex-based parameter validation, and custom 404 pages
+- **💾 Page Caching**: Optional per-page state preservation across navigation for seamless user experience
+- **🔐 Built-in Authentication**: JWT support (HS256 / RS256 / RS512) with automatic session management
+- **🔧 Enhanced Middleware**: Class-based and functional middleware with global and per-page application
+- **🎭 Dual Rendering Modes**: Supports both **Declarative** (`@ft.component`) and **Imperative** routing seamlessly
+- **🔒 Concurrency-Safe**: Session isolation via `contextvars` — no data leakage in multi-user async environments
+- **🎛️ Dynamic Controls**: Real-time UI updates with `dynamic_control()` — works with cached pages
+- **📱 Responsive Design**: `ResponsiveControlsy` and `on_resize` hooks for adaptive desktop/tablet/mobile layouts
+- **⚡ High Performance**: O(1) exact route lookup, lazy-loaded components, and intelligent view caching
+- **🎨 Sub-router Support**: Organize pages into independent modules with `AddPagesy` and route prefixes
+- **🛠️ Developer Tools**: CLI (`fs init`) for project scaffolding, code generation, and app templates
+- **🐍 Python 3.9+**: Uses modern Python generics and type hints out of the box
+- **📦 Flet 0.27+ Compatible**: Tested from Flet `0.27.*` all the way to `0.80+` with automatic fallbacks
+- **📚 Comprehensive Documentation**: Step-by-step guides, API reference, and practical examples
 
-## 🎯 Quick Start
+## Quick Start
 
 ### Installation
 
@@ -111,15 +122,15 @@ if __name__ == "__main__":
     app.run()
 ```
 
-#### 🎬 Demo
+#### Demo
 
 <video controls>
   <source src="assets/index.webm" type="video/webm" alt="index demo Flet-Easy">
 </video>
 
-## 🎯 What's New in v0.3.0
+## What's New in v0.3.0
 
-### 🚀 Major Features
+### Major Features
 
 - **NavigationBar Integration**: Built-in support for `ft.NavigationBar` with automatic routing
 - **Page Caching System**: Optional state preservation to maintain UI state across navigation
@@ -127,7 +138,7 @@ if __name__ == "__main__":
 - **Dynamic Controls**: Real-time UI updates with `dynamic_control()` method
 - **Performance Improvements**: Optimized route loading and middleware execution
 
-### 🔄 New Methods
+### New Methods
 
 - `page_reload()` - Reset page to default state
 - `dynamic_control()` - Real-time control updates
@@ -138,6 +149,9 @@ if __name__ == "__main__":
 
 - `go_back()` and `logout()` now execute directly
 - Enhanced `Pagesy` with `index` and `cache` parameters
-- Python 3.9+ compatibility
+- Python 3.9+ compatibility with modern built-in generics
+- **Flet 0.27+ compatibility** — automatic fallbacks for older API surfaces
+- **Concurrency-safe middleware** — `contextvars` isolation per async task
+- **Strict type safety** — fully passes `ty check` with zero `# type: ignore` comments
 
 [**→ View complete changelog**](changelog.md)

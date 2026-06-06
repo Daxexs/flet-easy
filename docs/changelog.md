@@ -1,6 +1,6 @@
 # Flet-Easy changelog
 
-## v0.3.0 (../03/26)
+## v0.3.0.dev26 (../05/26)
 
 * **Package Reorganization:** Restructured the `flet-easy` package into logical subpackages (`core/`, `security/`, `ui/`) to improve maintainability, while preserving 100% backward compatibility for existing imports.
 
@@ -19,7 +19,7 @@
 
 ### New features
 
-* Support for rendering new Flet Declarative UI Components (`@ft.component`) as native routes, bridging URL parameters and `Datasy` seamlessly into declarative objects. (see [flet-easy/issues/51](https://github.com/Daxexs/flet-easy/issues/51)) [[Docs](https://daxexs.github.io/flet-easy/dev/guide/add-pages/through-decorators/#using-declarative-components-ftcomponent)]
+* Support for rendering new Flet Declarative UI Components (`@ft.component`) as native routes, bridging URL parameters and `Datasy` seamlessly into declarative objects. (see [#51](https://github.com/Daxexs/flet-easy/issues/51)) [[Docs](https://daxexs.github.io/flet-easy/dev/guide/add-pages/through-decorators/#using-declarative-components-ftcomponent)] - [[Docs](https://daxexs.github.io/flet-easy/dev/guide/routing/declarative/)]
 
 * Add support for using `@ft.component` gracefully directly on the `build()` method of class-based views. `Flet-Easy` will automatically instantiate the class and inject the `self.data` property, removing the need for an explicit `__init__(self, data: fs.Datasy)`. [[Docs](https://daxexs.github.io/flet-easy/dev/guide/add-pages/through-decorators/#using-declarative-components-ftcomponent)]
 
@@ -93,11 +93,7 @@
 * **PEP 585 Modernization:** Standardized the entire codebase to use Python 3.9+ built-in generics (`dict`, `list`, `tuple`), eliminating deprecation warnings and future-proofing the library.
 * **Core Logic Consolidation:** Deduplicated mission-critical methods in `router.py` and flattened the package structure for improved performance and maintainability.
 * **Enhanced Compatibility:** Implemented robust fallback mechanisms for `RouteUrlStrategy`, `CupertinoAppBar`, and `CupertinoNavigationBar` to ensure 100% compatibility with Flet versions as old as 0.27.*.
-* **Bug Fixes:**
-  * Fixed a critical type error in `job.py` where `login_done` was incorrectly typed as `bool` instead of `Callable`.
-  * Resolved inheritance issues from `None` in `migration.py` when running on specific Flet versions.
-  * Integrated comprehensive safety guards for `Msg` field access and optional route parameters.
-  * Fixed an issue where the `on_error` page event was always triggered internally. It is now correctly conditioned to execute only when the `FletEasy` global `logger` parameter is set to `True`.
+* **Bug Fixes:** Resolved critical type errors, Flet version compatibility issues, `on_error` event logic, and declarative rendering bugs while adding safety guards for parameters and messages.
 
 ### Build & Testing
 
@@ -158,7 +154,7 @@ New method added in Datasy (data) [[Doc](https://daxexs.github.io/flet-easy/0.2.
 * `history_routes` : Get the history of the routes.
 * `go_back` : Method to go back to the previous route.
 
-### **🔎Note**
+### **Note**
 
 * Now `page.go()` and `data.go()` work similarly to go to a page (View), the only difference is that `data.go()` checks for url redirects when using `data.redirect()`.
 * The 'clear' parameter of `Pagesy` and the `page` decorator is deprecated, it will be removed in future versions.

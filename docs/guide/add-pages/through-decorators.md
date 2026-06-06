@@ -112,7 +112,7 @@ async def information_page(data: fs.Datasy):  # Async supported
     )
 ```
 
-#### 🎬 Demo
+#### Demo
 
 <video controls>
   <source src="../../../assets/guide/add-pages/Through-decorators-using_functions.webm" type="video/mp4" alt="Flet-Easy - Add Pages Through Decorators Using Functions">
@@ -304,7 +304,7 @@ app.run()
 2. **Context vs `Datasy` Navigation**: Flet-Easy ensures that native `ft.context.page.push_route()` commands and `data.go()` calls stay perfectly synchronized and both are valid ways to navigate.
 3. **Combined Architecture**: As shown in the `/test` route, you are fully supported to mix standard imperative functions alongside declarative component classes within your Flet-Easy application.
 
-### 🎬 Demo
+### Demo
 
 <video controls>
   <source src="../../../assets/guide/add-pages/declarative-component.webm" type="video/webm" alt="Flet-Easy - Add Pages Through Decorators Using Declarative Components">

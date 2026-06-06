@@ -54,7 +54,7 @@ def keyboard_page(data: fs.Datasy):
 app.run()
 ```
 
-### 🎬 **Demo**
+### **Demo**
 
 <video controls>
   <source src="../../../assets/advanced/events/keyboard-event.webm" type="video/mp4" alt="Flet Easy - Keyboard Event">

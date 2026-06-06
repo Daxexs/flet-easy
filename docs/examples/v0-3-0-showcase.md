@@ -170,7 +170,7 @@ app.add_pages([app2])
 app.run()
 ```
 
-#### 🎬 Demo
+#### Demo
 
 <video controls>
   <source src="../../assets/examples/v0-3-0-showcase/declarative-routing-with-decorators.webm" type="video/webm" alt="Flet-Easy - declarative-routing-with-decorators">
@@ -322,7 +322,7 @@ app.add_middleware(middleware_home, MiddlewareDialog)
 app.run()
 ```
 
-#### 🎬 Demo
+#### Demo
 
 <video controls>
   <source src="../../assets/examples/v0-3-0-showcase/manual-routing-without-decorators.webm" type="video/webm" alt="Flet-Easy - manual-routing-without-decorators">

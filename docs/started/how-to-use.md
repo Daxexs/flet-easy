@@ -1,8 +1,12 @@
 # How to use
 
-`Flet-Easy` presents a structure according to how the user wants to adapt it, since it allows to have several files and connect them to a main file.
+`Flet-Easy` presents a flexible structure that allows you to easily connect multiple files to a main application. Flet-Easy supports both **Imperative** and **Declarative** programming styles.
 
-* To use `Flet-easy`, first we have to use the `FletEasy` class and create an object where to make the app configurations.
+!!! tip "Supported Modes"
+    - **Imperative Mode**: The traditional way of building with Flet using `page.views.append()`.
+    - **Declarative Mode**: A more modern, React-like approach using the `@ft.component` decorator where the UI reacts to data changes automatically.
+
+* To use `Flet-easy`, first instantiate the `FletEasy` class and configure the app object.
 
 ## FletEasy
 
@@ -16,7 +20,7 @@ We create the app object, in which you can configure:
 * `secret_key` : Used with `SecretKey` class of Flet-Easy, to configure JWT or client storage. [[`See more`](../advanced/basic-jwt.md)]
 * `path_views` : Configuration of the folder where are the .py files of the pages, you use the `Path` class to configure it. [[`See more`](../guide/add-pages/in-automatic.md)]
 
-### 📷 **Demo**
+### **Demo**
 
 ![FletEasy](../assets/started/img/FletEasy.png "FletEasy class and its parameters")
   
@@ -72,11 +76,12 @@ To add pages, the following parameters are required:
 * `index` : Define the index of the page, use in controls like `ft.NavigationBar` and `ft.CupertinoNavigationBar`.
 * `cache`: Boolean that preserves page state when navigating. Controls retain their values instead of resetting. Works in **imperative** mode, but not in **declarative** (`@ft.component`). (Optional)
 
-### **Example**
+### Example (Imperative)
 
 ```Python hl_lines="4 9 27 44"
 import flet_easy as fs
 import flet as ft
+
 
 app = fs.FletEasy(
     route_prefix='/FletEasy',
@@ -175,13 +180,13 @@ Besides that you get some extra methods:
 
 ---
 
-!!! tip
+!!! tip "Page Navigation"
     Now `page.go()` and `data.go()` work similarly to go to a page (`View`), the only difference is that `data.go()` checks for url redirects when using `data.redirect()`.
 
-!!! Note "logaut and login"
-    Compatible with android, ios, windows and web.
+!!! note "Login and Logout Compatibility"
+    Compatible with Android, iOS, Windows, and Web.
 
-### 🎬 Demo
+### Demo
 
 <video controls>
   <source src="../../assets/started/how-to-use.webm" type="video/webm" alt="How to use Flet-Easy">

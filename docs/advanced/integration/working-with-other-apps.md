@@ -50,6 +50,6 @@ app_main.mount("/", fastapi.app(app.run(fastapi=True)))
 uvicorn main:app_main
 ```
 
-### 📷 **Demo**
+### **Demo**
 
 ![app](../../assets/advanced/integration/app-api.png "Flet-Easy - app-api")

@@ -381,7 +381,7 @@ def login_page(data: fs.Datasy):
 app.run()
 ```
 
-#### 🎬 **Demo**
+#### **Demo**
 
 <video controls>
   <source src="../../assets/advanced/middleware-general-application.webm" type="video/mp4" alt="Middleware-example">
@@ -475,7 +475,7 @@ def login_page(data: fs.Datasy):
 app.run()
 ```
 
-## 🎬 **Demo**
+## **Demo**
 
 <video controls>
   <source src="../../assets/advanced/middleware-general-application.webm" type="video/webm" alt="Middleware-example">

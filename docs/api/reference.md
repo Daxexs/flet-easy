@@ -459,17 +459,18 @@ def blog_post(data: fs.Datasy, year: int, month: int, slug: str):
 
 ### FletEasy Configuration
 
-| Parameter      | Type                      | Default  | Description                                                                         |
-|----------------|---------------------------|----------|-------------------------------------------------------------------------------------|
-| `route_prefix` | `str`                     | `""`     | Base prefix for all routes                                                          |
-| `route_init`   | `str`                     | `"/home"`| Initial route when app starts                                                       |
-| `route_login`  | `str` \| `None`           | `None`   | Redirect route for protected pages                                                  |
-| `on_keyboard`  | `bool`                    | `False`  | Enable keyboard event handling                                                      |
-| `on_resize`    | `bool`                    | `False`  | Enable window resize events                                                         |
-| `secret_key`   | `SecretKey` \| `None`     | `None`   | Secret key for encryption and decoding JWTs across the application                  |
-| `auto_logout`  | `bool`                    | `False`  | Auto-logout on JWT expiration or generic exceptions related to decoding             |
-| `path_views`   | `str` \| `Path` \| `None` | `None`   | Directory for automatic page discovery (loads pages recursively)                    |
-| `logger`       | `bool`                    | `False`  | Enable detailed logging. If `True`, Flet internal `on_error` events will be logged. |
+| Parameter            | Type                      | Default  | Description                                                                                       |
+|----------------------|---------------------------|----------|---------------------------------------------------------------------------------------------------|
+| `route_prefix`       | `str`                     | `""`     | Base prefix for all routes                                                                        |
+| `route_init`         | `str`                     | `"/home"`| Initial route when app starts                                                                     |
+| `route_login`        | `str` \| `None`           | `None`   | Redirect route for protected pages                                                                |
+| `on_keyboard`        | `bool`                    | `False`  | Enable keyboard event handling                                                                    |
+| `on_resize`          | `bool`                    | `False`  | Enable window resize events                                                                       |
+| `secret_key`         | `SecretKey` \| `None`     | `None`   | Secret key for encryption and decoding JWTs across the application                                |
+| `auto_logout`        | `bool`                    | `False`  | Auto-logout on JWT expiration or generic exceptions related to decoding                           |
+| `path_views`         | `str` \| `Path` \| `None` | `None`   | Directory for automatic page discovery (loads pages recursively)                                  |
+| `logger`             | `bool`                    | `False`  | Enable detailed logging. If `True`, Flet internal `on_error` events will be logged.               |
+| `use_error_boundary` | `bool`                    | `True`   | Show a visual error screen with the traceback when rendering fails. Set to `False` in production. |
 
 ### Pagesy Configurations
 

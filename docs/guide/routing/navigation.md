@@ -142,7 +142,7 @@ def profile_page(data: fs.Datasy):
 app.run()
 ```
 
-#### 🎬 Demo
+#### Demo
 
 <video controls>
   <source src="../../../assets/guide/routing/go_navigation_bar.webm" type="video/webm" alt="Flet-Easy - go_navigation_bar">
@@ -205,7 +205,7 @@ def counter_page(data: fs.Datasy):
 app.run()
 ```
 
-### 🎬 Demo
+### Demo
 
 <video controls>
   <source src="../../../assets/guide/core/Datasy-page_reload.webm" type="video/webm" alt="Flet-Easy - page_reload">

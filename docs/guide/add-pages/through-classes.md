@@ -108,7 +108,7 @@ class Page2(Custom):
 app.run()
 ```
 
-## 🎬 **Demo**
+## **Demo**
 
 <video controls>
   <source src="../../../assets/guide/add-pages/use-class-new-page.webm" type="video/mp4" alt="Flet-Easy - Add Pages Through Classes">

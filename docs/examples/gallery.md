@@ -46,7 +46,7 @@ if __name__ == "__main__":
     app.run()
 ```
 
-#### 🎬 Demo
+#### Demo
 
 <video controls>
   <source src="../../assets/examples/hello-world-app.webm" type="video/webm" alt="Flet-Easy - Hello World App">
@@ -301,7 +301,7 @@ if __name__ == "__main__":
     app.run()
 ```
 
-#### 🎬 Demo
+#### Demo
 
 <video controls>
   <source src="../../assets/examples/counter-app.webm" type="video/webm" alt="Flet-Easy - Counter App">
@@ -313,7 +313,7 @@ if __name__ == "__main__":
 
 This advanced example demonstrates the full capabilities of Flet-Easy v0.3.0 in a complete, router-based application. It serves as an excellent production-ready template incorporating **Authentication**, **Navigation**, **Middlewares**, and **Page Caching**.
 
-#### 🎬 Application Demo
+#### Application Demo
 
 <video controls>
   <source src="../../assets/examples/example-0.3.0v.webm" type="video/webm" alt="Flet-Easy - v0.3.0 Showcase">
