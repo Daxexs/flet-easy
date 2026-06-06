@@ -2,150 +2,158 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/changelog/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/advanced/basic-jwt/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/advanced/data-sharing-between-pages/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/advanced/middleware/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/advanced/page-caching/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/advanced/ref/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/advanced/responsiveControlsy/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/advanced/route-protection/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/advanced/configuration/control-view/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/advanced/configuration/general/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/advanced/configuration/page-404/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/advanced/events/handle/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/advanced/events/keyboard-event/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/advanced/events/on-resize/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/advanced/integration/working-with-other-apps/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/api/reference/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/cli/commands/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/cli/create-app/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/documentation-structure/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/examples/gallery/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/examples/migration-v0.2.0-to-v0.3.0/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/examples/v0-3-0-showcase/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/guide/add-pages/in-automatic/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/guide/add-pages/through-classes/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/guide/add-pages/through-decorators/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/guide/add-pages/using-functions/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/guide/core/datasy/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/guide/core/fletEasy/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/guide/core/pagesy/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/guide/core/viewsy/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
+    </url>
+    <url>
+         <loc>https://daxexs.github.io/flet-easy/dev/guide/routing/declarative/</loc>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/guide/routing/dynamic-routes/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
+    </url>
+    <url>
+         <loc>https://daxexs.github.io/flet-easy/dev/guide/routing/imperative/</loc>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/guide/routing/navigation/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/started/begin/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/started/how-to-use/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/started/installation/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
     <url>
          <loc>https://daxexs.github.io/flet-easy/dev/started/run-the-app/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-06-06</lastmod>
     </url>
 </urlset>
