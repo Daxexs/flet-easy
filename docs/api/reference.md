@@ -73,8 +73,8 @@ __Quick Reference:__
 
 ```python
 def my_page(data: fs.Datasy):
-    # Navigation
-    data.go("/other-page")
+    # Immediate Navigation / Redirection
+    data.go_route("/other-page") # or data.redirect("/other-page")
     data.go_back()
 
     # Authentication
@@ -119,7 +119,7 @@ page = Pagesy(
 )
 ```
 
-### AddPagesy
+### AddPagesy (Sub-Routes)
 
 ::: flet_easy.AddPagesy
     options:
@@ -138,6 +138,28 @@ pages = AddPagesy([
 ])
 
 app.add_pages(pages)
+```
+
+### Declarative Class Components (v0.3.0+)
+
+Flet-Easy naturally integrates class-based views with Flet's Native Component System. You can write your view logic within a class, decorate the `build()` method with `@ft.component`, and `self.data` will automatically be injected upon initialization.
+
+__Quick Reference:__
+
+```python
+import flet as ft
+import flet_easy as fs
+
+@app.page("/profile")
+class ProfilePage:
+    @ft.component
+    def build(self):
+        return ft.View(
+            controls=[
+                ft.Text("Profile"),
+                ft.ElevatedButton("Go Home", on_click=self.data.go("/"))
+            ]
+        )
 ```
 
 ### Viewsy
@@ -437,32 +459,32 @@ def blog_post(data: fs.Datasy, year: int, month: int, slug: str):
 
 ### FletEasy Configuration
 
-| Parameter      | Type        | Default    | Description                             |
-|----------------|-------------|------------|-----------------------------------------|
-| `route_prefix` | `str`       | `""`       | Base prefix for all routes              |
-| `route_init`   | `str`       | `"/"`      | Initial route when app starts           |
-| `route_login`  | `str`       | `"/login"` | Redirect route for protected pages      |
-| `on_keyboard`  | `bool`      | `False`    | Enable keyboard event handling          |
-| `on_resize`    | `bool`      | `False`    | Enable window resize events             |
-| `secret_key`   | `SecretKey` | `None`     | Secret key for JWT and encryption       |
-| `auto_logout`  | `bool`      | `False`    | Auto-logout on JWT expiration           |
-| `path_views`   | `Path`      | `None`     | Directory for automatic page discovery  |
-| `logger`       | `bool`      | `False`    | Enable detailed logging                 |
+| Parameter      | Type                      | Default  | Description                                                                         |
+|----------------|---------------------------|----------|-------------------------------------------------------------------------------------|
+| `route_prefix` | `str`                     | `""`     | Base prefix for all routes                                                          |
+| `route_init`   | `str`                     | `"/home"`| Initial route when app starts                                                       |
+| `route_login`  | `str` \| `None`           | `None`   | Redirect route for protected pages                                                  |
+| `on_keyboard`  | `bool`                    | `False`  | Enable keyboard event handling                                                      |
+| `on_resize`    | `bool`                    | `False`  | Enable window resize events                                                         |
+| `secret_key`   | `SecretKey` \| `None`     | `None`   | Secret key for encryption and decoding JWTs across the application                  |
+| `auto_logout`  | `bool`                    | `False`  | Auto-logout on JWT expiration or generic exceptions related to decoding             |
+| `path_views`   | `str` \| `Path` \| `None` | `None`   | Directory for automatic page discovery (loads pages recursively)                    |
+| `logger`       | `bool`                    | `False`  | Enable detailed logging. If `True`, Flet internal `on_error` events will be logged. |
 
-### Pagesy Configuration
+### Pagesy Configurations
 
-| Parameter         | Type        | Default    | Description                    |
-|-------------------|-------------|------------|--------------------------------|
-| `route`           | `str`       | Required   | URL pattern for the page       |
-| `view`            | `Callable`  | Required   | Function that returns a View   |
-| `title`           | `str`       | `None`     | Page title for browser         |
-| `index`           | `int`       | `None`     | Navigation index for tabs      |
-| `clear`           | `bool`      | `False`    | Clear navigation history       |
-| `share_data`      | `bool`      | `False`    | Enable data sharing            |
-| `protected_route` | `bool`      | `False`    | Require authentication         |
-| `custom_params`   | `Dict`      | `None`     | Custom parameter validators    |
-| `middleware`      | `List`      | `None`     | Page-specific middleware       |
-| `cache`           | `bool`      | `False`    | Preserve page state            |
+| Parameter         | Type                                                                                       | Default  | Description                                       |
+|-------------------|--------------------------------------------------------------------------------------------|----------|---------------------------------------------------|
+| `route`           | `str`                                                                                      | Required | URL pattern for the page                          |
+| `view`            | `Callable` \| `type`                                                                       | Required | Function or Class that returns a View (`build()`) |
+| `title`           | `str` \| `None`                                                                            | `None`   | Page title for browser                            |
+| `index`           | `int` \| `None`                                                                            | `None`   | Navigation index for tabs/Navigation Bars         |
+| `clear`           | `bool`                                                                                     | `False`  | Clear navigation history upon landing             |
+| `share_data`      | `bool`                                                                                     | `False`  | Enable data sharing via `data.share`              |
+| `protected_route` | `bool`                                                                                     | `False`  | Require authentication (`@app.login`)             |
+| `custom_params`   | `Dict[str, Callable]` \| `None`                                                            | `None`   | Custom parameter validators                       |
+| `middleware`      | `deque` \| `List` \| `tuple` \| `set` \| `Callable` \| `Type[MiddlewareRequest]` \| `None` | `None`   | Page-specific middlewares executed sequentially   |
+| `cache`           | `bool`                                                                                     | `False`  | Preserve page state (Controls, Inputs, Memory)    |
 
 ## Error Handling
 

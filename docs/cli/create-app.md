@@ -5,13 +5,13 @@ To start a project with `Flet-Easy` provides a cli to facilitate the constructio
 ## App structure
 
 !!! note "Structure main"
-![FletEasy](../../assets/cli/img/template_dxs.png "Flet-Easy - struct app")
+![FletEasy](../assets/cli/img/template_dxs.png "Flet-Easy - struct app")
 
 ---
 
 Which can be scaled to an app with higher requirements such as a design pattern based on MVC.
 !!! note "Example structure MVC"
-![FletEasy](../../assets/cli/img/struct-app.png "Flet-Easy - struct app")
+![FletEasy](../assets/cli/img/struct-app.png "Flet-Easy - struct app")
   
 ## CLI
 
@@ -31,4 +31,4 @@ fs init
 
 [![github](https://img.shields.io/badge/Template-000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Daxexs/fs-template-dxs)
 
-![FletEasy](../../assets/cli/fs-init.gif "Flet-Easy - fs init")
+![FletEasy](../assets/cli/fs-init.gif "Flet-Easy - fs init")

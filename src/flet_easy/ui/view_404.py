@@ -3,7 +3,9 @@ from flet import (
     Colors,
     Column,
     Container,
+    CrossAxisAlignment,
     FilledButton,
+    MainAxisAlignment,
     Text,
     View,
 )
@@ -30,14 +32,14 @@ def page_404_fs(data: Datasy) -> View:
                             ),
                         ),
                     ],
-                    alignment="center",
-                    horizontal_alignment="center",
+                    alignment=MainAxisAlignment.CENTER,
+                    horizontal_alignment=CrossAxisAlignment.CENTER,
                 ),
                 bgcolor=Colors.BLACK12,
                 padding=20,
                 border_radius=10,
             )
         ],
-        vertical_alignment="center",
-        horizontal_alignment="center",
+        vertical_alignment=MainAxisAlignment.CENTER,
+        horizontal_alignment=CrossAxisAlignment.CENTER,
     )

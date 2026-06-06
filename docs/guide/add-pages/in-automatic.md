@@ -1,10 +1,10 @@
 # In automatic
 
-It forgets the imports of each of the .py files and the functions or variables of the pages. For this you must have a proper order where all the .py files that contain each page must be in a folder, for example `views`. The configuration is done in the [`FletEasy`](../../started/how-to-use.md#fleteasy) class of the [`path_views`](../../started/how-to-use.md#fleteasy) parameter and in each of the .py files use the [AddPagesy](through-decorators.md#addpagesy) class.
+It forgets the imports of each of the .py files and the functions or variables of the pages. For this you must have a proper order where all the .py files that contain each page must be in a folder, for example `views`. The configuration is done in the [`FletEasy`](../../started/how-to-use.md#fleteasy) class of the [`path_views`](../../started/how-to-use.md#fleteasy) parameter and in each of the .py files use the [AddPagesy](through-decorators.md#addpagesy-class) class.
 
 ## App structure
 
-![FletEasy](../../../assets/guide/add-pages/img/funtion_add_page.png "FletEasy : App structure routing automatic")
+![FletEasy](../../assets/guide/add-pages/img/funtion_add_page.png "FletEasy : App structure routing automatic")
 
 ### **Example**
 
@@ -62,5 +62,5 @@ app.run()
 #### 🎬 Demo
 
 <video controls>
-  <source src="../../../assets/guide/add-pages/Through-decorators-using_functions.webm" type="video/mp4" alt="FletEasy : Routing automatic">
+  <source src="../../../assets/guide/add-pages/Through-decorators-using_functions.webm" type="video/webm" alt="FletEasy : Routing automatic">
 </video>

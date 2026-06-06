@@ -35,7 +35,7 @@ app = fs.FletEasy(
 
 * `run()` : Execute the app. Supports async, fastapi and export_asgi_app. [[`See more`](run-the-app.md)]
 * `add_middleware()` : Requires a list of functions or classes. [[`See more`](../advanced/middleware.md)]
-* `add_pages()` : Add pages from other files. In the list you enter objects of class [AddPagesy](../guide/add-pages/through-decorators.md#addpagesy). [[`See more`](../guide/add-pages/through-decorators.md#adding-pages)]
+* `add_pages()` : Add pages from other files. In the list you enter objects of class [AddPagesy](../guide/add-pages/through-decorators.md#addpagesy-class). [[`See more`](../guide/add-pages/through-decorators.md#adding-pages-to-main-app)]
 * `add_routes()` : Add routes without the use of decorators. [[`See more`](../guide/add-pages/using-functions.md#add-routes)]
 
 ### Decorators

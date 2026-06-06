@@ -24,7 +24,7 @@ concurrency:
 
 jobs:
   ruff:
-    name: Ruff (check + format)
+    name: Ruff - Ty (check + format)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -50,6 +50,9 @@ jobs:
       - name: Ruff format check
         run: uv run ruff format --check
 
+      - name: Ty check
+        run: uv run ty
+
   markdown:
     name: Markdown Lint
     runs-on: ubuntu-latest
@@ -58,7 +61,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Markdown Lint
-        uses: DavidAnson/markdownlint-cli2-action@v19
+        uses: DavidAnson/markdownlint-cli2-action@v23
         with:
           config: .markdownlint.yaml
           globs: |

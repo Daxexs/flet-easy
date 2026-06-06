@@ -6,31 +6,67 @@ both Flet 0.28.* (old API) and Flet >= 0.80.* (new API).
 
 __all__ = [
     "NEW_FLET_VERSION",
-    "alignment",
     "Control",
-    "SessionStorage",
-    "SharedPreferences",
+    "SessionStorageEditBase",
+    "SharedPreferencesEditBase",
+    "context",
+    "observable",
+    "unwrap_component",
 ]
+
+from typing import TYPE_CHECKING
 
 from flet import Page
 
-try:
-    # Flet < 0.80 (old API: flet.core.*)
-    NEW_FLET_VERSION = False
-    from flet.core import alignment  # type: ignore
-    from flet.core.control import Control  # type: ignore
-    from flet.core.session_storage import SessionStorage  # type: ignore
+if TYPE_CHECKING:
+    from typing import Any
 
-    SharedPreferences = None  # Not available in old Flet
-
-except ImportError:
-    # Flet >= 0.80 (new API: flet.controls.*)
     NEW_FLET_VERSION = True
-    from flet.controls import alignment
     from flet.controls.control import Control
-    from flet.controls.services.shared_preferences import SharedPreferences
 
-    SessionStorage = None  # Not available in new Flet
+    SessionStorageEditBase = Any
+    SharedPreferencesEditBase = Any
+
+    context: Any = None
+    observable: Any = None
+    unwrap_component: Any = None
+
+else:
+    try:
+        # Flet < 0.80 (old API: flet.core.*)
+        NEW_FLET_VERSION = False
+        from flet.core.control import Control
+        from flet.core.session_storage import SessionStorage as SessionStorageEditBase
+        from flet.core.session_storage import SessionStorage as SharedPreferencesEditBase
+
+        def observable(cls):
+            return cls
+
+        def unwrap_component(c):
+            return c
+
+        class _DummyContext:
+            class _DummyPage:
+                views = []
+
+                async def push_route(self, route: str) -> None:
+                    pass
+
+            page = _DummyPage()
+
+        context = _DummyContext()
+
+    except ImportError:
+        # Flet >= 0.80 (new API: flet.controls.*)
+        NEW_FLET_VERSION = True
+        from flet import context, observable, unwrap_component
+        from flet.controls.control import Control
+        from flet.controls.services.shared_preferences import (
+            SharedPreferences as SessionStorageEditBase,
+        )
+        from flet.controls.services.shared_preferences import (
+            SharedPreferences as SharedPreferencesEditBase,
+        )
 
 
 async def go_page(page: Page, route: str) -> None:

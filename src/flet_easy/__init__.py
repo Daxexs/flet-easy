@@ -15,7 +15,9 @@ from flet_easy.core.middleware import MiddlewareRequest
 
 page = FletEasy.page
 
-__version__ = "0.3.0.dev21"
+from importlib.metadata import version
+
+__version__ = version("flet-easy")
 
 __all__ = [
     "Datasy",

@@ -1,5 +1,6 @@
 from collections import deque
-from typing import Any, Callable, Dict, List, Tuple, Union
+from collections.abc import Awaitable
+from typing import Any, Callable, Optional, Union
 
 from flet import Control, ControlEvent, Page, View, ViewPopEvent
 
@@ -20,31 +21,32 @@ _logger = get_logger("Datasy")
 
 
 class Datasy(AuthMixin):
-    """The decorated function will always receive a parameter which is `data` (can be any name), which will make an object of type `Datasy` of `Flet-Easy`.
+    """Core data object passed to route handlers in Flet-Easy.
 
-    This class has the following attributes, in order to access its data:
+    Provides access to the Flet `Page` instance, URL parameters, routing state,
+    client storage, and authentication utilities.
 
-    * `page` : We get the values of the page provided by `Flet`.
-    * `url_params` : We obtain a dictionary with the values passed through the url.
-    * `view` : Get a `View` object from `Flet`, previously configured with the `view` decorator of `Flet-Easy`.
-    * `route_prefix` : Value entered in the `FletEasy` class parameters to create the app object.
-    * `route_init` : Value entered in the `FletEasy` class parameters to create the app object.
-    * `route_login` : Value entered in the `FletEasy` class parameters to create the app object.
-    ---
-    * `share` : It is used to be able to store and to obtain values in the client session.
-    * `on_keyboard_event` : get event values to use in the page.
-    * `on_resize` : get event values to use in the page.
-    * `logout` : method to close sessions of all sections in the browser (client storage).
-    * `login` : method to create sessions of all sections in the browser (client storage).
-    * `go` / `go_route`: Method to change the application path.
-    * `go_back` : Method to go back to the previous route.
-    * `go_navigation_bar` : Handles navigation bar changes.
-    * `history_routes` : Get the history of the routes.
-    * `route` : Route provided by the route event.
-    * `redirect` : To redirect to a path before the page loads, it is used in middleware.
-    * `page_reload` : Use this method to reload the page.
-    * `dynamic_control` : Adds dynamic control to the page.
-    * `confirm_pop` : Confirm pop view.
+    Attributes:
+    * `page` : The active Flet `Page` instance.
+    * `url_params` : A dictionary of parsed parameters from the current URL.
+    * `view` : The `View` object configured by the `@app.view` decorator.
+    * `route_prefix` : The configured application route prefix.
+    * `route_init` : The initial application route.
+    * `route_login` : The configured login route for protected endpoints.
+    * `share` : Interface for storing and retrieving values in the client session.
+    * `on_keyboard_event` : Contains keyboard event data if enabled.
+    * `on_resize` : Contains window resize event data if enabled.
+    * `logout` : Closes the active session in client storage.
+    * `login` : Creates a new session in client storage.
+    * `go` / `go_route`: Navigates to a new application route.
+    * `go_back` : Navigates back to the previous route.
+    * `go_navigation_bar` : Handles navigation bar index updates.
+    * `history_routes` : History of visited routes in the current session.
+    * `route` : The current application route.
+    * `redirect` : Returns a `Redirect` object to bypass the current view (useful in middleware).
+    * `page_reload` : Reloads the current route.
+    * `dynamic_control` : Registers a dynamically updatable control for the current route.
+    * `confirm_pop` : Triggers the `ViewPopEvent` manually.
     """
 
     __slots__ = (
@@ -63,10 +65,11 @@ class Datasy(AuthMixin):
         "_dynamic_control",
         "__secret_key",
         "__auto_logout",
-        "__sleep",
+        "_sleep_auth",
         "_key_login",
         "_login_done",
         "_shared_preferences",
+        "_use_client_storage",
     )
 
     def __init__(
@@ -74,16 +77,16 @@ class Datasy(AuthMixin):
         page: Page,
         route_prefix: str,
         route_init: str,
-        route_login: str,
-        secret_key: str,
+        route_login: Optional[str],
+        secret_key: Optional[SecretKey],
         auto_logout: bool,
         page_on_keyboard: Keyboardsy,
         page_on_resize: Resizesy,
-        go: Callable[[Union[str, int], bool], None] = None,
+        go: Callable[..., Awaitable[None]],
     ) -> None:
-        self.__page: Page = page
-        self.__url_params: Dict[str, Any] = None
-        self.__view: Viewsy = None
+        self.__page = page
+        self.__url_params: dict[str, Any] = {}
+        self.__view: Optional[Union[Viewsy, View]] = None
         self.__route_prefix = route_prefix
         self.__route_init = route_init
         self.__route_login = route_login
@@ -96,18 +99,20 @@ class Datasy(AuthMixin):
 
         self.__on_keyboard_event = page_on_keyboard
         self.__on_resize: Resizesy = page_on_resize
-        self.__route: str = None
+        self.__route: Optional[str] = None
         self._run_go = go
-        self.__history_routes: deque[Tuple[str, int]] = deque()
-        self._dynamic_control: Dict[str, List[Tuple[Control, Callable[[Control]], None]]] = {}
+        self.__history_routes: deque[tuple[str, Optional[int]]] = deque()
+        self._dynamic_control: dict[str, list[tuple[Control, Callable[[Control], None]]]] = {}
 
-        self.__secret_key: SecretKey = secret_key
+        self.__secret_key = secret_key
         self.__auto_logout: bool = auto_logout
         self._sleep_auth: int = 1
-        self._key_login: str = None
+        self._key_login: Optional[str] = None
         self._login_done: bool = False
+        # Cached once per session — storage API never changes at runtime
+        self._use_client_storage: bool = hasattr(page, "client_storage")
 
-        _logger.info(
+        _logger.debug(
             "Using SharedPreferences (Flet >= 0.80)"
             if NEW_FLET_VERSION
             else "Using SessionStorage (Flet < 0.80)"
@@ -122,19 +127,19 @@ class Datasy(AuthMixin):
         self.__page = page
 
     @property
-    def history_routes(self) -> deque[Tuple[str, int]]:
+    def history_routes(self) -> deque[tuple[str, Optional[int]]]:
         return self.__history_routes
 
     @property
-    def url_params(self) -> Dict[str, Any]:
+    def url_params(self) -> dict[str, Any]:
         return self.__url_params
 
     @url_params.setter
-    def url_params(self, url_params: Dict[str, Any]):
+    def url_params(self, url_params: dict[str, Any]):
         self.__url_params = url_params
 
     @property
-    def view(self) -> Union[Viewsy, View]:
+    def view(self) -> Optional[Union[Viewsy, View]]:
         return self.__view
 
     @view.setter
@@ -158,7 +163,7 @@ class Datasy(AuthMixin):
         self.__route_init = route_init
 
     @property
-    def route_login(self) -> str:
+    def route_login(self) -> Optional[str]:
         return self.__route_login
 
     @route_login.setter
@@ -175,7 +180,7 @@ class Datasy(AuthMixin):
         return self.__on_keyboard_event
 
     @on_keyboard_event.setter
-    def on_keyboard_event(self, on_keyboard_event: object):
+    def on_keyboard_event(self, on_keyboard_event: Keyboardsy):
         self.__on_keyboard_event = on_keyboard_event
 
     @property
@@ -183,11 +188,11 @@ class Datasy(AuthMixin):
         return self.__on_resize
 
     @on_resize.setter
-    def on_resize(self, on_resize: object):
+    def on_resize(self, on_resize: Resizesy):
         self.__on_resize = on_resize
 
     @property
-    def key_login(self) -> str:
+    def key_login(self) -> Optional[str]:
         return self._key_login
 
     @property
@@ -195,11 +200,11 @@ class Datasy(AuthMixin):
         return self.__auto_logout
 
     @property
-    def secret_key(self) -> SecretKey:
+    def secret_key(self) -> Optional[SecretKey]:
         return self.__secret_key
 
     @property
-    def route(self) -> str:
+    def route(self) -> Optional[str]:
         return self.__route
 
     @route.setter
@@ -208,62 +213,50 @@ class Datasy(AuthMixin):
 
     """ Page go  """
 
-    def go(self, route: str) -> Callable[[ControlEvent], None]:
+    def go(self, route: str) -> Callable[[Any], None]:
         """To change the application path, it is important for better validation to avoid using `page.go()`."""
 
         return lambda _=None: self.go_route(route)
 
     def go_route(self, route: Union[str, int]) -> None:
         """To change the application path, it is important for better validation to avoid using `page.go()`."""
-
-        async def _go_route():
-            await self._run_go(route)
-
-        self.page.run_task(_go_route)
+        self.page.run_task(self._run_go, route)
 
     def go_navigation_bar(self, e: ControlEvent) -> None:
         """Handles navigation bar changes. Use this method in the on_change event of
         'ft.NavigationBar' or 'ft.CupertinoNavigationBar' controls."""
-
-        async def _go_nav():
-            route = e.control.selected_index
-            await self._run_go(route)
-
-        self.page.run_task(_go_nav)
+        index = getattr(e.control, "selected_index", None)
+        if index is not None:
+            self.page.run_task(self._run_go, index)
 
     def redirect(self, route: str) -> Redirect:
         """Useful if you do not want to access a route that has already been sent."""
         return Redirect(route)
 
-    def go_back(self, e: ControlEvent = None) -> None:
+    def go_back(self, e: Optional[ControlEvent] = None) -> None:
         """Go back to the previous route."""
 
         if len(self.history_routes) > 1:
             self.history_routes.pop()
             route, index = self.history_routes.pop()
 
-            if index is not None:
+            if index is not None and self.view and self.view.navigation_bar:
                 self.view.navigation_bar.selected_index = index
 
-            async def _go_back():
-                await self._run_go(route)
-
-            self.page.run_task(_go_back)
+            self.page.run_task(self._run_go, route)
         else:
-            print("-> I can't go back! there is no history. ")
+            _logger.warning("go_back: called with no navigation history to go back to.")
 
-    def page_reload(self):
+    def page_reload(self) -> None:
         """Use this method to reload the page, restores the default values of the page"""
-        self._run_go(self.page.route, page_reload=True)
+        self.page.run_task(self._run_go, self.page.route, page_reload=True)
 
     def dynamic_control(self, control: Control, func_update: Callable[[Control], None]) -> None:
         """Adds dynamic control to the page, allowing real-time updates when caching is enabled on the page."""
-        if self.page.route not in self._dynamic_control:
-            self._dynamic_control[self.page.route] = [(control, func_update)]
-        else:
-            self._dynamic_control[self.page.route].append((control, func_update))
+        self._dynamic_control.setdefault(self.page.route, []).append((control, func_update))
 
     def confirm_pop(self, e: ViewPopEvent) -> None:
         """Confirm pop view"""
         self.go_back()
-        e.control.confirm_pop(False)
+        if hasattr(e.view, "confirm_pop"):
+            _ = getattr(e.view, "confirm_pop")(False)  # noqa: B009

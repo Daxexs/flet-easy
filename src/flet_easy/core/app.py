@@ -1,11 +1,15 @@
-import logging
 from collections import deque
 from pathlib import Path
-from types import FunctionType
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Optional, Union, cast
 from warnings import warn
 
-from flet_easy.exceptions import AddPagesError, ConfigurationError, FletEasyError, MiddlewareError
+from flet_easy.exceptions import (
+    AddPagesError,
+    ConfigurationError,
+    FletEasyError,
+    MiddlewareError,
+)
+from flet_easy.utils import normalize_route
 
 try:
     from flet import AppView, Page, WebRenderer
@@ -15,14 +19,28 @@ except ImportError:
     )
 
 try:
-    # support for flet < 0.80.0 deprecated in flet 0.80.0
-    from flet import app
+    from flet import RouteUrlStrategy
 except ImportError:
+    from enum import Enum
+
+    class RouteUrlStrategy(str, Enum):
+        PATH = "path"
+        HASH = "hash"
+
+
+try:
+    # support for flet < 0.80.0 deprecated in flet 0.80.0
     from flet import run as app
+except ImportError:
+    from flet import app
 
 from flet_easy.core.auto_route import automatic_routing
 from flet_easy.core.data import Datasy
-from flet_easy.core.middleware import MiddlewareHandler, MiddlewareRequest
+from flet_easy.core.middleware import (
+    Middleware,
+    MiddlewareItem,
+    MiddlewareRequest,
+)
 from flet_easy.core.pages import AddPagesy, Pagesy
 from flet_easy.core.router import FletEasyX
 from flet_easy.logger import LoggingFletEasy, get_logger
@@ -68,7 +86,7 @@ class FletEasy:
     ```
     """
 
-    __self = None
+    __self: Optional["FletEasy"] = None
 
     # ─── Initialization ───────────────────────────────────────────────
 
@@ -83,32 +101,37 @@ class FletEasy:
         auto_logout: bool = False,
         path_views: Optional[Path] = None,
         logger: bool = False,
+        use_error_boundary: bool = True,
     ) -> None:
         if logger:
+            import logging
+
             LoggingFletEasy.enable(logging.DEBUG)
         self._logger = get_logger("FletEasy")
 
         self.__route_prefix: str = route_prefix or ""
         self.__route_init: str = route_init
         self.__route_login: Optional[str] = route_login
-        self.__path_views: Optional[Path] = path_views
+        self.__path_views: Optional[Union[str, Path]] = path_views
         self.__on_resize: bool = on_resize
         self.__on_keyboard: bool = on_keyboard
         self.__secret_key: Optional[SecretKey] = secret_key
         self.__auto_logout: bool = auto_logout
+        self.__use_error_boundary: bool = use_error_boundary
 
         self.__page_404: Optional[Pagesy] = None
-        self.__middlewares: Optional[List[Union[MiddlewareHandler, MiddlewareRequest]]] = None
-        self.__middlewares_after: Optional[List[Union[MiddlewareHandler, MiddlewareRequest]]] = None
+        self.__middlewares: Optional[deque[MiddlewareItem]] = None
+        self.__middlewares_after: Optional[deque[MiddlewareItem]] = None
 
         self.__pages: deque[Pagesy] = deque()
         self.__view_data: Optional[Callable[[Datasy], Viewsy]] = None
         self.__config_login: Optional[Callable[[Datasy], bool]] = None
-        self.__view_config: Optional[Callable[[Datasy], None]] = None
+        self.__view_config: Optional[Callable[[Page], None]] = None
         self.__config_event: Optional[Callable[[Datasy], None]] = None
 
         FletEasy.__self = self
-        self.__pagesys = automatic_routing(self.__path_views) if self.__path_views else None
+        self.__fsx: Optional[FletEasyX] = None
+        self.__pagesys = automatic_routing(str(self.__path_views)) if self.__path_views else None
 
     # ─── App Lifecycle ────────────────────────────────────────────────
 
@@ -138,7 +161,10 @@ class FletEasy:
             on_keyboard=self.__on_keyboard,
             secret_key=self.__secret_key,
             auto_logout=self.__auto_logout,
+            use_error_boundary=self.__use_error_boundary,
         )
+
+        self.__fsx = fsx
 
         fsx.run()
 
@@ -165,11 +191,11 @@ class FletEasy:
         assets_dir: str = "assets",
         upload_dir: Optional[str] = None,
         web_renderer: WebRenderer = WebRenderer.CANVAS_KIT,
-        route_url_strategy: str = "path",
+        route_url_strategy: Union[RouteUrlStrategy, str] = RouteUrlStrategy.PATH,
         export_asgi_app: bool = False,
         fastapi: bool = False,
-        **kwargs,
-    ) -> None:
+        **kwargs: Any,
+    ) -> Any:
         """Execute the app. Supports async, fastapi, and export_asgi_app."""
         main = self.get_app()
 
@@ -184,18 +210,23 @@ class FletEasy:
 
         try:
             self._logger.debug("running app from fletEasy with flet")
-            return app(
-                target=main,
-                name=name,
-                host=host,
-                port=port,
-                view=view,
-                assets_dir=assets_dir,
-                upload_dir=upload_dir,
-                web_renderer=web_renderer,
-                route_url_strategy=route_url_strategy,
-                export_asgi_app=export_asgi_app,
+            app_kwargs: dict[str, Any] = {
+                "name": name,
+                "host": host,
+                "port": port,
+                "view": view,
+                "assets_dir": assets_dir,
+                "upload_dir": upload_dir,
+                "web_renderer": web_renderer,
+                "export_asgi_app": export_asgi_app,
                 **kwargs,
+            }
+            if route_url_strategy is not None:
+                app_kwargs["route_url_strategy"] = route_url_strategy
+
+            return app(
+                main,
+                **app_kwargs,
             )
         except RuntimeError:
             raise FletEasyError(
@@ -204,12 +235,6 @@ class FletEasy:
             )
 
     # ─── Route Registration ───────────────────────────────────────────
-
-    def _build_route(self, route: Optional[str]) -> Optional[str]:
-        """Build the full route by prepending the prefix."""
-        if not self.__route_prefix or not route:
-            return route
-        return self.__route_prefix if route == "/" else self.__route_prefix + route
 
     @classmethod
     def page(
@@ -220,14 +245,8 @@ class FletEasy:
         page_clear: bool = False,
         share_data: bool = False,
         protected_route: bool = False,
-        custom_params: Optional[Dict[str, Any]] = None,
-        middleware: Optional[
-            Union[
-                List[Union[MiddlewareHandler, MiddlewareRequest]],
-                MiddlewareHandler,
-                MiddlewareRequest,
-            ]
-        ] = None,
+        custom_params: Optional[dict[str, Any]] = None,
+        middleware: Middleware = None,
         cache: bool = False,
     ) -> Callable:
         """Decorator to add a new page to the app.
@@ -244,10 +263,12 @@ class FletEasy:
             cache: Preserve page state when navigating (optional).
         """
         self = cls.__self
+        if self is None:
+            raise ConfigurationError("FletEasy instance not initialized.")
 
-        def decorator(func: Callable) -> Callable:
+        def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
             pagesy = Pagesy(
-                route=self._build_route(route),
+                route=normalize_route(self.__route_prefix, route),
                 view=func,
                 title=title,
                 index=index,
@@ -261,9 +282,9 @@ class FletEasy:
             self.__pages.append(pagesy)
 
             # Back-reference for reverse decorator order (@ft.component on top)
-            func.__flet_easy_pagesy__ = pagesy
+            setattr(func, "__flet_easy_pagesy__", pagesy)  # noqa: B010
 
-            self._logger.debug(f"Adding page: {self.__pages[-1]}")
+            self._logger.debug("Adding page: %s", self.__pages[-1])
             return func
 
         return decorator
@@ -282,19 +303,19 @@ class FletEasy:
             page_clear: Remove previous views (optional).
         """
 
-        def decorator(func: Callable) -> Callable:
+        def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
             self.__page_404 = Pagesy(
-                self._build_route(route),
+                normalize_route(self.__route_prefix, route or ""),
                 func,
                 title or "Flet-Easy 404",
                 clear=page_clear,
             )
-            self._logger.debug(f"Adding page 404: {self.__page_404}")
+            self._logger.debug("Adding page 404: %s", self.__page_404)
             return func
 
         return decorator
 
-    def add_pages(self, group_pages: Union[List[AddPagesy], AddPagesy]) -> None:
+    def add_pages(self, group_pages: Union[list[AddPagesy], AddPagesy]) -> None:
         """Add pages from other files.
 
         Example:
@@ -311,11 +332,11 @@ class FletEasy:
                 else:
                     self.__pages.extend(page._add_pages())
 
-                self._logger.debug(f"Adding group of pages: {len(group_pages)}: {page}\n")
+                self._logger.debug("Adding group of pages: %d: %s", len(group_pages), page)
         except Exception as e:
             raise AddPagesError("Add pages error in route: ", e)
 
-    def add_routes(self, add_views: List[Pagesy]) -> None:
+    def add_routes(self, add_views: list[Pagesy]) -> None:
         """Add routes without the use of decorators.
 
         Example:
@@ -333,54 +354,51 @@ class FletEasy:
 
         for page in add_views:
             if self.__route_prefix:
-                page.route = self.__route_prefix + page.route
+                page.route = normalize_route(self.__route_prefix, page.route)
 
             self.__pages.append(page)
-            self._logger.debug(f"Add routes: {page}")
+            self._logger.debug("Add routes: %s", page)
 
     # ─── Configuration Decorators ─────────────────────────────────────
 
-    def view(self, func: Callable[[Datasy], Viewsy]) -> None:
+    def view(self, func: Callable[[Datasy], Viewsy]) -> Callable[[Datasy], Viewsy]:
         """Decorator to add custom view controls (appbar, navigation, etc).
 
         The decorated function receives `data:fs.Datasy` and returns `fs.Viewsy`.
         """
         self.__view_data = func
-        self._logger.debug(f"Adding view: {self.__view_data}")
+        self._logger.debug("Adding view: %s", self.__view_data)
+        return func
 
-    def config(self, func: Callable[[Datasy], None]) -> None:
+    def config(self, func: Callable[[Page], None]) -> Callable[[Page], None]:
         """Decorator to add custom page configuration (theme, etc).
 
         The decorated function receives `page:ft.Page` and returns nothing.
         """
         self.__view_config = func
-        self._logger.debug(f"Adding config: {self.__view_config}")
+        self._logger.debug("Adding config: %s", self.__view_config)
+        return func
 
-    def login(self, func: Callable[[Datasy], bool]) -> None:
+    def login(self, func: Callable[[Datasy], bool]) -> Callable[[Datasy], bool]:
         """Decorator to add login configuration for protected routes.
 
         The decorated function receives `data:fs.Datasy` and must return a boolean.
         """
         self.__config_login = func
-        self._logger.debug(f"Adding login: {self.__config_login}")
+        self._logger.debug("Adding login: %s", self.__config_login)
+        return func
 
-    def config_event_handler(self, func: Callable[[Datasy], None]) -> None:
-        """Decorator to add page event handler settings.
-
-        See: https://flet.dev/docs/controls/page#events
-        """
+    def config_event_handler(self, func: Callable[[Datasy], None]) -> Callable[[Datasy], None]:
+        """Decorator to add page event handler settings."""
         self.__config_event = func
-        self._logger.debug(f"Adding config event: {self.__config_event}")
+        self._logger.debug("Adding config event: %s", self.__config_event)
+        return func
 
     # ─── Middleware ────────────────────────────────────────────────────
 
     def add_middleware(
         self,
-        *middleware: Union[
-            Tuple[Union[MiddlewareHandler, MiddlewareRequest]],
-            MiddlewareHandler,
-            MiddlewareRequest,
-        ],
+        *middleware: MiddlewareItem,
     ) -> None:
         """Add global middleware.
 
@@ -395,21 +413,21 @@ class FletEasy:
                 "Pass at least one middleware function or MiddlewareRequest class."
             )
 
-        items = middleware[0] if isinstance(middleware[0], list) else middleware
+        items = middleware[0] if isinstance(middleware[0], list) else list(middleware)
 
-        self.__middlewares = []
-        self.__middlewares_after = []
+        self.__middlewares = deque()
+        self.__middlewares_after = deque()
 
         for m in items:
-            if isinstance(m, FunctionType):
-                self.__middlewares.append(m)
-            elif isinstance(m, type) and issubclass(m, MiddlewareRequest):
+            if isinstance(m, type) and issubclass(m, MiddlewareRequest):
                 self.__middlewares.append(m)
                 self.__middlewares_after.append(m)
+            elif callable(m):
+                self.__middlewares.append(cast(MiddlewareItem, m))
             else:
                 raise MiddlewareError(
                     f"Middleware '{m}' must be a class inheriting from "
                     f"MiddlewareRequest or a callable function."
                 )
 
-        self._logger.debug(f"Add middlewares in method 'add_middleware': {items}")
+        self._logger.debug("Add middlewares in method 'add_middleware': %s", items)

@@ -3,9 +3,8 @@ name: Tests
 on:
   push:
     paths:
-      - "tests/**"
-    branches:
-      - main
+      - "tests/*"
+      - "tests/ui/*"
   pull_request:
     types:
       - opened
@@ -13,30 +12,28 @@ on:
 
 jobs:
   tests:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
-        - name: Checkout Repository
-          uses: actions/checkout@v4
-  
-        - name: Set up Python
-          uses: actions/setup-python@v4
-          with:
-            python-version: "3.12"
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-        - name: Install the latest version of uv and enable caching and define a custom cache key suffix
-          id: setup-uv
-          uses: astral-sh/setup-uv@v5
-          with:
-            version: "latest"
-            enable-cache: true
-            cache-suffix: "optional-suffix"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
-        - name: syncronize flet-easy
-          run: |
-            uv sync --group test
-            echo "Syncronize flet-easy completed"
+      - name: Install the latest version of uv and enable caching and define a custom cache key suffix
+        id: setup-uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+          enable-cache: true
+          cache-suffix: "optional-suffix"
 
-        - name: run py
-          run: |
-            uv run pytest tests/routing.py
-            echo "Pytest completed"
+      - name: syncronize flet-easy
+        run: |
+          uv sync --all-groups --all-extras
+          echo "Syncronize flet-easy completed"
+
+      - name: Run tests via nox
+        run: uv run nox -s tests_scripts tests_scripts_ui

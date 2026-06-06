@@ -2,9 +2,9 @@
 
 ## Add Pages from Other Files
 
-Use the `AddPagesy` class to organize pages in separate files and group them with a common URL prefix.
+Use the `AddPagesy` class (Sub-Router) to organize pages in separate files and group them with a common URL prefix.
 
-## `AddPagesy` Class
+## `AddPagesy` Class (Sub-Routes) {#addpagesy-class}
 
 ```python
 class AddPagesy:
@@ -70,7 +70,7 @@ Decorator to add a page to the group. Same parameters as `Pagesy` class. ([See d
 
 ### App Structure
 
-![FletEasy](../../../assets/guide/add-pages/img/struct-views.png "Flet-Easy - Add Pages Through Decorators")
+![FletEasy](../../assets/guide/add-pages/img/struct-views.png "Flet-Easy - Add Pages Through Decorators")
 
 **URLs created**: `/user/task`, `/user/information`
 

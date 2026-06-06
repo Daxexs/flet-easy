@@ -6,7 +6,7 @@ To run the application we use an object method already instantiated by [`FletEas
 
 ### run
 
-![FletEasy run](../../assets/started/img/method_run.png "Method run() of FletEasy class")
+![FletEasy run](../assets/started/img/method_run.png "Method run() of FletEasy class")
 
 ### Use with fastapi
 
@@ -18,11 +18,11 @@ To run the application we use an object method already instantiated by [`FletEas
 
 To get the main of the app and be able to add Fastapi to it.
 
-![run fastapi](../../assets/started/img/fastapi_run.png "Method run() with fastapi")
+![run fastapi](../assets/started/img/fastapi_run.png "Method run() with fastapi")
 
 ### Export asgi app
 
-![run fastapi](../../assets/started/img/export_asgi.png "Method run() export asgi app")
+![run fastapi](../assets/started/img/export_asgi.png "Method run() export asgi app")
 
 ---
 !!! warning "Available from version 0.2.8"
@@ -117,7 +117,7 @@ ft.app(target=app.get_app())
 
 ## customize as it is executed
 
-![run view](../../assets/started/img/run_view.png "Flet-Easy - run view customize")
+![run view](../assets/started/img/run_view.png "Flet-Easy - run view customize")
 
 ## Possible errors
 
@@ -140,4 +140,4 @@ ft.app(target=app.get_app())
 ### build windows
 
 !!! warning "If there are problems in `build windows`"
-    remove `print()` from Python if used in ['add_middleware'](../advanced/middleware.md#method-and-attribute-to-use-see-more) functions.
+    remove `print()` from Python if used in ['add_middleware'](../advanced/middleware.md#available-methods-and-attributes) functions.

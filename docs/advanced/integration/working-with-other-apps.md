@@ -2,7 +2,7 @@
 
 ## Working with other apps and creating apis
 
-To be able to make our main app work with other apps, besides being able to create apis from the same url path with the same host and port. First we must obtain the main of the app to be able to mount it in another app. For it we are going to use the [`run`](../../../started/run-the-app/#use-with-fastapi) method with its `fastapi=True` parameter.
+To be able to make our main app work with other apps, besides being able to create apis from the same url path with the same host and port. First we must obtain the main of the app to be able to mount it in another app. For it we are going to use the [`run`](../../started/run-the-app.md#use-with-fastapi) method with its `fastapi=True` parameter.
 
 !!! note "More information"
     * [Hosting multiple Flet apps under the same domain](https://docs.flet.dev/publish/web/dynamic-website/?h=hosting+multiple+flet+apps#customizing-web-app)
@@ -52,4 +52,4 @@ uvicorn main:app_main
 
 ### 📷 **Demo**
 
-![app](../../../assets/advanced/integration/app-api.png "Flet-Easy - app-api")
+![app](../../assets/advanced/integration/app-api.png "Flet-Easy - app-api")

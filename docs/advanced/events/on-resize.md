@@ -73,4 +73,4 @@ app.run()
 
 ## 📷 **Demo**
 
-![on-resize](../../../assets/advanced/events/img/on-resize.png "Flet Easy - On Resize")
+![on-resize](../../assets/advanced/events/img/on-resize.png "Flet Easy - On Resize")

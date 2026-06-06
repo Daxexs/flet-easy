@@ -233,6 +233,7 @@ nav:
       - Complete API Documentation: api/reference.md
   - Development:
       - CLI Tools:
+          - Commands: cli/commands.md
           - Project Creation: cli/create-app.md
   - Changelog:
       - Release Notes: changelog.md

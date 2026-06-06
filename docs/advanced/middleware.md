@@ -75,9 +75,34 @@ app.add_middleware(AuthMiddleware, LoggingMiddleware)
 !!! tip "Performance Tip"
     Use class-based middleware for complex logic and better organization. Function-based middleware is suitable for simple checks.
 
+## Execution Hierarchy and Lists
+
+Flet-Easy applies middleware following a strict **Outside-In** hierarchy. If multiple layers of middleware exist for a given route, they execute in this cascading order:
+
+1. **Global Middlewares (`app.add_middleware`)**: Applied to every single route in the application.
+2. **Sub-router Middlewares (`fs.AddPagesy(middleware=...)`)**: Applied to all pages belonging to that group/prefix.
+3. **Specific Page Middlewares (`@app.page(middleware=...)`)**: Applied only to that specific page.
+
+Additionally, when adding middlewares you can provide a list of mixed types (functions and classes) which execute sequentially from left to right: `middleware=[func_md, ClassMd]`.
+
+```python
+# 1. Global
+app.add_middleware(GlobalMiddleware)
+
+# 2. Sub-router (Mixed Array)
+admin_group = fs.AddPagesy(route_prefix="/admin", middleware=[auth_func, AdminClassMd])
+
+# 3. Page specific
+@admin_group.page("/dashboard", middleware=[DashboardSpecificMiddleware])
+def dashboard(data: fs.Datasy):
+    pass
+```
+
+Navigation to `/admin/dashboard` triggers the `before_request` events in order: `Global -> auth_func -> AdminClassMd -> DashboardSpecific`.
+
 ## General Application
 
-Another alternative to protected-route
+A global application flow as an alternative to protected-routes:
 
 ## Page-specific Middleware
 

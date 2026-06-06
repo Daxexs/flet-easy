@@ -3,7 +3,7 @@
 ## System Requirements
 
 - **Python**: 3.9 or higher (✨ Enhanced support in v0.3.0)
-- **Flet**: 0.21.0 or higher (required dependency)
+- **Flet**: 0.27.0 or higher (required dependency)
 - **Operating Systems**: Windows, macOS, Linux, iOS, Android, Web
 
 !!! info "Dependency Changes"

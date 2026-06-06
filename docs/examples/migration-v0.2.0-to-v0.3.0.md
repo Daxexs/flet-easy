@@ -8,9 +8,11 @@ This guide helps you migrate your Flet-Easy applications from version 0.2.x to 0
 * 🆕 **Page Caching System**: Optional state preservation during navigation
 * 🆕 **Dynamic Controls**: Real-time updates for cached pages
 * 🆕 **Enhanced Middleware**: Class-based middleware with before/after hooks
+* 🆕 **Declarative Class Components**: Natively use `@ft.component` on class `.build()` methods.
 * 🆕 **Direct Method Execution**: Simplified API for common operations
 * 🆕 **Python 3.9 Support**: Extended compatibility
 * ⚡ **Performance Improvements**: Optimized routing and middleware execution
+* 🆕 **Enhanced Authentication**: Automatic `next_route` redirections, plus `login_async()` and `logout()` immediate executions.
 * 🆕 **`decode_jwt` / `decode_jwt_async`** methods added to `Datasy`, replacing the standalone `fs.decode()` / `fs.decode_async()` functions.
 * ⚠️ **`fs.decode` and `fs.decode_async` are deprecated** — they still work but emit a `FutureWarning` and will be removed in a future version.
 
@@ -41,17 +43,50 @@ def handle_logout(_):
     data.logout("token")  # Executes immediately
 ```
 
-### New Direct Navigation Method
+### Authentication Changes
+
+**Before (v0.2.x):**
+
+```python
+# `next_route` was optional in login()
+data.login("token", {"user": "admin"})
+```
+
+**After (v0.3.0):**
+
+```python
+# `next_route` is now MANDATORY to guarantee safe redirections
+data.login("token", {"user": "admin"}, next_route="/dashboard")
+
+# You can also use the new asynchronous login
+await data.login_async("token", {"user": "admin"}, next_route="/dashboard")
+```
+
+### New Direct Executions
 
 **New in v0.3.0:**
 
 ```python
 # Direct navigation - executes immediately
 def some_function():
-    data.go_route("/dashboard")  # New method
+    data.go_route("/dashboard")  # Navigate immediately
+    data.redirect("/dashboard")  # Force instant redirect (useful in middleware)
+    data.page_reload()  # Reload the current page immediately
 
 # Traditional method still works
 button = ft.ElevatedButton("Dashboard", on_click=data.go("/dashboard"))
+```
+
+### Seamless Pop History Tracking
+
+**New in v0.3.0:**
+
+```python
+# Automatically align physical back buttons (like Android's OS back) with Flet-Easy's deep-routing history!
+@app.view
+def global_view(data: fs.Datasy, page: ft.Page):
+    page.on_view_pop = data.confirm_pop
+    return fs.Viewsy(...)
 ```
 
 ## New Features Migration
@@ -181,6 +216,39 @@ class AuthMiddleware(fs.MiddlewareRequest):
 
 # Both function and class-based middleware work
 app.add_middleware(AuthMiddleware)
+```
+
+### Declarative Class Components
+
+**New Feature:**
+
+!!! warning "Flet Version Requirement"
+    The use of declarative components (`@ft.component`) is only available from **Flet version 0.80.0** onwards.
+
+Before v0.3.0, using classes for views required passing `data` explicitly and couldn't easily leverage Flet's declarative rendering.
+
+```python
+# Before (v0.2.x / Imperative)
+@app.page("/profile")
+class Profile:
+    def __init__(self, data: fs.Datasy):
+        self.data = data
+        
+    def build(self):
+        return ft.View(controls=[ft.Text("Profile")])
+```
+
+**After (v0.3.0 - Declarative):**
+
+```python
+# After (v0.3.0 / Declarative Component)
+@app.page("/profile")
+class Profile:
+    # No __init__ needed! self.data is injected automatically
+    
+    @ft.component
+    def build(self):
+        return ft.View(controls=[ft.Text("Profile")])
 ```
 
 ### Page-Specific Middleware

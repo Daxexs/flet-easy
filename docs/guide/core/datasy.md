@@ -83,6 +83,10 @@ data.route           # Current route path
 
 Navigate to a specific route.
 
+!!! Note "Important behavior"
+
+    Unlike `go_route()` or `redirect()`, the `go()` method **returns an asynchronous lambda function**, which makes it ideal to be passed directly to event handlers like `on_click` without needing to wrap it manually.
+
 ```python
 @app.page("/home")
 def home_page(data: fs.Datasy):
@@ -191,7 +195,7 @@ def dashboard_page(data: fs.Datasy):
 
 !!! Note "Enhanced in v0.3.0"
 
-Redirect to a specific route immediately. This method is executed directly, and importantly, it is now available not just for middlewares, but also directly in page functions to force a quick redirection.
+Redirect to a specific route immediately. Unlike `go()`, **it executes directly**. This method is now available not just for middlewares, but also directly in page functions to force a quick redirection.
 
 ```python
 @app.page("/old-route")

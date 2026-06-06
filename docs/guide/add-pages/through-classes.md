@@ -14,7 +14,29 @@ The class can have several benefits, such as inheritance which is useful to avoi
 
 !!! note "Soporta async"
 
-## **Example**
+## **Declarative Class Components (v0.3.0+)**
+
+Since v0.3.0, you can natively integrate Flet-Easy class views with Flet's Declarative UI components by decorating the `build()` method with `@ft.component`. Flet-Easy will intelligently instantiate the class and **automatically inject `self.data`**, meaning you no longer need an explicit `__init__(self, data: fs.Datasy)` method!
+
+```python
+import flet as ft
+import flet_easy as fs
+
+@app.page("/profile")
+class Profile:
+    # No __init__ required! Flet-Easy injects self.data automatically.
+    
+    @ft.component
+    def build(self):
+        return ft.View(
+            controls=[
+                ft.Text("Profile Page"),
+                ft.Button("Go Home", on_click=self.data.go("/")),
+            ]
+        )
+```
+
+## **Imperative Class Components (Legacy / Standard)**
 
 ```python title="main.py" hl_lines="4-6 9 39-41 44 53-55 59 67"
 import flet as ft

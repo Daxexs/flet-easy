@@ -6,6 +6,10 @@ __pycache__/
 # C extensions
 *.so
 
+# flet store files
+**/storage/
+*.db
+
 # Distribution / packaging
 .Python
 build/

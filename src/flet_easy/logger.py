@@ -9,13 +9,13 @@ except ImportError:
 
 
 class ColorFormatter(logging.Formatter):
-    def format(self, record):
+    def format(self, record: logging.LogRecord) -> str:
         record.name = f"[bold]{record.name}[/]:"
         return super().format(record)
 
 
 class OnlyMyLogsFilter(logging.Filter):
-    def filter(self, record):
+    def filter(self, record: logging.LogRecord) -> bool:
         return record.name.startswith("flet_easy")
 
 

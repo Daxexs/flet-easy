@@ -1,16 +1,34 @@
 line-length = 100
-target-version = "py38"
+target-version = "py39"
 extend-exclude = ["__init__.py"]
-
-[lint]
-extend-select = ["E", "F", "UP", "SIM", "I", "Q", "RUF100"]
-typing-modules = ["airflow.typing_compat"]
-ignore = ["F631"]
 
 [format]
 docstring-code-format = true
 docstring-code-line-length = 80
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
 
 [lint.pycodestyle]
 ignore-overlong-task-comments = true
 max-line-length = 320
+
+[lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "SIM", # flake8-simplify
+]
+ignore = [
+    "E501", # line too long (handled by formatter)
+    "B008", # do not perform function calls in argument defaults
+    "B011", # do not call assert False
+    "B904", # raise without from in exception handler
+]

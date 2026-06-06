@@ -8,7 +8,7 @@ You can register routes in your main application without using decorators by usi
 
 ## App structure
 
-![App structure](../../../assets/guide/add-pages/img/funtion_add_page.png "App structure")
+![App structure](../../assets/guide/add-pages/img/funtion_add_page.png "App structure")
 
 ### **Example: Defining a Page Function**
 
@@ -63,7 +63,7 @@ class PageTest:
 
 ### Add routes
 
-We import the functions or classes from the `views` folder, then we use the [`add_routes`](/flet-easy/0.2.0/how-to-use/#methods) method of the [FletEasy](/flet-easy/0.2.0/how-to-use/#fleteasy) instance, in which we will add a list of [`Pagesy`](/flet-easy/0.2.0/add-pages/by-means-of-functions/#pagesy) classes where we will configure the routes and the functions or classes to be used in addition to others.
+We import the functions or classes from the `views` folder, then we use the [`add_routes`](../../started/how-to-use.md#methods) method of the [FletEasy](../../started/how-to-use.md#fleteasy) instance, in which we will add a list of [`Pagesy`](#pagesy) classes where we will configure the routes and the functions or classes to be used in addition to others.
 
 ```python title="main.py"
 # Import functions from a `views` folder
@@ -99,7 +99,7 @@ if __name__ == "__main__":
 - `clear`: Removes the pages from the `page.views` list of flet. (optional)
 - `index`: Define the index of the page, use in controls like `ft.NavigationBar` and `ft.CupertinoNavigationBar`. (optional)
 - `cache`: Boolean that preserves page state when navigating. Controls retain their values instead of resetting. Works in **imperative** mode, but not in **declarative** (`@ft.component`). (optional)
-- `share_data` : It is a boolean value, which is useful if you want to share data between pages, in a morerestricted way. (optional) [[`See more`](../../../advanced/data-sharing-between-pages/)]
-- `protected_route`: Protects the route of the page, according to the configuration of the `login` decoratorof the `FletEasy` class. (optional) [[`See more`](../../../advanced/route-protection/)]
-- `custom_params`: To add validation of parameters in the custom url using a dictionary, where the key is the nameof the parameter validation and the value is the custom function that must report a boolean value. [[`See more`](../../../guide/routing/dynamic-routes/#custom-validation)]
-- `middleware` : It acts as an intermediary between different software components, intercepting andprocessing requests and responses. They allow adding functionalities to an application in a flexible andmodular way. (optional) [[`See more`](../../../advanced/middleware/#for-each-page)]
+- `share_data` : It is a boolean value, which is useful if you want to share data between pages, in a morerestricted way. (optional) [[`See more`](../../advanced/data-sharing-between-pages.md)]
+- `protected_route`: Protects the route of the page, according to the configuration of the `login` decoratorof the `FletEasy` class. (optional) [[`See more`](../../advanced/route-protection.md)]
+- `custom_params`: To add validation of parameters in the custom url using a dictionary, where the key is the nameof the parameter validation and the value is the custom function that must report a boolean value. [[`See more`](../routing/dynamic-routes.md#custom-validation)]
+- `middleware` : It acts as an intermediary between different software components, intercepting andprocessing requests and responses. They allow adding functionalities to an application in a flexible andmodular way. (optional) [[`See more`](../../advanced/middleware.md#for-each-page)]
