@@ -97,7 +97,7 @@ app.run(view=ft.AppView.WEB_BROWSER)
 
 ```
 
-### ** Demo**
+### **Demo**
 
 ![alt video](../../assets/guide/routing/route-advanced.gif "Flet-Easy - Dynamic routes - Advanced form")
 

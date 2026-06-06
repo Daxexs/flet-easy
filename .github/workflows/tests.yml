@@ -12,15 +12,18 @@ on:
 
 jobs:
   tests:
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.12"]
     runs-on: windows-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: ${{ matrix.python-version }}
 
       - name: Install the latest version of uv and enable caching and define a custom cache key suffix
         id: setup-uv
@@ -36,4 +39,5 @@ jobs:
           echo "Syncronize flet-easy completed"
 
       - name: Run tests via nox
-        run: uv run nox -s tests_scripts tests_scripts_ui
+        run: uv run nox -s tests_scripts tests_scripts_ui --python ${{ matrix.python-version }}
+

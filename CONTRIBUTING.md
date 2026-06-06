@@ -11,7 +11,7 @@ The following is a set of guidelines for contributing.
 
 ## 1. Install uv
 
-For more information [here](https://github.com/astral-sh/uv).
+For more information, see [uv's GitHub repository](https://github.com/astral-sh/uv).
 
 ```bash
 pip install uv
