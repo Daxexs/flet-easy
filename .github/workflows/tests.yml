@@ -5,6 +5,8 @@ on:
     paths:
       - "tests/*"
       - "tests/ui/*"
+      - "src/**"
+      - ".github/workflows/tests.yml"
   pull_request:
     types:
       - opened
