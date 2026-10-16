@@ -51,6 +51,9 @@
 
 Installs all the dependencies to use, you can use all the functionalities provided by FletEasy
 
+> [!NOTE]
+> FletEasy v0.2.x is compatible with `Flet >= 0.25.1, < 0.28` (the `colors` imports used by FletEasy were removed in `Flet 0.28.0`).
+
 ```bash
 pip install flet-easy[all]
 ```
@@ -62,10 +65,10 @@ pip install flet-easy[all]
 > [!TIP]
 > [Recommended for `Flet` Packaging Application](https://flet.dev/docs/publish).
 
-Requires installation of [Flet >= 0.25](https://github.com/flet-dev/flet).
+Requires installation of [Flet >= 0.25.1, < 0.28](https://github.com/flet-dev/flet).
 
 ```bash
-pip install flet[all]
+pip install "flet[all]>=0.25.1,<0.28"
 ```
 
 #### If you do not use: [CLI-to-create-app](https://daxexs.github.io/flet-easy/0.2.0/cli-to-create-app)

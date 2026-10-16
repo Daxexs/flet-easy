@@ -4,7 +4,7 @@
     In **version 0.1.3 from now on** it requires installing [`flet`](http://github.com/flet-dev/flet) separately, in previous versions it is installed by default.
 
     ```bash
-    pip install flet
+    pip install "flet>=0.25.1,<0.28"
     ```
 To install flet-easy just copy this into your terminal after having already installed `python >= 3.8`
 
@@ -38,10 +38,10 @@ pip install flet-easy[all]
 !!! tip
     [Recommended for `Flet` Packaging Application](https://flet.dev/docs/publish).
 
-Requires installation of [Flet >= 0.21](https://github.com/flet-dev/flet).
+Requires installation of [Flet >= 0.25.1, < 0.28](https://github.com/flet-dev/flet) for Flet-Easy v0.2.x.
 
 ```bash
-pip install flet>=0.21
+pip install "flet[all]>=0.25.1,<0.28"
 ```
 
 #### If you do not use: [`[CLI-to-create-app]`](/flet-easy/0.2.0/cli-to-create-app)

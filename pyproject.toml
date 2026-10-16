@@ -41,10 +41,10 @@ all = [
     "rsa>=4.9",
     "cookiecutter>=2.6.0",
     "rich-argparse>=1.4.0",
-    "flet[all]>=0.25.1",
+    "flet[all]>=0.25.1,<0.28",
 ]
 JWT = ["pyJWT>=2.0.0", "rsa>=4.9"]
-cli = ["cookiecutter>=2.6.0", "rich-argparse>=1.4.0", "flet[all]>=0.25.1"]
+cli = ["cookiecutter>=2.6.0", "rich-argparse>=1.4.0", "flet[all]>=0.25.1,<0.28"]
 
 [project.urls]
 Homepage = "https://github.com/Daxexs"
@@ -63,7 +63,7 @@ fs = "flet_easy.cli.main:run"
 [dependency-groups]
 test = [
     "ruff>=0.3.4",
-    "flet[all]>=0.25.1",
+    "flet[all]>=0.25.1,<0.28",
     "tortoise-orm>=0.22.2",
     "pytest>=8.3.4",
     "pyjwt>=2.0.0",

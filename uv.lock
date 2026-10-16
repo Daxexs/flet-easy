@@ -364,8 +364,8 @@ test = [
 requires-dist = [
     { name = "cookiecutter", marker = "extra == 'all'", specifier = ">=2.6.0" },
     { name = "cookiecutter", marker = "extra == 'cli'", specifier = ">=2.6.0" },
-    { name = "flet", extras = ["all"], marker = "extra == 'all'", specifier = ">=0.25.1" },
-    { name = "flet", extras = ["all"], marker = "extra == 'cli'", specifier = ">=0.25.1" },
+    { name = "flet", extras = ["all"], marker = "extra == 'all'", specifier = ">=0.25.1,<0.28" },
+    { name = "flet", extras = ["all"], marker = "extra == 'cli'", specifier = ">=0.25.1,<0.28" },
     { name = "pyjwt", marker = "extra == 'all'", specifier = ">=2.0.0" },
     { name = "pyjwt", marker = "extra == 'jwt'", specifier = ">=2.0.0" },
     { name = "rich-argparse", marker = "extra == 'all'", specifier = ">=1.4.0" },
@@ -380,7 +380,7 @@ docs = [
     { name = "mkdocs-material", specifier = ">=9.5.17" },
 ]
 test = [
-    { name = "flet", extras = ["all"], specifier = ">=0.25.1" },
+    { name = "flet", extras = ["all"], specifier = ">=0.25.1,<0.28" },
     { name = "pyjwt", specifier = ">=2.0.0" },
     { name = "pytest", specifier = ">=8.3.4" },
     { name = "rsa", specifier = ">=4.9" },

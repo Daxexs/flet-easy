@@ -4,7 +4,8 @@ try:
     from flet import AppView, Page, WebRenderer, app
 except ImportError:
     raise FletEasyError(
-        'Install "flet" the latest version available -> pip install flet[all] --upgrade.'
+        'Flet-Easy v0.2.x requires Flet >=0.25.1,<0.28; install it with '
+        'pip install "flet[all]>=0.25.1,<0.28".'
     )
 
 from collections import deque
